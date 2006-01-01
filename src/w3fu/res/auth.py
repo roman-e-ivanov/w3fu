@@ -16,7 +16,7 @@ class AuthForm(Form):
 
     login = StrArg('login', pattern=u'^[\wа-яА-Я\._-]+$',
                    min_size=4, max_size=32)
-    password = StrArg('password', pattern=u'^[а-яА-Я\x20-\x7e]+$', clear=True,
+    password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$', clear=True,
                       min_size=4, max_size=32)
 
 
