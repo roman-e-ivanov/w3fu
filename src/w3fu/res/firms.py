@@ -32,7 +32,7 @@ class FirmPublic(Resource):
 
 class FirmCreateForm(Form):
 
-    name = StrArg('name', min_size=4, max_size=32)
+    name = StrArg('name', min_size=1, max_size=100)
 
 
 @bind('/admin/firms')
