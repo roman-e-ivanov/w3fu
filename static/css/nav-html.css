@@ -1,0 +1,31 @@
+/*----------<<< CSS for navigation >>>---------*/
+
+/*========== Column-navigation ==========*/
+.c-nav {
+	
+}
+
+.c-nav-list {
+	
+	padding:1px;
+	position:absolute;
+	left:0; top:0;
+}
+
+.с-nav-line {
+	
+	margin:5px;
+	
+}
+
+.с-nav-line a {
+	display:block; 
+	background:#888;
+ 
+}
+
+.с-nav-line a:hover {
+	background:#ddd;
+	color:#000;
+}
+/*========== Line-navigation ==========*/

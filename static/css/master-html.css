@@ -1,0 +1,77 @@
+/*@import url("reset-html.css");*/
+@import url("reset960-html.css");
+/*@import url("double.column.fixed-html.css");*/
+@import url("nav-html.css");
+@import url("debugging.css");
+@import url("960-html.css");
+
+
+	.login-ok, .text_login, .text_reg, .login-argabsent, .password-ok, .password-argabsent {background:#f0f0f0; border:1px solid #909090;  font-size:11px; padding:2px;}
+	.login-argabsent, .password-argabsent {background:#ff9999;}
+     
+    .container_16 {
+     	position: relative;
+		background: #fff url("/s/img/16_col.gif") repeat-y;
+	}
+    .popup {
+    	position:absolute;
+  		top:10px; right:10px;
+  		text-align:right;
+    }
+    .popup1 {
+    	position:absolute;
+  		top:150px; right:10px;
+  		text-align:right;
+    }
+	.popup2 {
+    	position:absolute;
+  		top:300px; right:10px;
+  		text-align:right;
+    }
+    .dropdown-content {
+    	display: none;
+    	background: #ffffff;
+    	text-align:left;
+    }
+    
+    .dropdown-button {
+    	cursor: pointer;
+    	}
+    	
+    .dropdown-button:hover {text-decoration:none;}
+    
+    div.datepicker-container {
+    	font-size: 10pt
+    	}
+    table.datepicker-calendar {
+    	border-collapse: collapse;   			
+    }
+    
+    table.datepicker-calendar td {
+    	border:1px solid #ffffff;
+		padding: 2px 6px;
+		cursor: pointer;
+    }
+    
+    table.datepicker-calendar th {
+    	border:1px solid #ffffff;
+    	background-color:#9999cc;
+    	font-weight:bold;
+		padding: 2px 6px;
+		cursor: default;
+    }
+.datepicker-next, .datepicker-prev {cursor:pointer;}
+    
+    input.datepicker-day, input.datepicker-month, input.datepicker-year {border:1px solid #444444;}
+
+	td.datepicker-workingday {background-color:#99cc99;}
+	td.datepicker-workingday:hover {background-color:#ccffcc;}
+	
+	td.datepicker-today {background-color:#ffff99;}
+	td.datepicker-today:hover {background-color:#ccffff;}
+	
+	td.datepicker-holiday {background-color:#cc9999;}
+	td.datepicker-holiday:hover {background-color:#ffcccc;}
+	
+	td.datepicker-anotherday {background-color:#cccccc; color:#888888;}
+	td.datepicker-anotherday:hover {background-color:#eeeeee; color:#444444;}

@@ -1,0 +1,42 @@
+/*----------<<< Double-column fixed >>>---------*/
+
+body {
+ /* padding:10px 0;*/ 
+  width:1000px; 
+  margin:0 auto;
+  position: relative;
+/*  background: #fff url("/s/img/16_col.gif") repeat-y;*/
+}
+
+/*========== Header ==========*/
+
+.l-header {
+  	
+}
+
+/*========== Main block ==========*/
+
+.l-main {
+	width:100%; overflow:hidden;
+}
+
+.l-main-content {
+  	float:right;
+  	width:750px;
+  	padding-bottom:32767px;
+ 	margin-bottom:-32767px;
+}
+
+.l-main-sidebar {
+ 	float:left; 
+ 	width:250px;
+ 	padding-bottom:32767px;
+  	margin-bottom:-32767px;
+}
+
+/*========== Footer ==========*/
+
+.l-footer {
+	clear:both;
+	padding:10px 0; 
+}
