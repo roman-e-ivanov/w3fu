@@ -3,7 +3,7 @@ import sys
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 
-APP_PATH = '/home/nbahob/workspace/w3fu-trunk'
+APP_PATH = '/home/nbahob/workspace/w3fu'
 
 sys.path.append(APP_PATH + '/src')
 
