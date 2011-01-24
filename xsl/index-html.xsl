@@ -22,7 +22,7 @@
 					
 				</w3fu:attribute>
 			</meta>
-			<w3fu:call-template name="w3fu:header" />
+			<w3fu:call-template name="w3fu:links" />
 			</head>
 			
 			<body>
