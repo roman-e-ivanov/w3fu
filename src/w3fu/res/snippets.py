@@ -7,11 +7,12 @@ def html(xslt=None):
     def decorator(method):
         def f(res, *args, **kwargs):
             resp = method(res, *args, **kwargs)
-            resp.ctype = 'application/xml' if xslt is None else 'text/html'
+            t = None if 'no-xslt' in res.req.query else xslt
+            resp.ctype = 'application/xml' if t is None else 'text/html'
             if resp.status == 200:
                 resp.content = res.app.xslt.transform(res.name(),
                                                       resp.content,
-                                                      xslt)
+                                                      t)
             return resp
         return f
     return decorator

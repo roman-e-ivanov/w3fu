@@ -38,8 +38,8 @@ class Request(object):
         self._init_headers()
 
     def _init_args(self):
-        self.query = dict(parse_qsl(self._env.get('QUERY_STRING', '')))
-        self.content = dict(parse_qsl(self._content()))
+        self.query = dict(parse_qsl(self._env.get('QUERY_STRING', ''), True))
+        self.content = dict(parse_qsl(self._content(), True))
 
     def _init_headers(self):
         self.method = self._env.get('REQUEST_METHOD', '').lower()
