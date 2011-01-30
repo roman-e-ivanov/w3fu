@@ -2,6 +2,7 @@ import sys
 from openid.consumer.consumer import Consumer, DiscoveryFailure, SUCCESS
 from pprint import pprint
 
+from w3fu import config
 from w3fu.res import bind, Resource
 from w3fu.res.snippets import html, storage, form, user
 from w3fu.data.forms import Form, Arg
@@ -52,7 +53,7 @@ class Login(Resource):
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
-        resp.set_cookie(SESSION_NAME, session['id'], SESSION_TTL)
+        resp.set_cookie(config.session_name, session['id'], config.session_ttl)
         return resp.location('/home')
 
 
@@ -85,7 +86,7 @@ class Register(Resource):
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
-        resp.set_cookie(SESSION_NAME, session['id'], SESSION_TTL)
+        resp.set_cookie(config.session_name, session['id'], config.session_ttl)
         return resp.location('/home')
 
 

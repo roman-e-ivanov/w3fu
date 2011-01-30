@@ -3,9 +3,11 @@ import sys
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 
-APP_PATH = '/home/nbahob/workspace/w3fu'
+APP_PATH = '/home/rivan/workspace/w3fu'
 
 sys.path.append(APP_PATH + '/src')
+
+from w3fu import config
 
 from w3fu.web import Application
 from w3fu.data.xml import XSLT
@@ -22,10 +24,10 @@ from w3fu.res.auth import Login, Register
 controller = Controller([Index, JsonTest, HtmlTest, Login, Register])
 
 conn_config = {
-               'host': 'localhost',
-               'db': 'w3fu',
-               'user': 'root',
-               'passwd': '12345678',
+               'host': config.conn_host,
+               'db': config.conn_db,
+               'user': config.conn_user,
+               'passwd': config.conn_passwd,
                'cursorclass': DictCursor,
                'use_unicode': True,
                'charset': 'utf8'

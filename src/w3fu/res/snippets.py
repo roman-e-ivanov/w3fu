@@ -1,5 +1,6 @@
 from json import dumps
 
+from w3fu import config
 from w3fu.storage import StorageError
 
 
@@ -54,14 +55,11 @@ def form(formcls, redirect=True):
     return decorator
 
 
-SESSION_NAME = 'u'
-
-
 def user(method):
     def f(res, db, *args, **kwargs):
         user = None
         try:
-            session_id = res.req.cookie[SESSION_NAME].value
+            session_id = res.req.cookie[config.session_name].value
             session = db.sessions.find(session_id).fetch()
             if session:
                 user = db.users.find(session['user_id']).fetch()
