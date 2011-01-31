@@ -50,8 +50,26 @@
 					<a title="" href="/register">/register</a>
 				</li>
 			</ul>
-		</div>
+		
+		
+			<ul class="c-nav-list">
 
+				<li class="с-nav-line">
+					<a title="" href="/?no-xslt">/?no-xslt</a>
+				</li>
+
+				<li class="с-nav-line">
+					<a title="" href="/test?no-xslt">/test?no-xslt</a>
+				</li>
+				
+			<li class="с-nav-line">
+					<a title="" href="/login?no-xslt">/login?no-xslt</a>
+				</li>
+			<li class="с-nav-line">
+					<a title="" href="/register?no-xslt">/register?no-xslt</a>
+				</li>
+			</ul>
+		</div>
 
 	</w3fu:template>
 

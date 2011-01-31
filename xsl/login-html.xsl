@@ -10,7 +10,7 @@
 	<w3fu:template match="/">
 		<html>
 			<head>
-			<title>Регистрация</title>
+			<title>Вход на сайт</title>
 			<w3fu:call-template name="w3fu:keywords">
 				<w3fu:with-param name="keywords" select="'войти, вход, залогиниться'" />
 			</w3fu:call-template>

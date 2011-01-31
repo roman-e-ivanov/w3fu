@@ -2,14 +2,15 @@
 
 /*========== Column-navigation ==========*/
 .c-nav {
-	
+	position:absolute;
 }
 
 .c-nav-list {
 	
 	padding:1px;
-	position:absolute;
+	/*position:absolute;*/
 	left:0; top:0;
+	display:block;
 }
 
 .с-nav-line {
