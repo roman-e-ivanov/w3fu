@@ -16,18 +16,15 @@ class Sessions(Mapper):
     rowcls = Session
 
     insert_sql = '''
-        insert ignore into %(self)s (id, user_id, expires) values
-        (%%(id)s, %%(user_id)s, from_unixtime(unix_timestamp() + %(ttl)d))
+        insert ignore into {self} (id, user_id, expires) values
+        (%(id)s, %(user_id)s, from_unixtime(unix_timestamp() + {ttl}))
     '''
 
-    find_sql = 'select * from %(self)s where %(pk)s = %%(p0)s and now() < expires'
+    find_sql = 'select * from {self} where {pk} = %(p0)s and now() < expires'
 
     def insert(self, row, ttl, sql=insert_sql):
         row.new()
-        sql %= {
-                'self': self.table,
-                'ttl': ttl
-                }
+        sql = sql.format(self=self.table, ttl=str(ttl))
         return self._conn.cursor().query(sql, dict(row))
 
 
@@ -42,7 +39,7 @@ class Users(Mapper):
     table = 'users'
     rowcls = User
 
-    find_by_login_sql = 'select * from %(self)s where login = %%(p0)s'
+    find_by_login_sql = 'select * from {self} where login = %(p0)s'
 
 
 class OpenIDStore(Mapper):
