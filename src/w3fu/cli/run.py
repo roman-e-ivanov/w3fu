@@ -18,7 +18,7 @@ setup_testing_defaults(environ)
 def start_response(status, headers):
     print(status)
     for name, value in headers:
-        print('%s: %s' % (name, value))
+        print('{0}: {1}'.format(name, value))
 
 for data in app(environ, start_response):
     print
