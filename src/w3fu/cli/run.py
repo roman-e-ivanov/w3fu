@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
-
 from wsgiref.util import setup_testing_defaults
 
-from w3fu import app
+from w3fu import config, app
 
 
 environ = {
-           'HTTP_HOST': 'localhost',
-           'PATH_INFO': '/',
-           'HTTP_COOKIE': 'u=mgGxNzteT7igDQBqD-OZAw',
-           'REQUEST_METHOD': 'GET',
-           'QUERY_STRING': u'login=striped&password=8888'
+           'HTTP_HOST': config.cli_http_host,
+           'REQUEST_METHOD': config.cli_request_method,
+           'PATH_INFO': config.cli_path_info,
+           'HTTP_COOKIE': config.cli_http_cookie,
+           'QUERY_STRING': config.cli_query_string
            }
 
 setup_testing_defaults(environ)

@@ -1,3 +1,9 @@
+cli_http_host = 'localhost'
+cli_request_method = 'GET'
+cli_path_info = '/'
+cli_query_string = ''
+cli_http_cookie = ''
+
 conn_host = 'localhost'
 conn_db = 'w3fu'
 conn_user = 'root'

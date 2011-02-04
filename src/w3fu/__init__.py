@@ -1,11 +1,6 @@
-# -*- coding: utf-8 -*-
 import sys
 import MySQLdb
 from MySQLdb.cursors import DictCursor
-
-APP_PATH = '/home/rivan/workspace/w3fu'
-
-sys.path.append(APP_PATH + '/src')
 
 from w3fu import config
 
@@ -40,6 +35,6 @@ storage = Storage(lambda storage: Connection(
                                              mappers=(Users, Sessions)
                                              ))
 
-xslt = XSLT(APP_PATH + '/xsl')
+xslt = XSLT(config.xsl_path)
 
 app = Application(controller, storage, xslt)
