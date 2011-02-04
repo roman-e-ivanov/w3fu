@@ -10,18 +10,15 @@
 	<w3fu:template match="/">
 		<html>
 			<head>
-			<title>Регистрация</title>
-			<meta name="keywords">
-				<w3fu:attribute name="content">
-        			
-        		</w3fu:attribute>
-			</meta>
+			<title>Главная страница</title>
+			<w3fu:call-template name="w3fu:keywords">
+				<w3fu:with-param name="keywords" select="'войти, вход, залогиниться'" />
+			</w3fu:call-template>
+			
+			<w3fu:call-template name="w3fu:description">
+				<w3fu:with-param name="description" select="'Вход на сайт'" />
+			</w3fu:call-template>
 
-			<meta name="description">
-				<w3fu:attribute name="content">
-					
-				</w3fu:attribute>
-			</meta>
 			<w3fu:call-template name="w3fu:links" />
 			</head>
 			

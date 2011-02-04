@@ -7,7 +7,7 @@ from w3fu import app
 
 environ = {
            'HTTP_HOST': 'localhost',
-           'PATH_INFO': '/login',
+           'PATH_INFO': '/',
            'HTTP_COOKIE': 'u=mgGxNzteT7igDQBqD-OZAw',
            'REQUEST_METHOD': 'GET',
            'QUERY_STRING': u'login=striped&password=8888'
