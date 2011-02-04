@@ -1,12 +1,13 @@
-import re
+from re import compile
 
 
-def bind(pattern, **args):
+def bind(pattern, *args, **kwargs):
     def f(cls):
         cls.pattern = pattern
-        cls.cpattern = re.compile(('^%s$' % pattern)
-                                  % dict((k, '(?P<%s>%s)' % (k, v))
-                                         for k, v in args.iteritems()))
+        rargs = tuple('({0})'.format(v) for v in args)
+        rkwargs = dict((k, '(?P<{0}>{1})'.format(k, v))
+                         for k, v in kwargs.iteritems())
+        cls.cpattern = compile('^{0}$'.format(pattern.format(*rargs, **rkwargs)))
         return cls
     return f
 
@@ -32,8 +33,8 @@ class Resource(object):
         return cls.__name__.lower()
 
     @classmethod
-    def path(cls, args={}):
-        return cls.pattern % args
+    def path(cls, *args, **kwargs):
+        return cls.pattern.format(*args, **kwargs)
 
     def __init__(self, app, req):
         self.app = app
