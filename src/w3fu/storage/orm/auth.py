@@ -17,14 +17,14 @@ class Sessions(Mapper):
 
     insert_sql = '''
         insert ignore into {self} (id, user_id, expires) values
-        (%(id)s, %(user_id)s, from_unixtime(unix_timestamp() + {ttl}))
+        (%(id)s, %(user_id)s, from_unixtime(unix_timestamp() + {ttl!s}))
     '''
 
     find_sql = 'select * from {self} where {pk} = %(p0)s and now() < expires'
 
     def insert(self, row, ttl, sql=insert_sql):
         row.new()
-        sql = sql.format(self=self.table, ttl=str(ttl))
+        sql = sql.format(self=self.table, ttl=ttl)
         return self._conn.cursor().query(sql, dict(row))
 
 

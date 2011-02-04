@@ -43,7 +43,7 @@ class Mapper(object):
 
     def _query(self, sql, args, kwargs):
         sql = sql.format(self=self.table, pk=self.rowcls.pk)
-        params = dict(('p{0}'.format(str(i)), arg) for i, arg in enumerate(args))
+        params = dict(('p{0!s}'.format(i), arg) for i, arg in enumerate(args))
         params.update(kwargs)
         return self._conn.cursor().query(sql, params, self.rowcls)
 
