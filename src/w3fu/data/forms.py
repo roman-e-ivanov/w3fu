@@ -1,6 +1,3 @@
-from urllib import urlencode
-
-
 class ArgError(Exception):
 
     @classmethod
@@ -34,15 +31,11 @@ class Form(object):
         self.errors = {}
         self._validate()
 
-    def qs(self):
-        return urlencode(self.raw)
-
     def content(self):
-        content = {
-                   'values': self.raw,
-                   'errors': self.errors
-                   }
-        return content
+        return {
+                'values': self.raw,
+                'errors': self.errors
+                }
 
     def _validate(self):
         for name, arg in self.args.iteritems():

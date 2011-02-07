@@ -1,5 +1,6 @@
 from time import time, gmtime, strftime
 from urlparse import parse_qsl, urlunsplit
+from urllib import urlencode
 from Cookie import SimpleCookie, Morsel
 
 
@@ -77,7 +78,8 @@ class Response(object):
         self.headers.append((name, value))
         return self
 
-    def location(self, path, qs=''):
+    def location(self, path, args={}):
+        qs = urlencode(args)
         url = urlunsplit((self.req.scheme, self.req.host, path, qs, ''))
         self.header('Location', url)
         return self

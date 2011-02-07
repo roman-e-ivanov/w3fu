@@ -4,7 +4,7 @@ from pprint import pprint
 
 from w3fu import config
 from w3fu.res import bind, Resource
-from w3fu.res.snippets import html, storage, form, user
+from w3fu.res.snippets import html, storage, user
 from w3fu.data.forms import Form, Arg
 from w3fu.storage.orm.auth import User, Session
 
@@ -26,30 +26,30 @@ RegisterForm = AuthForm
 @bind('/login')
 class Login(Resource):
 
-    @form(LoginForm, redirect=False)
     @html('login-html')
     @storage
     @user
-    def get(self, db, form, user):
+    def get(self, db, user):
+        form = LoginForm(self.req.query)
+        error = form.raw.get('error')
         resp = self.req.response(200, {})
-        if not form.raw:
-            return resp
         resp.content['form'] = form.content()
-        if form.errors:
+        if error is None:
             return resp
-        user = db.users.find_by_login(form.values['login']).fetch()
-        if user is None or not user.check_password(form.values['password']):
+        if error == 'auth':
             resp.content['error'] = {'auth': {}}
         return resp
 
-    @form(LoginForm)
     @html()
     @storage
-    def post(self, db, form):
+    def post(self, db):
+        form = LoginForm(self.req.content)
         resp = self.req.response(302)
+        if form.errors:
+            return resp.location(self.path(), form.raw)
         user = db.users.find_by_login(form.values['login']).fetch()
         if user is None or not user.check_password(form.values['password']):
-            return resp.location(self.path(), form.qs())
+            return resp.location(self.path(), dict(error='auth', **form.raw))
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
@@ -60,29 +60,29 @@ class Login(Resource):
 @bind('/register')
 class Register(Resource):
 
-    @form(RegisterForm, redirect=False)
     @html('register-html')
     @storage
     def get(self, db, form):
+        form = RegisterForm(self.req.query)
+        error = form.raw.get('error')
         resp = self.req.response(200, {})
-        if not form.raw:
-            return resp
         resp.content['form'] = form.content()
-        if form.errors:
+        if error is None:
             return resp
-        user = db.users.find_by_login(form.values['login']).fetch()
-        if user is not None:
+        if error == 'exists':
             resp.content['error'] = {'exists': {}}
         return resp
 
-    @form(RegisterForm)
     @html()
     @storage
     def post(self, db, form):
+        form = RegisterForm(self.req.content)
         resp = self.req.response(302)
+        if form.errors:
+            return resp.location(self.path(), form.raw)
         user = User(**form.values)
         if not db.users.insert(user).count:
-            return resp.location(self.path(), form.qs())
+            return resp.location(self.path(), dict(error='exists', **form.raw))
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()

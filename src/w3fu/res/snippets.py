@@ -41,20 +41,6 @@ def storage(method):
     return f
 
 
-def form(formcls, redirect=True):
-    def decorator(method):
-        def f(res, *args, **kwargs):
-            raw = res.req.content if redirect else res.req.query
-            form = formcls(raw)
-            if redirect and form.errors:
-                return res.req.response(302).location(res.path(res.req.args),
-                                                      form.qs())
-            kwargs['form'] = form
-            return method(res, *args, **kwargs)
-        return f
-    return decorator
-
-
 def user(method):
     def f(res, db, *args, **kwargs):
         user = None

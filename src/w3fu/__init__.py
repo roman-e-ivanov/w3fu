@@ -1,4 +1,3 @@
-import sys
 import MySQLdb
 from MySQLdb.cursors import DictCursor
 
