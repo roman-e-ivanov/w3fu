@@ -1,3 +1,6 @@
+import re
+
+
 class ArgError(Exception):
 
     @classmethod
@@ -25,69 +28,91 @@ class Form(object):
 
     __metaclass__ = FormMeta
 
-    def __init__(self, raw):
-        self.raw = raw
-        self.values = {}
-        self.errors = {}
-        self._validate()
+    def __init__(self, src):
+        self.src = dict(src)
+        self.err = {}
+        self.data = {}
+        self._process()
 
     def content(self):
         return {
-                'values': self.raw,
-                'errors': self.errors
+                'values': self.src,
+                'errors': self.err
                 }
 
-    def _validate(self):
+    def _process(self):
         for name, arg in self.args.iteritems():
-            arg.validate(name, self.raw, self)
+            self.data[name] = arg.process(self.src, self.err)
 
 
 class Arg(object):
 
     is_arg = 1
 
-    def __init__(self, default=None, min_size=0, max_size=65535):
+    def __init__(self, name, default=None, clear=False):
+        self._name = name
         self._default = default
-        self._min_size = min_size
-        self._max_size = max_size
+        self._clear = clear
 
-    def validate(self, name, raw, form):
+    def process(self, src, err):
         try:
-            form.values[name] = self._process(name, raw)
+            try:
+                value = src[self._name]
+            except KeyError:
+                raise ArgAbsent()
+            return self._process(value)
         except ArgAbsent as e:
             if self._default is not None:
-                form.values[name] = self._default
-            else:
-                for field in e.args:
-                    form.errors[field] = {e.name(): {}}
+                return self._default
+            err[self._name] = {e.name(): {}}
         except ArgError as e:
-            for field in e.args:
-                form.errors[field] = {e.name(): {}}
+            err[self._name] = {e.name(): {}}
+        finally:
+            if self._clear:
+                try:
+                    del src[self._name]
+                except KeyError:
+                    pass
+        return None
 
-    def _process(self, name, raw):
+
+class StrArg(Arg):
+
+    def __init__(self, name, trim=True, pattern=None,
+                 min_size=0, max_size=65535, **kwargs):
+        super(StrArg, self).__init__(name, **kwargs)
+        self._trim = trim
+        self._min_size = min_size
+        self._max_size = max_size
+        if pattern is not None:
+            self._pattern = re.compile(pattern)
+
+    def _process(self, value):
+        if self._trim:
+            s = value.strip()
+        if not self._min_size <= len(s) <= self._max_size:
+            raise ArgSizeError()
         try:
-            s = raw[name]
-        except KeyError:
-            raise ArgAbsent(name)
-        if len(s) < self._min_size or len(s) > self._max_size:
-            raise ArgSizeError(name)
+            if not self._pattern.match(s):
+                raise ArgTypeError()
+        except AttributeError:
+            pass
         return s
 
 
 class IntArg(Arg):
 
-    def __init__(self, min=0, max=None, **kwargs):
-        super(IntArg, self).__init__(**kwargs)
+    def __init__(self, name, min=0, max=None, **kwargs):
+        super(IntArg, self).__init__(name, **kwargs)
         self._min = min
         self._max = max
 
-    def _process(self, name, raw):
-        s = super(IntArg, self)._process(name, raw)
+    def _process(self, value):
         try:
-            x = int(s)
+            x = int(value)
         except ValueError:
-            raise ArgTypeError(name)
+            raise ArgTypeError()
         if ((self._min is not None and x < self._min) or
             (self._max is not None and x > self._max)):
-            raise ArgRangeError(name)
+            raise ArgRangeError()
         return x
