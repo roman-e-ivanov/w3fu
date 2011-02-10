@@ -8,22 +8,22 @@ from w3fu.storage.orm import Mapper
 class OpenIdStore(Mapper):
 
     add_nonce_sql = '''
-        insert ignore into nonces values (%{url}s, %{timestamp}s, %{salt}s)
+        insert ignore into nonces values (%(url)s, %(timestamp)s, %(salt)s)
     '''
     set_assoc_sql = '''
         replace into assocs values
-        (%{url}s, %{handle}s, %{secret}s, %{issued}s, %{lifetime}s, %{type}s)
+        (%(url)s, %(handle)s, %(secret)s, %(issued)s, %(lifetime)s, %(type)s)
     '''
     get_assoc_sql = '''
         select handle, secret, issued, lifetime, type
-        from assocs where url = %{url}s and handle = %{handle}s
+        from assocs where url = %(url)s and handle = %(handle)s
     '''
     get_assocs_sql = '''
         select handle, secret, issued, lifetime, type
-        from assocs where url = %{url}s
+        from assocs where url = %(url)s
     '''
     remove_assoc_sql = '''
-        delete from assocs where url = %{url}s and handle = %{handle}s
+        delete from assocs where url = %(url)s and handle = %(handle)s
     '''
 
     def storeAssociation(self, url, assoc):
