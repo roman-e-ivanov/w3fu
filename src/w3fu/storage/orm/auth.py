@@ -40,18 +40,3 @@ class Users(Mapper):
     rowcls = User
 
     find_by_login_sql = 'select * from {self} where login = %(p0)s'
-
-
-class OpenIDStore(Mapper):
-
-    def storeAssociation(self, server_url, association):
-        pass
-
-    def getAssociation(self, server_url, handle=None):
-        pass
-
-    def removeAssociation(self, server_url, handle):
-        pass
-
-    def useNonce(self, server_url, timestamp, salt):
-        pass
