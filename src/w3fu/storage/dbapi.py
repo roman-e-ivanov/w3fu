@@ -76,7 +76,7 @@ class Cursor(object):
             return None
         try:
             return self._rowcls(row)
-        except AttributeError:
+        except TypeError:
             return row
 
     @property
