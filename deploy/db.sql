@@ -23,14 +23,14 @@ DROP TABLE IF EXISTS `assocs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `assocs` (
-  `server_url` blob NOT NULL,
+  `url` varchar(255) NOT NULL,
   `handle` varchar(255) NOT NULL,
-  `secret` blob NOT NULL,
-  `issued` int(11) NOT NULL,
-  `lifetime` int(11) NOT NULL,
-  `assoc_type` varchar(64) NOT NULL,
-  PRIMARY KEY (`server_url`(255),`handle`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `secret` varbinary(255) NOT NULL,
+  `issued` int(10) unsigned NOT NULL,
+  `lifetime` int(10) unsigned NOT NULL,
+  `type` varchar(64) NOT NULL,
+  PRIMARY KEY (`url`,`handle`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -50,11 +50,11 @@ DROP TABLE IF EXISTS `nonces`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `nonces` (
-  `server_url` blob NOT NULL,
-  `timestamp` int(11) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `timestamp` int(10) unsigned NOT NULL,
   `salt` char(40) NOT NULL,
-  PRIMARY KEY (`server_url`(255),`timestamp`,`salt`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`url`,`timestamp`,`salt`)
+) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +114,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'testuser','12345678'),(31,'rivan@work','12345'),(32,'rivan@home','67890');
+INSERT INTO `users` VALUES (1,'testuser','12345678');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -127,4 +127,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-30 18:00:14
+-- Dump completed on 2011-02-11 19:22:24
