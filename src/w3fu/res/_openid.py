@@ -29,7 +29,7 @@ class OpenIdAuth(Resource):
             #authrequest = consumer.begin('https://www.google.com/accounts/o8/id')
         except DiscoveryFailure:
             return self.req.response(401, content='Unauthorized')
-        rurl = authrequest.redirectURL('http://localhost',
-                                       return_to='http://localhost/profile',
-                                       immediate=False);
-        return self.req.response(302).location(rurl)
+        url = authrequest.redirectURL('http://localhost',
+                                      return_to='http://localhost/profile')
+        db.commit()
+        return self.req.response(302).location(url)
