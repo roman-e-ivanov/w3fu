@@ -1,7 +1,7 @@
 from w3fu import config
 from w3fu.res import bind, Resource
 from w3fu.res.snippets import html, storage, user
-from w3fu.data.forms import Form, StrArg
+from w3fu.web.forms import Form, StrArg
 from w3fu.storage.orm.auth import User, Session
 
 
