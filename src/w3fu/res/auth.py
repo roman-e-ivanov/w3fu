@@ -45,19 +45,19 @@ class Login(Resource):
         form = LoginForm(self.req.content)
         resp = self.req.response(302)
         if form.err:
-            return resp.location(str(Url(self.req.host, self.path(),
-                                         form.src, self.req.scheme)))
+            return resp.location(str(Url(self.req.scheme, self.req.host,
+                                         self.path(), form.src)))
         user = db.users.find_by_login(form.data['login']).fetch()
         if user is None or not user.check_password(form.data['password']):
-            return resp.location(str(Url(self.req.host, self.path(),
-                                         dict(error='auth', **form.src),
-                                         self.req.scheme)))
+            return resp.location(str(Url(self.req.scheme, self.req.host,
+                                         self.path(),
+                                         dict(error='auth', **form.src))))
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
         resp.set_cookie(config.session_name, session['id'], config.session_ttl)
-        return resp.location(str(Url(self.req.host, '/home',
-                                     {}, self.req.scheme)))
+        return resp.location(str(Url(self.req.scheme,
+                                     self.req.host, '/home', {})))
 
 
 @bind('/register')
@@ -82,16 +82,16 @@ class Register(Resource):
         form = RegisterForm(self.req.content)
         resp = self.req.response(302)
         if form.err:
-            return resp.location(str(Url(self.req.host, self.path(),
-                                         form.src, self.req.scheme)))
+            return resp.location(str(Url(self.req.scheme, self.req.host,
+                                         self.path(), form.src)))
         user = User(**form.data)
         if not db.users.insert(user).count:
-            return resp.location(str(Url(self.req.host, self.path(),
-                                         dict(error='exists', **form.src),
-                                         self.req.scheme)))
+            return resp.location(str(Url(self.req.scheme, self.req.host,
+                                         self.path(),
+                                         dict(error='exists', **form.src))))
         session = Session(user_id=user['id'])
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
         resp.set_cookie(config.session_name, session['id'], config.session_ttl)
-        return resp.location(str(Url(self.req.host, '/home',
-                                     {}, self.req.scheme)))
+        return resp.location(str(Url(self.req.scheme,
+                                     self.req.host, '/home', {})))
