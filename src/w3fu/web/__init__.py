@@ -78,9 +78,7 @@ class Response(object):
         self.headers.append((name, value))
         return self
 
-    def location(self, path, args={}):
-        qs = urlencode(args)
-        url = urlunsplit((self.req.scheme, self.req.host, path, qs, ''))
+    def location(self, url):
         self.header('Location', url)
         return self
 
