@@ -8,5 +8,5 @@ class Index(Resource):
     @html('index-html')
     @storage
     @user
-    def get(self):
+    def get(self, db, user):
         return self.req.response(200, {})
