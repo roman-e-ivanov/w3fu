@@ -13,9 +13,10 @@
      	position: relative;
 		background: #fff url("/s/img/16_col.gif") repeat-y;
 	}
-    .popup {
+
+    .popup-user-login {
     	position:absolute;
-  		top:10px; right:10px;
+  		top:0px; right:10px;
   		text-align:right;
     }
     .popup1 {

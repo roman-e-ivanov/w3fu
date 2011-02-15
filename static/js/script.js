@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	
 	$("form.validate").valForm();
-	$("div.popup").dropDown();
+	$("div.popup-user-login").dropDown();
 	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();
 	$("div.popup2").dropDown();

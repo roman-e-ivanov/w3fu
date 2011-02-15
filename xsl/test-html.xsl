@@ -4,7 +4,6 @@
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="common/nav.html.xsl" />
- 	<w3fu:include href="common/providers-js.html.xsl" />
  	<w3fu:include href="common/datepicker.html.xsl" />
 
 	<w3fu:template match="/">
@@ -26,7 +25,6 @@
 				
 				<div class="l-header">
 					<p>Заголовок<br /><br /></p>
-					<w3fu:call-template name="w3fu:providers-js" />
 					<div class="popup1">
 						<form><p>
 						<input type="text" name="" class="text_login datepicker-day"

@@ -39,16 +39,16 @@
 					<a title="" href="/">/</a>
 				</li>
 
-				<li class="с-nav-line">
+		<!--		<li class="с-nav-line">
 					<a title="" href="/test">/test</a>
-				</li>
+				</li>-->
 				
 			<li class="с-nav-line">
 					<a title="" href="/login">/login</a>
 				</li>
-			<li class="с-nav-line">
+			<!--<li class="с-nav-line">
 					<a title="" href="/register">/register</a>
-				</li>
+				</li>-->
 			</ul>
 		
 		
@@ -58,16 +58,16 @@
 					<a title="" href="/?no-xslt">/?no-xslt</a>
 				</li>
 
-				<li class="с-nav-line">
+				<!--<li class="с-nav-line">
 					<a title="" href="/test?no-xslt">/test?no-xslt</a>
-				</li>
+				</li>-->
 				
 			<li class="с-nav-line">
 					<a title="" href="/login?no-xslt">/login?no-xslt</a>
 				</li>
-			<li class="с-nav-line">
+			<!--<li class="с-nav-line">
 					<a title="" href="/register?no-xslt">/register?no-xslt</a>
-				</li>
+				</li>-->
 			</ul>
 		</div>
 

@@ -26,11 +26,10 @@
 				<w3fu:call-template name="w3fu:statnav" />
 			
 				<div class="container_16">
-				<div class="grid_13 l-header">
-					<p>Заголовок<br /><br /></p>
+				<div class="grid_12 l-header">
+					<p>Заголовок</p>
 				</div>
-				<div class="grid_3 l-header">
-					<w3fu:apply-templates select="login/user" />
+				<div class="grid_4 l-header">
 				</div>
 				<div class="clear"></div>
 				 	
@@ -84,6 +83,7 @@
 					<w3fu:call-template name="w3fu:footer" />
 				</div>
 				<div class="clear"></div>
+				<w3fu:call-template name="w3fu:user-login" />
 				</div>
 			</body>
 		</html>
