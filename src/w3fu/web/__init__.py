@@ -4,19 +4,6 @@ from urllib import urlencode
 from Cookie import SimpleCookie, Morsel
 
 
-STATUS_STRINGS = {
-                  200: '200 OK',
-                  301: '301 Moved Permanently',
-                  302: '302 Found',
-                  304: '304 Not Modified',
-                  403: '404 Forbidden',
-                  404: '404 Not Found',
-                  405: '405 Method Not Allowed',
-                  500: '500 Internal Server Error',
-                  503: '503 Service Unavailable'
-                  }
-
-
 class Application(object):
 
     def __init__(self, controller, storage, xslt):
@@ -46,6 +33,7 @@ class Request(object):
         self.method = self._env.get('REQUEST_METHOD', '').lower()
         self.scheme = self._env.get('wsgi.url_scheme')
         self.host = self._env.get('HTTP_HOST')
+        self.referer = self._env.get('HTTP_REFERER')
         self.path = self._env.get('PATH_INFO', '')
         self.cookie = SimpleCookie(self._env.get('HTTP_COOKIE', ''))
 
@@ -57,6 +45,19 @@ class Request(object):
 
     def response(self, *args, **kwargs):
         return Response(self.app, self, *args, **kwargs)
+
+
+STATUS_STRINGS = {
+                  200: '200 OK',
+                  301: '301 Moved Permanently',
+                  302: '302 Found',
+                  304: '304 Not Modified',
+                  403: '404 Forbidden',
+                  404: '404 Not Found',
+                  405: '405 Method Not Allowed',
+                  500: '500 Internal Server Error',
+                  503: '503 Service Unavailable'
+                  }
 
 
 class Response(object):

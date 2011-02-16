@@ -26,6 +26,9 @@ class Controller(object):
         return req.response(404)
 
 
+OVERLOADABLE = frozenset(('put', 'delete'))
+
+
 class Resource(object):
 
     @classmethod
@@ -41,8 +44,16 @@ class Resource(object):
         self.req = req
 
     def run(self):
+        method = self.req.method
+        if method == 'post':
+            try:
+                overloaded = self.req.content['method']
+                if overloaded in OVERLOADABLE:
+                    method = overloaded
+            except KeyError:
+                pass
         try:
-            method = getattr(self, self.req.method)
+            func = getattr(self, method)
         except AttributeError:
             return self.req.response(405)
-        return method()
+        return func()

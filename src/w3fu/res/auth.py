@@ -39,7 +39,6 @@ class Login(Resource):
             resp.content['error'] = {'auth': {}}
         return resp
 
-    @html()
     @storage
     def post(self, db):
         form = LoginForm(self.req.content)
@@ -59,6 +58,18 @@ class Login(Resource):
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))
 
+    @storage
+    def delete(self, db):
+        url = self.req.referer
+        if url is None:
+            url = str(Url(self.req.scheme, self.req.host))
+        resp = self.req.response(302).location(url)
+        if config.session_name in self.req.cookie:
+            db.sessions.delete(self.req.cookie[config.session_name].value)
+            db.commit()
+            resp.set_cookie(config.session_name, 0, -1000000)
+        return resp
+
 
 @bind('/register')
 class Register(Resource):
@@ -76,7 +87,6 @@ class Register(Resource):
             resp.content['error'] = {'exists': {}}
         return resp
 
-    @html()
     @storage
     def post(self, db, form):
         form = RegisterForm(self.req.content)

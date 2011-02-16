@@ -22,7 +22,7 @@ class Mapper(object):
 
     insert_sql = 'insert ignore into {self} ({keys}) values ({values})'
     update_sql = 'update {self} set {set} where {pk}=%(id)s'
-    delete_sql = 'delete from {self} where {pk} = %(id)s'
+    delete_sql = 'delete from {self} where {pk} = %(p0)s'
     find_sql = 'select * from {self} where {pk} = %(p0)s'
 
     @classmethod
@@ -62,8 +62,4 @@ class Mapper(object):
                          set=','.join('{0}=%({1})s'.format(f, f) for f in row.modified),
                          pk=self.rowcls.pk
                          )
-        return self._conn.cursor().query(sql, dict(row))
-
-    def delete(self, row, sql=delete_sql):
-        sql = sql.format(self=self.table, pk=self.rowcls.pk)
         return self._conn.cursor().query(sql, dict(row))
