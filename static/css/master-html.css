@@ -76,3 +76,14 @@
 	
 	td.datepicker-anotherday {background-color:#cccccc; color:#888888;}
 	td.datepicker-anotherday:hover {background-color:#eeeeee; color:#444444;}
+	
+	
+	.exit-form {
+		display:inline;
+		/*border:1px solid black;*/
+	}
+
+	.exit-button {
+		border:1px solid black;
+		/*border:none;*/
+	}

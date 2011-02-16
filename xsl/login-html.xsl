@@ -30,7 +30,9 @@
 					<p>Заголовок</p>
 				</div>
 				<div class="grid_4 l-header">
+					<w3fu:call-template name="w3fu:user-login" />
 				</div>
+				
 				<div class="clear"></div>
 				 	
 					<!--<div class="l-main-sidebar">
@@ -83,7 +85,7 @@
 					<w3fu:call-template name="w3fu:footer" />
 				</div>
 				<div class="clear"></div>
-				<w3fu:call-template name="w3fu:user-login" />
+				<w3fu:call-template name="w3fu:user-not-login" />
 				</div>
 			</body>
 		</html>

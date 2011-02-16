@@ -7,6 +7,7 @@
 		<script type="text/javascript" src="s/js/jquery.dropdown.js" />
 		<script type="text/javascript" src="s/js/jquery.datepicker.js" />
 		<script type="text/javascript" src="s/js/script.js" />
+		<script src="http://loginza.ru/js/widget.js" type="text/javascript" />
 		
 	</w3fu:template>
 
