@@ -76,7 +76,7 @@ class Register(Resource):
 
     @html('register-html')
     @storage
-    def get(self, db, form):
+    def get(self, db):
         form = RegisterForm(self.req.query)
         error = form.src.get('error')
         resp = self.req.response(200, {})
@@ -88,7 +88,7 @@ class Register(Resource):
         return resp
 
     @storage
-    def post(self, db, form):
+    def post(self, db):
         form = RegisterForm(self.req.content)
         resp = self.req.response(302)
         if form.err:
