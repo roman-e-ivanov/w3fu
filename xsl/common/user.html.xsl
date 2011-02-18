@@ -4,37 +4,16 @@
 	
 	<w3fu:if test="not(*/user)">	
 	
-		<div class="popup-user-login">
+		<div class="fast-login">
 		<a class="dropdown-button"><span>Войти</span></a>		
 		<div class="dropdown-content">
-			<form method="post" action="/login" class="validate">
-				<p>Логин:<input type="text" name="login" maxlength="32" class="val-required val-login" /></p> 
-				<p>Пароль:<input type="text" name="password" maxlength="32" class="val-required val-password" /></p>
+			<form method="post" action="/login" class="fast-login">
+				<p class="fast-login">Логин</p><input type="text" name="login" maxlength="32" class="val-required val-login fast-login-def" /> 
+				<p class="fast-login">Пароль</p><input type="text" name="password" maxlength="32" class="val-required val-password fast-login-def" />
 				<p><input type="submit" class="button" value="ОК" /></p>
 			</form>
-			<w3fu:apply-templates select="document('../conf/providers.xml')/*" />
-			<iframe src="http://loginza.ru/api/widget?overlay=loginza&amp;token_url=http://w3fu.com" style="width:359px;height:300px;" scrolling="no" frameborder="no" />
-			<a href="https://loginza.ru/api/widget?token_url=[RETURN_URL]" class="loginza">
-
-    <img src="http://loginza.ru/img/providers/yandex.png" alt="Yandex" title="Yandex" />
-
-    <img src="http://loginza.ru/img/providers/google.png" alt="Google" title="Google Accounts" />
-
-    <img src="http://loginza.ru/img/providers/vkontakte.png" alt="Вконтакте" title="Вконтакте" />
-
-    <img src="http://loginza.ru/img/providers/mailru.png" alt="Mail.ru" title="Mail.ru" />
-
-    <img src="http://loginza.ru/img/providers/twitter.png" alt="Twitter" title="Twitter" />
-
-    <img src="http://loginza.ru/img/providers/loginza.png" alt="Loginza" title="Loginza" />
-
-    <img src="http://loginza.ru/img/providers/myopenid.png" alt="MyOpenID" title="MyOpenID" />
-
-    <img src="http://loginza.ru/img/providers/openid.png" alt="OpenID" title="OpenID" />
-
-    <img src="http://loginza.ru/img/providers/webmoney.png" alt="WebMoney" title="WebMoney" />
-
-</a>
+			<a href="/register">Зарегестрироваться</a>
+	<!-- 		<w3fu:apply-templates select="document('../conf/providers.xml')/*" /> -->
 			</div>
 		</div>
 		

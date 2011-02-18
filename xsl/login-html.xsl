@@ -78,7 +78,6 @@
 							<p><input type="submit" class="button" value="ОК" /></p>
 							 <w3fu:apply-templates select="login/error" />
 						</form>
-						<iframe src="http://loginza.ru/api/widget?overlay=loginza&amp;token_url=http://w3fu.com" style="width:359px;height:300px;" scrolling="no" frameborder="no" />
 					</div>
 					<div class="clear"></div>
 

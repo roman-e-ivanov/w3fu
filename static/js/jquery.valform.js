@@ -1,26 +1,51 @@
 (function($) {
 $.extend(
 		$.fn, {
-			valForm : function () {
+			valForm : function (type) {
 			
 				if (!$(this).length) {return;}
 				
 				$(this).each (function() {
-					var val = new $.val(this);			
+					var val = new $.val(this, type);			
 					val.init();								
 				}); 
 			}
 		}
 );
 
-$.val = function (form) {
+$.val = function (form, type) {
+	
 	this.form = form;
 	this.email = $(this.form).find($.val.valElements.email);
 	this.integer = $(this.form).find($.val.valElements.integer);
 	this.toggle = $(this.form).find($.val.valElements.toggle);
 	this.login = $(this.form).find($.val.valElements.login);
 	this.password = $(this.form).find($.val.valElements.password);
+	this.showError = this.showValid = this.showDefault = function(){};
 	
+	if (type = 'fast-login') {
+		
+		this.showError = function(element){
+			
+			$(element).removeClass('fast-login-def');
+			$(element).removeClass('fast-login-val');
+			$(element).addClass('fast-login-err');
+		}
+		
+		this.showValid = function(element){
+			
+			$(element).removeClass('fast-login-def');
+			$(element).removeClass('fast-login-err');
+			$(element).addClass('fast-login-val');
+		}
+		
+		this.showDefault = function(element){
+			
+			$(element).removeClass('fast-login-val');
+			$(element).removeClass('fast-login-err');
+			$(element).addClass('fast-login-def');
+		}		
+	}	
 }
 
 $.extend($.val, {			
@@ -121,40 +146,16 @@ $.extend($.val, {
 							if (!validator.validateText(this,$.val.regexp.password)){send = false;}
 						});
 						
-						
+						/*отладочная функция*/
 						if (!send) {$(validator.form).css('border','3px solid red');}
-											
+						/*отладочная функция*/					
 					})(this);
 					
 					return send;
 				},
-				showError: function(element,message) {
-					
-					if ($(element).attr('type') == "text") {
-						
-						$(element).css('background-color','#ffcccc');
-					}
-					if ($(element).attr('type') == "checkbox") {
-						$(element).css('border','2px solid red');
-					}					
-				},				
-				showValid: function(element) {
-					
-					if ($(element).attr('type') == "text") {
-						$(element).css('background-color','#ccffcc');
-						
-					}
-					if ($(element).attr('type') == "checkbox") {
-						$(element).css('border','2px solid green');
-					}					
-				},				
-				showDefault: function(element) {
-					
-					if ($(element).attr('type') == "text") {	
-						$(element).css('background-color','#f0f0f0');
-						
-					}					
-				}				
+				showError: function(element) { this.showError(element); },				
+				showValid: function(element) { this.showValid(element); },				
+				showDefault: function(element) { this.showValid(element); }				
 			}
 		}
 );

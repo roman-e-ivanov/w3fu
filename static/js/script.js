@@ -1,12 +1,13 @@
 $(document).ready(function(){
 	
-	$("form.validate").valForm();
-	$("div.popup-user-login").dropDown();
-	$("div.popup1").dropDown();
+	$("form.fast-login").valForm('fast-login');	
+	$("div.fast-login").dropDown('fast-login');
+	
+/*	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();
 	$("div.popup2").dropDown();
 	$("div.popup2").datePicker();
-
+*/
 	var d = new Date(2010,1,29);
 	
 //	alert(d.getDate() +'/'+ d.getMonth() +'/'+ d.getFullYear());

@@ -6,7 +6,7 @@
 @import url("960-html.css");
 
 
-	.login-ok, .text_login, .text_reg, .login-argabsent, .password-ok, .password-argabsent {background:#f0f0f0; border:1px solid #909090;  font-size:11px; padding:2px;}
+	.login-ok, .text_login, .text_reg, .login-argabsent, .password-ok, .password-argabsent {background:#f0f0f0; border:1px solid #909090;}
 	.login-argabsent, .password-argabsent {background:#ff9999;}
      
     .container_16 {
@@ -87,3 +87,42 @@
 		border:1px solid black;
 		/*border:none;*/
 	}
+	
+/* fast login dropdown form */	
+	
+	div.fast-login {
+    	position:absolute;
+  		top:0px; right:10px;
+  		text-align:right;
+    }
+    
+	form.fast-login {
+		padding:20px;
+	}
+	
+	p.fast-login {
+		font-size: 10pt;
+		color:#666;
+		margin:0 0 3px 0;
+	}
+	
+	input.fast-login-def, input.fast-login-err, input.fast-login-val {		
+		font-size: 14pt;
+		padding:3px;
+		margin:0 0 10px 0;
+		border:1px solid #909090;
+	}
+	
+	input.fast-login-def {
+		background-color:#f0f0f0;
+	}
+	
+	input.fast-login-err {
+		background-color:#ffcccc;
+	}
+	
+	input.fast-login-val {
+		background-color:#ccffcc;
+	}
+	
+	
