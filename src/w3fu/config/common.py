@@ -1,6 +1,6 @@
 cli_http_host = 'localhost'
 cli_request_method = 'GET'
-cli_path_info = '/'
+cli_path_info = '/register'
 cli_query_string = ''
 cli_http_cookie = ''
 

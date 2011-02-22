@@ -60,7 +60,9 @@ $.extend($.val, {
 				integer: "input:text.val-integer",
 				toggle: "input:checkbox.val-toggle",
 				login: "input:text.val-login",
-				password: "input:text.val-password"
+				password: "input:password.val-password",
+				passtogle: ".password-toggle",
+				passdisplay: ".password-display"
 				
 			},
 			regexp: {
@@ -86,6 +88,7 @@ $.extend($.val, {
 						validator.password.blur(function(){ validator.validateText(this, $.val.regexp.password);});
 						validator.password.keyup(function(){ validator.validateText(this, $.val.regexp.password);});
 						
+												
 						validator.integer.blur(function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
 						validator.integer.keyup(function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});
 						
@@ -121,7 +124,7 @@ $.extend($.val, {
 						else {this.showValid(element); return true; }
 					}
 					return true;
-				},				
+				},
 				submitForm:function(){
 					var send = true;
 					(function (validator) {

@@ -29,6 +29,7 @@ $.dropdown = function (container, type) {
 		this.afterShow = function() {
 			this.content.find('input').get(0).focus();
 		}
+		
 	}
 }
 

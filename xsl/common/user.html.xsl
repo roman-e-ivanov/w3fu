@@ -9,7 +9,8 @@
 		<div class="dropdown-content">
 			<form method="post" action="/login" class="fast-login">
 				<p class="fast-login">Логин</p><input type="text" name="login" maxlength="32" class="val-required val-login fast-login-def" /> 
-				<p class="fast-login">Пароль</p><input type="text" name="password" maxlength="32" class="val-required val-password fast-login-def" />
+				<p class="fast-login">Пароль (<span class="password-toggle">показать</span>)</p><input type="password" name="password" maxlength="32" class="val-required val-password fast-login-def" />
+				<p class="display"><span>&#160;</span><span class="password-nodisplay"></span></p>
 				<p><input type="submit" class="button" value="ОК" /></p>
 			</form>
 			<a href="/register">Зарегестрироваться</a>

@@ -2,6 +2,7 @@ $(document).ready(function(){
 	
 	$("form.fast-login").valForm('fast-login');	
 	$("div.fast-login").dropDown('fast-login');
+	$("input:password").display($(".password-toggle"), $("span.password-nodisplay"));
 	
 /*	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();

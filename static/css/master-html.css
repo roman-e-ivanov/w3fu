@@ -87,7 +87,7 @@
 		border:1px solid black;
 		/*border:none;*/
 	}
-	
+
 /* fast login dropdown form */	
 	
 	div.fast-login {
@@ -97,19 +97,21 @@
     }
     
 	form.fast-login {
-		padding:20px;
+		padding:10px 20px 20px 20px;
+	}
+	p {
+		color:#666;
 	}
 	
 	p.fast-login {
 		font-size: 10pt;
-		color:#666;
-		margin:0 0 3px 0;
+		margin:10px 0 4px 0;		
 	}
 	
 	input.fast-login-def, input.fast-login-err, input.fast-login-val {		
 		font-size: 14pt;
 		padding:3px;
-		margin:0 0 10px 0;
+		margin:0 0 0px 0;
 		border:1px solid #909090;
 	}
 	
@@ -124,5 +126,27 @@
 	input.fast-login-val {
 		background-color:#ccffcc;
 	}
+	
+	p.display {
+		font-size: 8pt;
+		text-align:right;
+		margin-top:1px;
+		
+	}
+	
+/* password show/hide toggle */
+
+	.password-toggle {
+		text-decoration: none; 
+		border-bottom: 1px dashed #666;
+		cursor:pointer;
+	}
+	span.password-nodisplay {
+		display: none;
+	}
+	span.password-display {
+		display: inline;
+	}
+	
 	
 	
