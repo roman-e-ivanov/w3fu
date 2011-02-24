@@ -1,6 +1,34 @@
 class Row(dict):
 
     pk = 'id'
+    fields = frozenset()
+
+    def __init__(self, *args, **kwargs):
+        super(Row, self).__init__(*args, **kwargs)
+        if not self:
+            self._new()
+
+    def _new(self):
+        pass
+
+    def __setitem__(self, key, value):
+        super(Row, self).__setitem__(key, value)
+        try:
+            self.modified.add(key)
+        except AttributeError:
+            self.modified = set([key])
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError
+
+    def __setattr__(self, name, value):
+        if name in self.fields:
+            self[name] = value
+        else:
+            super(Row, self).__setattr__(name, value)
 
     @property
     def id(self):
@@ -9,13 +37,6 @@ class Row(dict):
     @id.setter
     def id(self, value):
         super(Row, self).__setitem__(self.pk, value)
-
-    def __setitem__(self, key, value):
-        super(Row, self).__setitem__(key, value)
-        try:
-            self.modified.add(key)
-        except AttributeError:
-            self.modified = set([key])
 
 
 class Mapper(object):

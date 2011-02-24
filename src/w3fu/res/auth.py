@@ -51,10 +51,11 @@ class Login(Resource):
             return resp.location(str(Url(self.req.scheme, self.req.host,
                                          self.path(),
                                          dict(error='auth', **form.src))))
-        session = Session(user_id=user['id'])
+        session = Session()
+        session.user_id = user.id
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
-        resp.set_cookie(config.session_name, session['id'], config.session_ttl)
+        resp.set_cookie(config.session_name, session.id, config.session_ttl)
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))
 
@@ -94,14 +95,17 @@ class Register(Resource):
         if form.err:
             return resp.location(str(Url(self.req.scheme, self.req.host,
                                          self.path(), form.src)))
-        user = User(**form.data)
+        user = User()
+        user.login = form.data['login']
+        user.password = form.data['password']
         if not db.users.insert(user).count:
             return resp.location(str(Url(self.req.scheme, self.req.host,
                                          self.path(),
                                          dict(error='exists', **form.src))))
-        session = Session(user_id=user['id'])
+        session = Session()
+        session.user_id = user.id
         db.sessions.insert(session, SESSION_TTL)
         db.commit()
-        resp.set_cookie(config.session_name, session['id'], config.session_ttl)
+        resp.set_cookie(config.session_name, session.id, config.session_ttl)
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))

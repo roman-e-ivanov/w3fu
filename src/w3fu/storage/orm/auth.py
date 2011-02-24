@@ -6,8 +6,10 @@ from w3fu.storage.orm import Mapper, Row
 
 class Session(Row):
 
-    def new(self):
-        self['id'] = urlsafe_b64encode(uuid4().bytes).rstrip('=')
+    fields = frozenset(('user_id', 'expires'))
+
+    def _new(self):
+        self.id = urlsafe_b64encode(uuid4().bytes).rstrip('=')
 
 
 class Sessions(Mapper):
@@ -23,15 +25,16 @@ class Sessions(Mapper):
     find_sql = 'select * from {self} where {pk} = %(p0)s and now() < expires'
 
     def insert(self, row, ttl, sql=insert_sql):
-        row.new()
         sql = sql.format(self=self.table, ttl=ttl)
         return self._conn.cursor().query(sql, dict(row))
 
 
 class User(Row):
 
+    fields = frozenset(('login', 'password'))
+
     def check_password(self, password):
-        return self['password'] == password
+        return self.password == password
 
 
 class Users(Mapper):
