@@ -1,5 +1,7 @@
 from uuid import uuid4
+from datetime import datetime
 
+from w3fu import config
 from w3fu.storage.orm import Mapper, Row
 from w3fu.data.util import salted_hash, b64encode
 
@@ -34,6 +36,7 @@ class Session(Row):
 
     def _new(self):
         self['id'] = b64encode(uuid4().bytes)
+        self['expires'] = datetime.utcnow() + config.session_ttl
 
 
 class Sessions(Mapper):
@@ -41,13 +44,6 @@ class Sessions(Mapper):
     table = 'sessions'
     rowcls = Session
 
-    insert_sql = '''
-        insert ignore into {self} (id, user_id, expires) values
-        (%(id)s, %(user_id)s, from_unixtime(unix_timestamp() + {ttl!s}))
+    find_sql = '''
+        select * from {self} where {pk} = %(p0)s and utc_timestamp() < expires
     '''
-
-    find_sql = 'select * from {self} where {pk} = %(p0)s and now() < expires'
-
-    def insert(self, row, ttl, sql=insert_sql):
-        sql = sql.format(self=self.table, ttl=ttl)
-        return self._conn.cursor().query(sql, dict(row))

@@ -83,12 +83,11 @@ class Response(object):
         self.header('Location', url)
         return self
 
-    def set_cookie(self, name, value, ttl=None, path='/'):
+    def set_cookie(self, name, value, expires=None, path='/'):
         morsel = Morsel()
         morsel.set(name, value, str(value))
         morsel['path'] = path
-        if ttl is not None:
-            expires = gmtime(time() + ttl)
-            morsel['expires'] = strftime('%a, %d %b %Y %H:%M:%S GMT', expires)
+        if expires is not None:
+            morsel['expires'] = expires.strftime('%a, %d %b %Y %H:%M:%S GMT')
         self.header('Set-Cookie', morsel.OutputString())
         return self

@@ -32,7 +32,10 @@ class Row(dict):
 
     @property
     def id(self):
-        return self[self.pk]
+        try:
+            return self[self.pk]
+        except KeyError:
+            return None
 
     @id.setter
     def id(self, value):
@@ -68,13 +71,13 @@ class Mapper(object):
         params.update(kwargs)
         return self._conn.cursor().query(sql, params, self.rowcls)
 
-    def insert(self, row, setid=True, sql=insert_sql):
+    def insert(self, row, sql=insert_sql):
         sql = sql.format(self=self.table,
                          keys=','.join(row.keys()),
                          values=','.join('%({0})s'.format(f) for f in row.iterkeys())
                          )
         cursor = self._conn.cursor().query(sql, dict(row))
-        if setid and cursor.count:
+        if row.id is None and cursor.count and cursor.lastid:
             row.id = cursor.lastid
         return cursor
 
