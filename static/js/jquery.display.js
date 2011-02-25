@@ -1,24 +1,28 @@
 (function($) {
 $.extend(
 		$.fn, {
-			display: function (button, display) {
+			display: function () {
 				if (!$(this).length) {return;}			
 				$(this).each (function() {
 					
-					$(this).bind('keyup',function(){
-						display.text($(this).attr('value'));
+					var element = $(this).find('.display-element');
+					var monitor = $(this).find('.display-monitor');
+					var toggle =  $(this).find('.display-toggle');
+										
+					element.bind('keyup',function(){
+						monitor.text($(this).attr('value'));
 					});
 					
-					$(this).bind('blur',function(){
-						display.text($(this).attr('value'));
+					element.bind('blur',function(){
+						monitor.find('span.password-nodisplay').text($(this).attr('value'));
 					});
 					
-					button.bind('click',function(){
-						display.toggleClass('password-nodisplay');
-						display.toggleClass('password-display');
+					toggle.bind('click',function(){
+						monitor.toggleClass('nodisplay');
+						monitor.toggleClass('display');
 						
-						if (button.text() == 'скрыть') {button.text('показать');}
-						else {button.text('скрыть');}
+						if (toggle.text() == 'скрыть') {toggle.text('показать');}
+						else {toggle.text('скрыть');}
 					});
 					
 				});																		 

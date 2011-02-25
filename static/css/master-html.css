@@ -136,15 +136,15 @@
 	
 /* password show/hide toggle */
 
-	.password-toggle {
+	.display-toggle {
 		text-decoration: none; 
 		border-bottom: 1px dashed #666;
 		cursor:pointer;
 	}
-	span.password-nodisplay {
+	span.nodisplay {
 		display: none;
 	}
-	span.password-display {
+	span.display {
 		display: inline;
 	}
 	

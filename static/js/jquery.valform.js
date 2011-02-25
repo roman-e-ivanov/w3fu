@@ -56,11 +56,11 @@ $.extend($.val, {
 			},			
 			valElements: {
 				required: "val-required",
-				email: "input:text.val-email",
-				integer: "input:text.val-integer",
-				toggle: "input:checkbox.val-toggle",
-				login: "input:text.val-login",
-				password: "input:password.val-password",
+				email: "input.val-email",
+				integer: "input.val-integer",
+				toggle: "input.val-toggle",
+				login: "input.val-login",
+				password: "input.val-password",
 				passtogle: ".password-toggle",
 				passdisplay: ".password-display"
 				

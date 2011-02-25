@@ -1,8 +1,9 @@
 $(document).ready(function(){
 	
 	$("form.fast-login").valForm('fast-login');	
+	$("form.fast-login").display();
 	$("div.fast-login").dropDown('fast-login');
-	$("input:password").display($(".password-toggle"), $("span.password-nodisplay"));
+	
 	
 /*	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();
@@ -19,7 +20,7 @@ $(document).ready(function(){
 			url:'test.json'
 	};
 	
-	$("input:button.b-ajax").click(function(){
+	$("input.b-ajax").click(function(){
 		/*$.getJSON('test.json', function(data){     
 			$.each(data, function(index, entry){
 				m += entry;
