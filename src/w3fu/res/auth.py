@@ -1,13 +1,11 @@
+from datetime import datetime
+
 from w3fu import config
 from w3fu.res import bind, Resource
 from w3fu.res.snippets import html, storage, user
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
 from w3fu.storage.orm.auth import User, Session
-
-
-SESSION_NAME = 'u'
-SESSION_TTL = 24 * 3600
 
 
 class AuthForm(Form):
@@ -53,9 +51,9 @@ class Login(Resource):
                                          dict(error='auth', **form.src))))
         session = Session()
         session.user_id = user.id
-        db.sessions.insert(session, SESSION_TTL)
+        db.sessions.insert(session)
         db.commit()
-        resp.set_cookie(config.session_name, session.id, config.session_ttl)
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))
 
@@ -68,7 +66,7 @@ class Login(Resource):
         if config.session_name in self.req.cookie:
             db.sessions.delete(self.req.cookie[config.session_name].value)
             db.commit()
-            resp.set_cookie(config.session_name, 0, -1000000)
+            resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
 
 
@@ -104,8 +102,8 @@ class Register(Resource):
                                          dict(error='exists', **form.src))))
         session = Session()
         session.user_id = user.id
-        db.sessions.insert(session, SESSION_TTL)
+        db.sessions.insert(session)
         db.commit()
-        resp.set_cookie(config.session_name, session.id, config.session_ttl)
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))

@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+
 cli_http_host = 'localhost'
 cli_request_method = 'GET'
 cli_path_info = '/register'
@@ -10,4 +13,4 @@ conn_user = 'root'
 conn_passwd = '12345678'
 
 session_name = 'u'
-session_ttl = 24 * 3600
+session_ttl = timedelta(days=1)
