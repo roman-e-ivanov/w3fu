@@ -79,18 +79,17 @@ $.extend($.val, {
 						
 						$(validator.form).submit(function(){return validator.submitForm();});						
 						
-						validator.email.blur(function(){ validator.validateText(this, $.val.regexp.email);});
-						validator.email.keyup(function(){ validator.validateText(this, $.val.regexp.email);});
+						validator.email.bind('blur', function(){ validator.validateText(this, $.val.regexp.email);});
+						validator.email.bind('keyup',function(){ validator.validateText(this, $.val.regexp.email);});
 						
-						validator.login.blur(function(){ validator.validateText(this, $.val.regexp.login);});
-						validator.login.keyup(function(){ validator.validateText(this, $.val.regexp.login);});
+						validator.login.bind('blur', function(){ validator.validateText(this, $.val.regexp.login);});
+						validator.login.bind('keyup', function(){ validator.validateText(this, $.val.regexp.login);});
 						
-						validator.password.blur(function(){ validator.validateText(this, $.val.regexp.password);});
-						validator.password.keyup(function(){ validator.validateText(this, $.val.regexp.password);});
-						
-												
-						validator.integer.blur(function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
-						validator.integer.keyup(function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});
+						validator.password.bind('blur', function(){ validator.validateText(this, $.val.regexp.password);});
+						validator.password.bind('keyup', function(){ validator.validateText(this, $.val.regexp.password);});
+															
+						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
+						validator.integer.bind('keyup', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});
 						
 						validator.toggle.click(function(){ validator.validateToggle(this); });
 						
