@@ -9,8 +9,9 @@ def html(xslt=None):
         def f(res, *args, **kwargs):
             resp = method(res, *args, **kwargs)
             t = None if 'no-xslt' in res.req.query else xslt
-            resp.ctype = 'application/xml' if t is None else 'text/html'
+            ctype = 'application/xml' if t is None else 'text/html'
             if resp.status == 200:
+                resp.ctype = ctype
                 resp.content = res.app.xslt.transform(res.name(),
                                                       resp.content,
                                                       t)
@@ -22,8 +23,9 @@ def html(xslt=None):
 def json(method):
     def f(res, *args, **kwargs):
         resp = method(res, *args, **kwargs)
-        resp.ctype = 'application/json'
-        resp.content = dumps(resp.content)
+        if resp.status == 200:
+            resp.ctype = 'application/json'
+            resp.content = dumps(resp.content)
         return resp
     return f
 
