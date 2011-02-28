@@ -12,14 +12,13 @@ from w3fu.storage.orm._openid import OpenIdStore
 
 from w3fu.res import Controller
 from w3fu.res.index import Index
-from w3fu.res.test import HtmlTest, JsonTest
+from w3fu.res.test import PlanJson
 from w3fu.res.auth import Login, Register
 from w3fu.res._openid import OpenIdAuth
 
 
 controller = Controller([Index,
-                         JsonTest,
-                         HtmlTest,
+                         PlanJson,
                          Login,
                          Register,
                          OpenIdAuth])
