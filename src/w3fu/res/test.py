@@ -1,5 +1,5 @@
 from w3fu.res import bind, Resource
-from w3fu.res.snippets import json
+from w3fu.res.snippets import json, html
 from w3fu.web.forms import Form, IntArg
 
 
@@ -42,3 +42,11 @@ class PlanJson(Resource):
             return self.req.response(404)
         body = dict(filter(lambda (k, v): form.data['t_from'] <= k < form.data['t_to'], plan['body'].iteritems()))
         return self.req.response(200, {'head': plan['head'], 'body': body})
+
+
+@bind('/test')
+class TestHtml(Resource):
+
+    @html('test-html')
+    def get(self):
+        return self.req.response(200, {})
