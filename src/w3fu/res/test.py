@@ -1,5 +1,6 @@
 from w3fu.res import bind, Resource
 from w3fu.res.snippets import json, html
+from w3fu.res.middleware.transform import JSON, XML
 from w3fu.web.forms import Form, IntArg
 
 
@@ -33,20 +34,20 @@ class PlanForm(Form):
 @bind('/api/plans/{id}', id='\d+')
 class PlanJson(Resource):
 
-    @json
-    def get(self):
-        form = PlanForm(self.req.query)
+    @JSON()
+    def get(self, req):
+        form = PlanForm(req.query)
         try:
-            plan = PLAN_DATA[self.req.args['id']]
+            plan = PLAN_DATA[req.args['id']]
         except KeyError:
-            return self.req.response(404)
+            return req.response(404)
         body = dict(filter(lambda (k, v): form.data['t_from'] <= k < form.data['t_to'], plan['body'].iteritems()))
-        return self.req.response(200, {'head': plan['head'], 'body': body})
+        return req.response(200, {'head': plan['head'], 'body': body})
 
 
 @bind('/test')
 class TestHtml(Resource):
 
-    @html('test-html')
-    def get(self):
-        return self.req.response(200, {})
+    @XML('test-html')
+    def get(self, req):
+        return req.response(200, {})

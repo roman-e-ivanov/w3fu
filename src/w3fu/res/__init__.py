@@ -22,7 +22,7 @@ class Controller(object):
             match = rescls.cpattern.match(req.path)
             if match:
                 req.args = match.groupdict()
-                return rescls(app, req).run()
+                return rescls(app).run(req)
         return req.response(404)
 
 
@@ -39,21 +39,20 @@ class Resource(object):
     def path(cls, *args, **kwargs):
         return cls.pattern.format(*args, **kwargs)
 
-    def __init__(self, app, req):
+    def __init__(self, app):
         self.app = app
-        self.req = req
 
-    def run(self):
-        method = self.req.method
+    def run(self, req):
+        method = req.method
         if method == 'post':
             try:
-                overloaded = self.req.content['method']
+                overloaded = req.content['method']
                 if overloaded in OVERLOADABLE:
                     method = overloaded
             except KeyError:
                 pass
         try:
-            func = getattr(self, method)
+            handler = getattr(self, method)
         except AttributeError:
-            return self.req.response(405)
-        return func()
+            return req.response(405)
+        return handler(req)
