@@ -49,11 +49,10 @@ class Login(Resource):
             return resp.location(str(Url(self.req.scheme, self.req.host,
                                          self.path(),
                                          dict(error='auth', **form.src))))
-        session = Session()
-        session.user_id = user.id
+        session = Session.new(user_id=user['id'])
         db.sessions.insert(session)
         db.commit()
-        resp.set_cookie(config.session_name, session.id, session.expires)
+        resp.set_cookie(config.session_name, session['id'], session['expires'])
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))
 
@@ -100,10 +99,9 @@ class Register(Resource):
             return resp.location(str(Url(self.req.scheme, self.req.host,
                                          self.path(),
                                          dict(error='exists', **form.src))))
-        session = Session()
-        session.user_id = user.id
+        session = Session.new(user_id=user['id'])
         db.sessions.insert(session)
         db.commit()
-        resp.set_cookie(config.session_name, session.id, session.expires)
+        resp.set_cookie(config.session_name, session['id'], session['expires'])
         return resp.location(str(Url(self.req.scheme,
                                      self.req.host, '/home', {})))

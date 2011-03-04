@@ -8,16 +8,9 @@ from w3fu.data.util import salted_hash, b64encode
 
 class User(Row):
 
-    fields = frozenset(('login', 'password'))
-
     def check_password(self, value):
         return self['password'] == salted_hash(value, self['password'])
 
-    @property
-    def password(self):
-        return self['password']
-
-    @password.setter
     def password(self, value):
         self['password'] = salted_hash(value)
 
@@ -31,8 +24,6 @@ class Users(Mapper):
 
 
 class Session(Row):
-
-    fields = frozenset(('user_id', 'expires'))
 
     def _new(self):
         self['id'] = b64encode(uuid4().bytes)

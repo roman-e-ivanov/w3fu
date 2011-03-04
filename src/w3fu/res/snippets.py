@@ -50,7 +50,7 @@ def user(method):
             session_id = res.req.cookie[config.session_name].value
             session = db.sessions.find(session_id).fetch()
             if session:
-                user = db.users.find(session.user_id).fetch()
+                user = db.users.find(session['user_id']).fetch()
         except KeyError:
             pass
         resp = method(res, db=db, user=user, *args, **kwargs)

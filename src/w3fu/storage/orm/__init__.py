@@ -1,12 +1,12 @@
 class Row(dict):
 
     pk = 'id'
-    fields = frozenset()
 
-    def __init__(self, *args, **kwargs):
-        super(Row, self).__init__(*args, **kwargs)
-        if not self:
-            self._new()
+    @classmethod
+    def new(cls, *args, **kwargs):
+        self = cls(*args, **kwargs)
+        self._new()
+        return self
 
     def _new(self):
         pass
@@ -17,18 +17,6 @@ class Row(dict):
             self.modified.add(key)
         except AttributeError:
             self.modified = set([key])
-
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            raise AttributeError
-
-    def __setattr__(self, name, value):
-        if name in self.fields:
-            self[name] = value
-        else:
-            super(Row, self).__setattr__(name, value)
 
     @property
     def id(self):
