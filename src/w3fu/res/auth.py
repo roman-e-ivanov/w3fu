@@ -91,9 +91,8 @@ class Register(Resource):
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))
-        user = User()
-        user.login = form.data['login']
-        user.password = form.data['password']
+        user = User.new(login=form.data['login'])
+        user.password(form.data['password'])
         if not self.db.users.insert(user).count:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          dict(error='exists', **form.src))))
