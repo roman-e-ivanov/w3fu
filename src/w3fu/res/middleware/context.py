@@ -3,7 +3,7 @@ from w3fu.res.middleware import Middleware
 from w3fu.storage import StorageError
 
 
-class Storage(Middleware):
+class storage(Middleware):
 
     def _handler(self, res, req, handler):
         res.db = res.app.storage.pull()
@@ -15,7 +15,7 @@ class Storage(Middleware):
             res.app.storage.push(res.db)
 
 
-class Logged(Middleware):
+class user(Middleware):
 
     def _handler(self, res, req, handler):
         res.user = None

@@ -1,6 +1,5 @@
 from w3fu.res import bind, Resource
-from w3fu.res.snippets import json, html
-from w3fu.res.middleware.transform import JSON, XML
+from w3fu.res.middleware.transform import json, xml
 from w3fu.web.forms import Form, IntArg
 
 
@@ -34,7 +33,7 @@ class PlanForm(Form):
 @bind('/api/plans/{id}', id='\d+')
 class PlanJson(Resource):
 
-    @JSON()
+    @json()
     def get(self, req):
         form = PlanForm(req.query)
         try:
@@ -48,6 +47,6 @@ class PlanJson(Resource):
 @bind('/test')
 class TestHtml(Resource):
 
-    @XML('test-html')
+    @xml('test-html')
     def get(self, req):
         return req.response(200, {})

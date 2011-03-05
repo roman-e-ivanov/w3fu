@@ -3,7 +3,7 @@ from json import dumps
 from w3fu.res.middleware import Middleware
 
 
-class JSON(Middleware):
+class json(Middleware):
 
     def _handler(self, res, req, handler):
         resp = handler(res, req)
@@ -13,7 +13,7 @@ class JSON(Middleware):
         return resp
 
 
-class XML(Middleware):
+class xml(Middleware):
 
     def __init__(self, xslt=None):
         self._xslt = xslt

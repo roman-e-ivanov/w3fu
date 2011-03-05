@@ -1,13 +1,13 @@
 from w3fu.res import bind, Resource
-from w3fu.res.middleware.context import Storage, Logged
-from w3fu.res.middleware.transform import XML
+from w3fu.res.middleware.context import storage, user
+from w3fu.res.middleware.transform import xml
 
 
 @bind('/')
 class Index(Resource):
 
-    @XML('index-html')
-    @Storage()
-    @Logged()
+    @xml('index-html')
+    @storage()
+    @user()
     def get(self, req):
         return req.response(200, {})

@@ -2,8 +2,8 @@ from datetime import datetime
 
 from w3fu import config
 from w3fu.res import bind, Resource
-from w3fu.res.middleware.context import Storage, Logged
-from w3fu.res.middleware.transform import XML
+from w3fu.res.middleware.context import storage, user
+from w3fu.res.middleware.transform import xml
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
 from w3fu.storage.orm.auth import User, Session
@@ -24,9 +24,9 @@ RegisterForm = AuthForm
 @bind('/login')
 class Login(Resource):
 
-    @XML('login-html')
-    @Storage()
-    @Logged()
+    @xml('login-html')
+    @storage()
+    @user()
     def get(self, req):
         form = LoginForm(req.query)
         error = form.src.get('error')
@@ -38,7 +38,7 @@ class Login(Resource):
             resp.content['error'] = {'auth': {}}
         return resp
 
-    @Storage()
+    @storage()
     def post(self, req):
         form = LoginForm(req.content)
         resp = req.response(302)
@@ -55,7 +55,7 @@ class Login(Resource):
         resp.set_cookie(config.session_name, session['id'], session['expires'])
         return resp.location(str(Url(req.scheme, req.host, '/home', {})))
 
-    @Storage()
+    @storage()
     def delete(self, req):
         url = req.referer
         if url is None:
@@ -71,8 +71,8 @@ class Login(Resource):
 @bind('/register')
 class Register(Resource):
 
-    @XML('register-html')
-    @Storage()
+    @xml('register-html')
+    @storage()
     def get(self, req):
         form = RegisterForm(req.query)
         error = form.src.get('error')
@@ -84,7 +84,7 @@ class Register(Resource):
             resp.content['error'] = {'exists': {}}
         return resp
 
-    @Storage()
+    @storage()
     def post(self, req):
         form = RegisterForm(req.content)
         resp = req.response(302)
