@@ -1,6 +1,5 @@
 from w3fu import config
 from w3fu.res.middleware import Middleware
-from w3fu.storage import StorageError
 
 
 class storage(Middleware):
@@ -9,8 +8,6 @@ class storage(Middleware):
         res.db = res.app.storage.pull()
         try:
             return handler(res, req)
-        except StorageError as e:
-            return req.response(503, str(e))
         finally:
             res.app.storage.push(res.db)
 
