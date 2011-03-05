@@ -1,5 +1,7 @@
 from re import compile
 
+from w3fu.web import Response
+
 
 def bind(pattern, *args, **kwargs):
     def f(cls):
@@ -23,7 +25,7 @@ class Controller(object):
             if match:
                 req.args = match.groupdict()
                 return rescls(app).run(req)
-        return req.response(404)
+        return Response(404)
 
 
 OVERLOADABLE = frozenset(('put', 'delete'))
@@ -54,5 +56,5 @@ class Resource(object):
         try:
             handler = getattr(self, method)
         except AttributeError:
-            return req.response(405)
+            return Response(405)
         return handler(req)

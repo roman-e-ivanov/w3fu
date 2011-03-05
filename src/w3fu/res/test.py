@@ -1,5 +1,6 @@
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.transform import json, xml
+from w3fu.web import Response
 from w3fu.web.forms import Form, IntArg
 
 
@@ -41,7 +42,7 @@ class PlanJson(Resource):
         except KeyError:
             return req.response(404)
         body = dict(filter(lambda (k, v): form.data['t_from'] <= k < form.data['t_to'], plan['body'].iteritems()))
-        return req.response(200, {'head': plan['head'], 'body': body})
+        return Response(200, {'head': plan['head'], 'body': body})
 
 
 @bind('/test')
@@ -49,4 +50,4 @@ class TestHtml(Resource):
 
     @xml('test-html')
     def get(self, req):
-        return req.response(200, {})
+        return Response(200, {})

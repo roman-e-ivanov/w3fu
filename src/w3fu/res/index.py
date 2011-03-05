@@ -1,3 +1,4 @@
+from w3fu.web import Response
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.context import storage, user
 from w3fu.res.middleware.transform import xml
@@ -10,4 +11,4 @@ class Index(Resource):
     @storage()
     @user()
     def get(self, req):
-        return req.response(200, {})
+        return Response(200, {})

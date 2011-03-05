@@ -4,6 +4,7 @@ from w3fu import config
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.context import storage, user
 from w3fu.res.middleware.transform import xml
+from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
 from w3fu.storage.orm.auth import User, Session
@@ -30,7 +31,7 @@ class Login(Resource):
     def get(self, req):
         form = LoginForm(req.query)
         error = form.src.get('error')
-        resp = req.response(200, {})
+        resp = Response(200, {})
         resp.content['form'] = form.content()
         if error is None:
             return resp
@@ -41,7 +42,7 @@ class Login(Resource):
     @storage()
     def post(self, req):
         form = LoginForm(req.content)
-        resp = req.response(302)
+        resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))
@@ -60,7 +61,7 @@ class Login(Resource):
         url = req.referer
         if url is None:
             url = str(Url(req.scheme, req.host))
-        resp = req.response(302).location(url)
+        resp = Response(302).location(url)
         if config.session_name in req.cookie:
             self.db.sessions.delete(req.cookie[config.session_name].value)
             self.db.commit()
@@ -76,7 +77,7 @@ class Register(Resource):
     def get(self, req):
         form = RegisterForm(req.query)
         error = form.src.get('error')
-        resp = req.response(200, {})
+        resp = Response(200, {})
         resp.content['form'] = form.content()
         if error is None:
             return resp
@@ -87,7 +88,7 @@ class Register(Resource):
     @storage()
     def post(self, req):
         form = RegisterForm(req.content)
-        resp = req.response(302)
+        resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))

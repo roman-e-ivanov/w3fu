@@ -43,9 +43,6 @@ class Request(object):
             return self._env['wsgi.input'].read(content_length)
         return ''
 
-    def response(self, *args, **kwargs):
-        return Response(self.app, self, *args, **kwargs)
-
 
 STATUS_STRINGS = {
                   200: '200 OK',
@@ -62,18 +59,17 @@ STATUS_STRINGS = {
 
 class Response(object):
 
-    def __init__(self, app, req, status=200, content='', ctype='text/plain'):
-        self.app = app
-        self.req = req
-        self.headers = []
+    def __init__(self, status=200, content=None, ctype='text/plain'):
         self.status = status
         self.ctype = ctype
         self.content = content
+        self.headers = []
 
     def output(self, start_response):
-        self.header('Content-Type', self.ctype + '; charset=UTF-8')
+        if self.content is not None:
+            self.header('Content-Type', self.ctype + '; charset=UTF-8')
         start_response(STATUS_STRINGS[self.status], self.headers)
-        return [self.content]
+        return [] if self.content is None else [self.content]
 
     def header(self, name, value):
         self.headers.append((name, value))
