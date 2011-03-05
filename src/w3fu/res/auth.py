@@ -7,7 +7,7 @@ from w3fu.res.middleware.transform import xml
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
-from w3fu.storage.orm.auth import User, Session
+from w3fu.data.domain.auth import User, Session
 
 
 class AuthForm(Form):

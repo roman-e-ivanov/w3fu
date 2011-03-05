@@ -2,7 +2,7 @@ from openid.association import Association
 from openid.store import nonce
 from time import time
 
-from w3fu.storage.orm import Mapper
+from w3fu.storage.mapping import Mapper
 
 
 class OpenIdStore(Mapper):

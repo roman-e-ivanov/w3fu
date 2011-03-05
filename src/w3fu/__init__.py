@@ -7,8 +7,8 @@ from w3fu.web import Application
 from w3fu.data.xml import XSLT
 from w3fu.storage import Storage
 from w3fu.storage.dbapi import Connection
-from w3fu.storage.orm.auth import Users, Sessions
-from w3fu.storage.orm._openid import OpenIdStore
+from w3fu.storage.mapping.auth import Users, Sessions
+from w3fu.storage.mapping._openid import OpenIdStore
 
 from w3fu.res import Controller
 from w3fu.res.index import Index
@@ -37,9 +37,10 @@ storage = Storage(lambda storage: Connection(
                                              storage=storage,
                                              driver=MySQLdb,
                                              config=conn_config,
-                                             mappers=(Users,
+                                             mappers=[Users,
                                                       Sessions,
-                                                      OpenIdStore)))
+                                                      OpenIdStore]
+                                             ))
 
 xslt = XSLT(config.xsl_path)
 
