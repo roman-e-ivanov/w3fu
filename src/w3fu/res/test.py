@@ -52,7 +52,7 @@ class PlanJson(Plan):
 @bind('/plans/{id}', id='\d+')
 class PlanXml(Plan):
 
-    get = xml()(Plan.get)
+    get = xml('test-html')(Plan.get)
 
 
 @bind('/test')
