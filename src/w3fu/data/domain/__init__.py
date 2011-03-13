@@ -1,6 +1,51 @@
+class Property(object):
+
+    is_property = True
+
+    def __init__(self, name, pk=False, auto=False):
+        self.name = name
+        self.pk = pk
+        self.auto = auto
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return self
+        return obj[self._name]
+
+    def __set__(self, obj, value):
+        obj[self._name] = value
+        try:
+            obj.modified.add(self._name)
+        except AttributeError:
+            obj.modified = set([self._name])
+
+
+class RowMeta(type):
+
+    def __init__(cls, name, bases, attrs):
+        cls.args = {}
+        for name, attr in attrs.iteritems():
+            if hasattr(attr, 'is_property'):
+                cls.props.append = attr.name
+                if attr.pk:
+                    cls.pk.append = attr.name
+                if attr.auto:
+                    cls.auto = attr.name
+        super(RowMeta, cls).__init__(name, bases, attrs)
+
+
 class Row(dict):
 
-    pk = 'id'
+    pk = []
+    props = []
+    join = []
+    auto = None
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError
 
     @classmethod
     def new(cls, *args, **kwargs):
@@ -10,21 +55,3 @@ class Row(dict):
 
     def _new(self):
         pass
-
-    def __setitem__(self, key, value):
-        super(Row, self).__setitem__(key, value)
-        try:
-            self.modified.add(key)
-        except AttributeError:
-            self.modified = set([key])
-
-    @property
-    def id(self):
-        try:
-            return self[self.pk]
-        except KeyError:
-            return None
-
-    @id.setter
-    def id(self, value):
-        super(Row, self).__setitem__(self.pk, value)
