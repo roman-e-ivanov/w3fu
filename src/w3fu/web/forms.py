@@ -17,10 +17,9 @@ class ArgRangeError(ArgError): pass
 class FormMeta(type):
 
     def __init__(cls, name, bases, attrs):
-        cls.args = {}
         for name, attr in attrs.iteritems():
-            if hasattr(attr, 'is_arg'):
-                cls.args[name] = attr
+            if hasattr(attr, 'attach'):
+                attr.attach(name, cls)
         super(FormMeta, cls).__init__(name, bases, attrs)
 
 
@@ -47,12 +46,15 @@ class Form(object):
 
 class Arg(object):
 
-    is_arg = 1
-
     def __init__(self, name, default=None, clear=False):
         self._name = name
         self._default = default
         self._clear = clear
+
+    def attach(self, name, cls):
+        if not hasattr(cls, 'args'):
+            cls.args = {}
+        cls.args[name] = self
 
     def process(self, src, err):
         try:
