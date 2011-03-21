@@ -4,7 +4,10 @@ from MySQLdb.cursors import DictCursor
 from w3fu import config
 
 from w3fu.web import Application
-from w3fu.data.xml import XSLT
+
+from w3fu.data.xml.xslt import XSLT
+from w3fu.data.xml.xslt.extensions import time
+
 from w3fu.storage import Storage
 from w3fu.storage.dbapi import Connection
 from w3fu.storage.mapping.auth import Users, Sessions
@@ -42,6 +45,8 @@ storage = Storage(lambda storage: Connection(
                                                       OpenIdStore]
                                              ))
 
-xslt = XSLT(config.xsl_path)
+xslt = XSLT(config.xsl_path, {
+                              'time': time,
+                              })
 
 app = Application(controller, storage, xslt)

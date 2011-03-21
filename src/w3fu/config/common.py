@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+xslt_ext_prefix = 'http://w3fu/'
 
 cli_http_host = 'localhost'
 cli_request_method = 'GET'

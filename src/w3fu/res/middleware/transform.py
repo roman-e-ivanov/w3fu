@@ -1,6 +1,7 @@
 from json import dumps
 
 from w3fu.res.middleware import Middleware
+from w3fu.data.xml import element
 
 
 class json(Middleware):
@@ -24,5 +25,6 @@ class xml(Middleware):
         ctype = 'application/xml' if t is None else 'text/html'
         if resp.status == 200:
             resp.ctype = ctype
-            resp.content = res.app.xslt.transform(res.name(), resp.content, t)
+            e = element(res.name(), resp.content)
+            resp.content = res.app.xslt.transform(e, t)
         return resp
