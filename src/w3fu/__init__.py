@@ -6,7 +6,7 @@ from w3fu import config
 from w3fu.web import Application
 
 from w3fu.data.xml.xslt import XSLT
-from w3fu.data.xml.xslt.extensions import time
+from w3fu.data.xml.xslt.extensions import _time
 
 from w3fu.storage import Storage
 from w3fu.storage.dbapi import Connection
@@ -46,7 +46,7 @@ storage = Storage(lambda storage: Connection(
                                              ))
 
 xslt = XSLT(config.xsl_path, {
-                              'time': time,
+                              'time': _time,
                               })
 
 app = Application(controller, storage, xslt)
