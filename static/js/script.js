@@ -5,9 +5,11 @@ $(document).ready(function(){
 	$("div.fast-login").dropDown('fast-login');
 	
 	
-/*	$("div.popup1").dropDown();
+	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();
-	$("div.popup2").dropDown();
+	
+	$("table.timetable").timeTable();
+/*	$("div.popup2").dropDown();
 	$("div.popup2").datePicker();
 */
 	var d = new Date(2010,1,29);

@@ -3,7 +3,7 @@
 
 	<w3fu:template name="w3fu:css">
 
-		<link rel="stylesheet" href="s/css/master-html.css" type="text/css" />
+		<link rel="stylesheet" href="/s/css/master-html.css" type="text/css" />
 
 	</w3fu:template>
 
