@@ -20,34 +20,73 @@ class Expression(object):
 
 class Property(object):
 
-    is_property = True
+    def __init__(self, name=None, default=None):
+        self._name = name
+        self._default = default
 
-    def __init__(self, name):
-        self.name = name
+    def attach(self, name, cls):
+        if self._name is None:
+            self._name = name
+
+    def __get__(self, obj, owner):
+        try:
+            return obj[self._name]
+        except KeyError:
+            return self._default
+
+
+class Column(Property):
+
+    def __init__(self, name=None, pk=False, fk=False, auto=False):
+        super(Column, self).__init__(name)
+        self._pk = pk
+        self._fk = fk
+        self._auto = auto
+
+    def attach(self, name, cls):
+        super(Column, self).attach(name, cls)
+        if not hasattr(cls, 'columns'):
+            cls.columns = []
+        cls.columns.append(self._name)
+        if self._pk:
+            cls.pk = self._name
+        if self._fk:
+            cls.fk = self._name
+        if self._auto:
+            cls.auto = self._name
 
     def __get__(self, obj, owner):
         if obj is None:
-            return Expression('{0}.{1}'.format(owner.table(), self.name))
-        try:
-            return obj[self.name]
-        except KeyError:
-            return None
+            return Expression('{0}.{1}'.format(owner.table(), self._name))
+        super(Column, self).__get__(obj, owner)
 
     def __set__(self, obj, value):
-        obj[self.name] = value
+        obj[self.column] = value
         try:
-            obj.modified.add(self.name)
+            obj.modified.add(self._name)
         except AttributeError:
-            obj.modified = set([self.name])
+            obj.modified = set([self._name])
+
+
+class Join(Property):
+
+    def __init__(self, childcls):
+        super(Join, self).__init__(default=[])
+        self._childcls = childcls
+
+    def attach(self, name, cls):
+        super(Join, self).attach(name, cls)
+        if not hasattr(cls, 'join'):
+            cls.join = {}
+        cls.join[self._childcls] = self._name
 
 
 class EntityMeta(type):
 
     def __init__(cls, name, bases, attrs):
-        cls.props = []
         for name, attr in attrs.iteritems():
-            if hasattr(attr, 'is_property'):
-                cls.props.append(attr)
+            if hasattr(attr, 'attach'):
+                attr.attach(name, cls)
         super(EntityMeta, cls).__init__(name, bases, attrs)
 
 
@@ -55,10 +94,7 @@ class Entity(dict):
 
     __metaclass__ = EntityMeta
 
-    pk = 'id'
-    fk = 'owner'
-    join = []
-    auto = True
+    auto = None
 
     @classmethod
     def table(cls):
@@ -82,31 +118,32 @@ class Entity(dict):
 
 class Address(Entity):
 
-    id = Property('id')
-    owner = Property('owner')
-    value = Property('name')
+    id = Column(pk=True, auto=True)
+    service_id = Column(fk=True)
+    name = Column()
 
 
 class Service(Entity):
 
-    id = Property('id')
-    owner = Property('owner')
-    name = Property('name')
-    join = [Address]
+    id = Column(pk=True, auto=True)
+    firm_id = Column(fk=True)
+    name = Column()
+    addresses = Join(Address)
 
 
 class Tag(Entity):
 
-    id = Property('id')
-    owner = Property('owner')
-    name = Property('name')
+    id = Column(pk=True, auto=True)
+    firm_id = Column(fk=True)
+    name = Property()
 
 
 class Firm(Entity):
 
-    id = Property('id')
-    name = Property('name')
-    join = [Tag, Service]
+    id = Column(pk=True, auto=True)
+    name = Column()
+    tags = Join(Tag)
+    services = Join(Service)
 
 
 class Mapper(object):
@@ -114,7 +151,7 @@ class Mapper(object):
     insert_sql = 'insert ignore into {table} ({keys}) values ({values})'
     update_sql = 'update {table} set {set} where {exp}'
     delete_sql = 'delete from {table} where {exp}'
-    select_sql = 'select {fields} from {table}{join} where {exp}'
+    select_sql = 'select {columns} from {table}{join} where {exp}'
 
     def __init__(self, conn):
         self._conn = conn
@@ -146,22 +183,41 @@ class Mapper(object):
     def select(self, entitycls, pattern='1', params={}):
         tree = [(None, entitycls)]
         for _, cls in tree:
-            tree.extend(zip([cls] * len(cls.join), cls.join))
-        props = [(cls, prop) for _, cls in tree for prop in cls.props]
-        fields = ','.join(['{0}.{1}'.format(cls.table(), prop.name)
-                           for cls, prop in props])
-        join = ''.join([' left join {0} on ({0}.{1}={2}.{3})'.format(this.table(), this.pk, child.table(), child.fk)
-                        for this, child in tree[1:]])
+            try:
+                tree.extend(zip([cls] * len(cls.join), cls.join.keys()))
+            except AttributeError:
+                continue
+        columns = [(cls, column) for _, cls in tree for column in cls.columns]
+        join = ''.join([' left join {0} on ({0}.{1}={2}.{3})'.format(child.table(), child.fk, cls.table(), cls.pk)
+                        for cls, child in tree[1:]])
         sql = self.select_sql.format(
-                                     fields=fields,
+                                     columns=','.join(['{0}.{1}'.format(cls.table(), column)
+                                                       for cls, column in columns]),
                                      table=entitycls.table(),
                                      join=join,
                                      exp=pattern
                                      )
-        print(sql)
-        cursor = self._conn.cursor.execute(sql, params)
-        if not cursor.rowcount:
-            return []
+        cursor = self._conn.cursor()
+        cursor.execute(sql, params)
+        index = {}
+        order = {}
+        for row in cursor:
+            temp = {}
+            for value, (cls, column) in zip(row, columns):
+                if value is None:
+                    continue
+                temp.setdefault(cls, cls())[column] = value
+            for cls, entity in temp.iteritems():
+                if entity[cls.pk] not in index.setdefault(cls, {}):
+                    index[cls][entity[cls.pk]] = entity
+                    order.setdefault(cls, []).append(entity)
+        for cls, child in tree[1:]:
+            for entity in order[child]:
+                try:
+                    index[cls][entity[child.fk]].setdefault(cls.join[child], []).append(entity)
+                except KeyError:
+                    continue
+        return order.get(entitycls, [])
 
 
 import MySQLdb
@@ -177,4 +233,7 @@ db = MySQLdb.connect(
                      )
 
 z = Mapper(db)
-z.select(Firm)
+a = z.select(Firm)
+
+from pprint import pprint
+pprint(a)
