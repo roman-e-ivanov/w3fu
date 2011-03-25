@@ -1,38 +1,67 @@
 class Expression(object):
 
-    def __init__(self, pattern, params={}, order=0):
+    _key = 0
+
+    def __init__(self, pattern, params={}):
         self.pattern = pattern
         self.params = params
-        self.order = order
 
-    def __eq__(self, other):
-        params = self.params.copy()
-        key = '{0}.{1}'.format(self.pattern, self.order)
-        params[key] = other
-        return Expression('{0}=%({1})s'.format(key), params, self.order + 1)
+    def _compare_op(self, other, op):
+        self.__class__._key += 1
+        key = 'p{0}'.format(self.__class__._key)
+        return Expression('{0}{1}%({2})s'.format(self.pattern, op, key),
+                          {key: other})
 
-    def __and__(self, other):
+    def _logical_op(self, other, op):
         params = self.params.copy()
         params.update(other.params)
-        return Expression('({0} and {1})'.format(self.pattern, other.pattern),
-                          params, max(self.order, other.order) + 1)
+        return Expression('({0} {1} {2})'.format(self.pattern, op, other.pattern),
+                          params)
+
+    def __eq__(self, other):
+        return self._compare_op(other, '=')
+
+    def __and__(self, other):
+        return self._logical_op(other, 'and')
 
 
 class Property(object):
 
     def __init__(self, name=None, default=None):
-        self._name = name
+        self.name = name
         self._default = default
 
     def attach(self, name, cls):
-        if self._name is None:
-            self._name = name
+        if self.name is None:
+            self.name = name
 
-    def __get__(self, obj, owner):
+    def __get__(self, obj, cls):
         try:
-            return obj[self._name]
+            value = obj[self.name]
         except KeyError:
             return self._default
+        try:
+            return self._getter(obj, value)
+        except AttributeError:
+            return value
+
+    def __set__(self, obj, value):
+        try:
+            obj[self.name] = self._setter(obj, value)
+        except AttributeError:
+            obj[self.name] = value
+        try:
+            obj.modified.add(self.name)
+        except AttributeError:
+            obj.modified = set([self.name])
+
+    def getter(self, func):
+        self._getter = func
+        return func
+
+    def setter(self, func):
+        self._setter = func
+        return func
 
 
 class Column(Property):
@@ -46,26 +75,19 @@ class Column(Property):
     def attach(self, name, cls):
         super(Column, self).attach(name, cls)
         if not hasattr(cls, 'columns'):
-            cls.columns = []
-        cls.columns.append(self._name)
+            cls.columns = set()
+        cls.columns.add(self.name)
         if self._pk:
-            cls.pk = self._name
+            cls.pk = self
         if self._fk:
-            cls.fk = self._name
+            cls.fk = self
         if self._auto:
-            cls.auto = self._name
+            cls.auto = self
 
-    def __get__(self, obj, owner):
+    def __get__(self, obj, cls):
         if obj is None:
-            return Expression('{0}.{1}'.format(owner.table(), self._name))
-        super(Column, self).__get__(obj, owner)
-
-    def __set__(self, obj, value):
-        obj[self.column] = value
-        try:
-            obj.modified.add(self._name)
-        except AttributeError:
-            obj.modified = set([self._name])
+            return Expression('{0}.{1}'.format(cls.table(), self.name))
+        return super(Column, self).__get__(obj, cls)
 
 
 class Join(Property):
@@ -78,7 +100,7 @@ class Join(Property):
         super(Join, self).attach(name, cls)
         if not hasattr(cls, 'join'):
             cls.join = {}
-        cls.join[self._childcls] = self._name
+        cls.join[self._childcls] = self.name
 
 
 class EntityMeta(type):
@@ -106,12 +128,6 @@ class Entity(dict):
         self._new()
         return self
 
-    def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError:
-            return None
-
     def _new(self):
         pass
 
@@ -135,7 +151,7 @@ class Tag(Entity):
 
     id = Column(pk=True, auto=True)
     firm_id = Column(fk=True)
-    name = Property()
+    name = Column()
 
 
 class Firm(Entity):
@@ -145,22 +161,64 @@ class Firm(Entity):
     tags = Join(Tag)
     services = Join(Service)
 
+    @name.getter
+    def get_name(self, value):
+        return value.lower()
+
+    @name.setter
+    def set_name(self, value):
+        return value.upper()
+
+
+class Query(object):
+
+    def __init__(self, pattern, params={}):
+        self.pattern = pattern
+        self.params = params
+
+    def _op(self, other, op):
+        params = self.params.copy()
+        params.update(other.params)
+        return Query('({0} {1} {2})'.format(self.pattern, op, other.pattern), params)
+
+    def __and__(self, other):
+        return self._logical_op(other, 'and')
+
+
+class PropertyQuery(object):
+
+    _key = 0
+
+    def __init__(self, property):
+        self._pattern = '{0}.{1}'.format(property.table(), property.name)
+
+    def _op(self, other, op):
+        self.__class__._key += 1
+        key = 'p{0}'.format(self.__class__._key)
+        return Query('{0}{1}%({2})s'.format(self._pattern, op, key), {key: other})
+
+    def __eq__(self, other):
+        return self._op(other, '=')
+
 
 class Mapper(object):
 
     insert_sql = 'insert ignore into {table} ({keys}) values ({values})'
-    update_sql = 'update {table} set {set} where {exp}'
-    delete_sql = 'delete from {table} where {exp}'
-    select_sql = 'select {columns} from {table}{join} where {exp}'
+    update_sql = 'update {table} set {set} where {query}'
+    delete_sql = 'delete from {table} where {query}'
+    select_sql = 'select {columns} from {table}{join} where {query}'
 
     def __init__(self, conn):
         self._conn = conn
 
+    def q(self, property):
+        return PropertyQuery(property)
+
     def insert(self, entity):
         sql = self.insert_sql.format(table=entity.table(),
-                                     keys=','.join(entity.fields),
+                                     keys=','.join(entity.columns),
                                      values=','.join('%({0})s'.format(entity[f])
-                                                     for f in entity.fields))
+                                                     for f in entity.columns))
         cursor = self._conn.cursor()
         cursor.execute(sql, dict(entity))
         lastid = cursor.lastrowid
@@ -172,15 +230,15 @@ class Mapper(object):
         sql = self.update_sql.format(table=entity.table(),
                                      set=','.join('{0}=%({0})s'.format(f)
                                                   for f in entity.modified),
-                                     exp=' and '.join('%0=%({0})s'.format(f)
-                                                      for f in entity.pk))
+                                     query=' and '.join('%0=%({0})s'.format(f)
+                                                        for f in entity.pk))
         return self._conn.cursor().execute(sql, dict(entity))
 
     def delete(self, entitycls, exp):
         sql = self.delete_sql.format(table=entitycls.table(), exp=exp.pattern)
         return self._conn.cursor().execute(sql, exp.params)
 
-    def select(self, entitycls, pattern='1', params={}):
+    def select(self, entitycls, query=Query('1')):
         tree = [(None, entitycls)]
         for _, cls in tree:
             try:
@@ -195,12 +253,12 @@ class Mapper(object):
                                                        for cls, column in columns]),
                                      table=entitycls.table(),
                                      join=join,
-                                     exp=pattern
+                                     query=query.pattern
                                      )
         cursor = self._conn.cursor()
-        cursor.execute(sql, params)
-        index = {}
-        order = {}
+        cursor.execute(sql, query.params)
+        indexed = {}
+        ordered = {}
         for row in cursor:
             temp = {}
             for value, (cls, column) in zip(row, columns):
@@ -208,16 +266,16 @@ class Mapper(object):
                     continue
                 temp.setdefault(cls, cls())[column] = value
             for cls, entity in temp.iteritems():
-                if entity[cls.pk] not in index.setdefault(cls, {}):
-                    index[cls][entity[cls.pk]] = entity
-                    order.setdefault(cls, []).append(entity)
+                if entity[cls.pk.name] not in indexed.setdefault(cls, {}):
+                    indexed[cls][entity[cls.pk.name]] = entity
+                    ordered.setdefault(cls, []).append(entity)
         for cls, child in tree[1:]:
-            for entity in order[child]:
-                try:
-                    index[cls][entity[child.fk]].setdefault(cls.join[child], []).append(entity)
-                except KeyError:
-                    continue
-        return order.get(entitycls, [])
+            try:
+                for entity in ordered[child]:
+                    indexed[cls][entity[child.fk.name]].setdefault(cls.join[child], []).append(entity)
+            except KeyError:
+                continue
+        return ordered.get(entitycls, [])
 
 
 import MySQLdb
@@ -232,8 +290,11 @@ db = MySQLdb.connect(
                      charset='utf8'
                      )
 
-z = Mapper(db)
-a = z.select(Firm)
+#z = Mapper(db)
+#a = z.select(Firm, Tag.id == 2)
 
+a = Firm()
+a.name = 'test'
 from pprint import pprint
 pprint(a)
+print(a.name)
