@@ -40,7 +40,13 @@ class Plan(Resource):
         except KeyError:
             return req.response(404)
         body = dict(filter(lambda (k, v): form.data['t_from'] <= k < form.data['t_to'], plan['body'].iteritems()))
-        return Response(200, {'head': plan['head'], 'body': body.values()})
+        return Response(200, {
+                              'id': req.args['id'],
+                              'from': form.data['t_from'],
+                              'to': form.data['t_to'],
+                              'head': plan['head'],
+                              'body': body.values()
+                              })
 
 
 @bind('/api/plans/{id}', id='\d+')
