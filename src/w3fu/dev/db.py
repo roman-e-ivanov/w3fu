@@ -1,30 +1,3 @@
-class Expression(object):
-
-    _key = 0
-
-    def __init__(self, pattern, params={}):
-        self.pattern = pattern
-        self.params = params
-
-    def _compare_op(self, other, op):
-        self.__class__._key += 1
-        key = 'p{0}'.format(self.__class__._key)
-        return Expression('{0}{1}%({2})s'.format(self.pattern, op, key),
-                          {key: other})
-
-    def _logical_op(self, other, op):
-        params = self.params.copy()
-        params.update(other.params)
-        return Expression('({0} {1} {2})'.format(self.pattern, op, other.pattern),
-                          params)
-
-    def __eq__(self, other):
-        return self._compare_op(other, '=')
-
-    def __and__(self, other):
-        return self._logical_op(other, 'and')
-
-
 class Property(object):
 
     def __init__(self, name=None, default=None):
@@ -34,8 +7,11 @@ class Property(object):
     def attach(self, name, cls):
         if self.name is None:
             self.name = name
+        self.owner = cls
 
     def __get__(self, obj, cls):
+        if obj is None:
+            return self
         try:
             value = obj[self.name]
         except KeyError:
@@ -83,11 +59,6 @@ class Column(Property):
             cls.fk = self
         if self._auto:
             cls.auto = self
-
-    def __get__(self, obj, cls):
-        if obj is None:
-            return Expression('{0}.{1}'.format(cls.table(), self.name))
-        return super(Column, self).__get__(obj, cls)
 
 
 class Join(Property):
@@ -190,7 +161,7 @@ class PropertyQuery(object):
     _key = 0
 
     def __init__(self, property):
-        self._pattern = '{0}.{1}'.format(property.table(), property.name)
+        self._pattern = '{0}.{1}'.format(property.owner.table(), property.name)
 
     def _op(self, other, op):
         self.__class__._key += 1
@@ -201,7 +172,7 @@ class PropertyQuery(object):
         return self._op(other, '=')
 
 
-class Mapper(object):
+class Store(object):
 
     insert_sql = 'insert ignore into {table} ({keys}) values ({values})'
     update_sql = 'update {table} set {set} where {query}'
@@ -211,8 +182,10 @@ class Mapper(object):
     def __init__(self, conn):
         self._conn = conn
 
-    def q(self, property):
-        return PropertyQuery(property)
+    def query(self):
+        def make_query(property):
+            return PropertyQuery(property)
+        return make_query
 
     def insert(self, entity):
         sql = self.insert_sql.format(table=entity.table(),
@@ -246,7 +219,7 @@ class Mapper(object):
             except AttributeError:
                 continue
         columns = [(cls, column) for _, cls in tree for column in cls.columns]
-        join = ''.join([' left join {0} on ({0}.{1}={2}.{3})'.format(child.table(), child.fk, cls.table(), cls.pk)
+        join = ''.join([' left join {0} on ({0}.{1}={2}.{3})'.format(child.table(), child.fk.name, cls.table(), cls.pk.name)
                         for cls, child in tree[1:]])
         sql = self.select_sql.format(
                                      columns=','.join(['{0}.{1}'.format(cls.table(), column)
@@ -255,6 +228,7 @@ class Mapper(object):
                                      join=join,
                                      query=query.pattern
                                      )
+        print(sql)
         cursor = self._conn.cursor()
         cursor.execute(sql, query.params)
         indexed = {}
@@ -290,11 +264,9 @@ db = MySQLdb.connect(
                      charset='utf8'
                      )
 
-#z = Mapper(db)
-#a = z.select(Firm, Tag.id == 2)
-
-a = Firm()
-a.name = 'test'
 from pprint import pprint
+
+z = Store(db)
+q = z.query()
+a = z.select(Firm, q(Firm.pk) == 1)
 pprint(a)
-print(a.name)
