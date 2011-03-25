@@ -24,6 +24,5 @@ class XSLT(object):
                 self._templates[name] = etree.XSLT(etree.parse(path))
 
     def transform(self, element, template=None):
-        if template is not None:
-            e = self._templates[template](element)
+        e = element if template is None else self._templates[template](element)
         return etree.tostring(e, pretty_print=True, encoding='UTF-8')
