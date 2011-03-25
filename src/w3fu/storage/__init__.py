@@ -1,7 +1,7 @@
 class StorageError(Exception): pass
 
 
-class Storage(object):
+class Pool(object):
 
     def __init__(self, factory):
         self._factory = factory
@@ -14,4 +14,4 @@ class Storage(object):
         try:
             return self._pool.pop()
         except IndexError:
-            return self._factory(self)
+            return self._factory()

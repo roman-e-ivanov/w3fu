@@ -7,7 +7,7 @@ from w3fu.res.middleware.transform import xml
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
-from w3fu.data.domain.auth import User, Session
+from w3fu.domain.auth import User, Session
 
 
 class AuthForm(Form):
@@ -41,19 +41,19 @@ class Login(Resource):
 
     @storage()
     def post(self, req):
-        form = LoginForm(req.content)
+        form = LoginForm(req.query)
         resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))
-        user = self.db.users.find_by_login(form.data['login']).fetch()
+        user = User.find_by_login(self.db, form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          dict(error='auth', **form.src))))
-        session = Session.new(user_id=user['id'])
-        self.db.sessions.insert(session)
+        session = Session.new(user_id=user.id)
+        session.insert(self.db)
         self.db.commit()
-        resp.set_cookie(config.session_name, session['id'], session['expires'])
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(str(Url(req.scheme, req.host, '/home', {})))
 
     @storage()
@@ -63,7 +63,7 @@ class Login(Resource):
             url = str(Url(req.scheme, req.host))
         resp = Response(302).location(url)
         if config.session_name in req.cookie:
-            self.db.sessions.delete(req.cookie[config.session_name].value)
+            Session.delete(self.db, req.cookie[config.session_name].value)
             self.db.commit()
             resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
@@ -93,12 +93,12 @@ class Register(Resource):
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))
         user = User.new(login=form.data['login'])
-        user.password(form.data['password'])
-        if not self.db.users.insert(user).count:
+        user.password = form.data['password']
+        if not user.save(self.db):
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          dict(error='exists', **form.src))))
-        session = Session.new(user_id=user['id'])
-        self.db.sessions.insert(session)
+        session = Session.new(user_id=user.id)
+        session.insert(self.db)
         self.db.commit()
-        resp.set_cookie(config.session_name, session['id'], session['expires'])
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(str(Url(req.scheme, req.host, '/home', {})))

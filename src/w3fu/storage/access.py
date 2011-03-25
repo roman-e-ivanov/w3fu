@@ -1,153 +1,4 @@
-class Property(object):
-
-    def __init__(self, name=None, default=None):
-        self.name = name
-        self._default = default
-
-    def attach(self, name, cls):
-        if self.name is None:
-            self.name = name
-        self.owner = cls
-
-    def __get__(self, obj, cls):
-        if obj is None:
-            return self
-        try:
-            value = obj[self.name]
-        except KeyError:
-            return self._default
-        try:
-            return self._getter(obj, value)
-        except AttributeError:
-            return value
-
-    def __set__(self, obj, value):
-        try:
-            obj[self.name] = self._setter(obj, value)
-        except AttributeError:
-            obj[self.name] = value
-        try:
-            obj.modified.add(self.name)
-        except AttributeError:
-            obj.modified = set([self.name])
-
-    def getter(self, func):
-        self._getter = func
-        return func
-
-    def setter(self, func):
-        self._setter = func
-        return func
-
-
-class Column(Property):
-
-    def __init__(self, name=None, pk=False, fk=False, auto=False):
-        super(Column, self).__init__(name)
-        self._pk = pk
-        self._fk = fk
-        self._auto = auto
-
-    def attach(self, name, cls):
-        super(Column, self).attach(name, cls)
-        if not hasattr(cls, 'columns'):
-            cls.columns = set()
-        cls.columns.add(self.name)
-        if self._pk:
-            cls.pk = self
-        if self._fk:
-            cls.fk = self
-        if self._auto:
-            cls.auto = self
-
-
-class Join(Property):
-
-    def __init__(self, childcls):
-        super(Join, self).__init__(default=[])
-        self._childcls = childcls
-
-    def attach(self, name, cls):
-        super(Join, self).attach(name, cls)
-        if not hasattr(cls, 'join'):
-            cls.join = {}
-        cls.join[self._childcls] = self.name
-
-
-class EntityMeta(type):
-
-    def __init__(cls, name, bases, attrs):
-        for name, attr in attrs.iteritems():
-            if hasattr(attr, 'attach'):
-                attr.attach(name, cls)
-        super(EntityMeta, cls).__init__(name, bases, attrs)
-
-
-class Entity(dict):
-
-    __metaclass__ = EntityMeta
-
-    auto = None
-
-    @classmethod
-    def table(cls):
-        return cls.__name__.lower()
-
-    @classmethod
-    def new(cls, *args, **kwargs):
-        self = cls(*args, **kwargs)
-        self._new()
-        return self
-
-    @classmethod
-    def find(cls, store, id):
-        q = store.query()
-        found = store.select(cls, q(cls.pk) == id)
-        if found:
-            return found[0]
-        else:
-            return None
-
-    def _new(self):
-        pass
-
-
-class Address(Entity):
-
-    id = Column(pk=True, auto=True)
-    service_id = Column(fk=True)
-    name = Column()
-
-
-class Service(Entity):
-
-    id = Column(pk=True, auto=True)
-    firm_id = Column(fk=True)
-    name = Column()
-    addresses = Join(Address)
-
-
-class Tag(Entity):
-
-    id = Column(pk=True, auto=True)
-    firm_id = Column(fk=True)
-    name = Column()
-
-
-class Firm(Entity):
-
-    id = Column(pk=True, auto=True)
-    name = Column()
-    tags = Join(Tag)
-    services = Join(Service)
-
-    @name.getter
-    def get_name(self, value):
-        return value.lower()
-
-    @name.setter
-    def set_name(self, value):
-        return value.upper()
+from w3fu.storage import StorageError
 
 
 class Query(object):
@@ -163,6 +14,9 @@ class Query(object):
 
     def __and__(self, other):
         return self._logical_op(other, 'and')
+
+    def __or__(self, other):
+        return self._logical_op(other, 'or')
 
 
 class PropertyQuery(object):
@@ -180,16 +34,55 @@ class PropertyQuery(object):
     def __eq__(self, other):
         return self._op(other, '=')
 
+    def __gt__(self, other):
+        return self._op(other, '>')
 
-class Store(object):
+    def __lt__(self, other):
+        return self._op(other, '<')
+
+    def __gte__(self, other):
+        return self._op(other, '>=')
+
+    def __lte__(self, other):
+        return self._op(other, '<=')
+
+
+class Database(object):
 
     insert_sql = 'insert ignore into {table} ({keys}) values ({values})'
     update_sql = 'update {table} set {set} where {query}'
     delete_sql = 'delete from {table} where {query}'
     select_sql = 'select {columns} from {table}{join} where {query}'
 
-    def __init__(self, conn):
-        self._conn = conn
+    def __init__(self, driver, config):
+        self._driver = driver
+        self._config = config
+        self._connect()
+
+    def _connect(self):
+        try:
+            self._conn = self._driver.connect(**self._config)
+        except self._driver.DatabaseError as e:
+            raise StorageError(e)
+
+    def _cursor(self):
+        try:
+            return self._conn.cursor()
+        except self._driver.OperationalError:
+            self._connect()
+            return self._conn.cursor()
+
+    def commit(self):
+        try:
+            self._conn.commit()
+        except self._driver.DatabaseError as e:
+            raise StorageError(e)
+
+    def rollback(self):
+        try:
+            self._conn.rollback()
+        except self._driver.DatabaseError as e:
+            raise StorageError(e)
 
     def query(self):
         def make_query(property):
@@ -199,7 +92,7 @@ class Store(object):
     def insert(self, entity):
         sql = self.insert_sql.format(table=entity.table(),
                                      keys=','.join(entity.columns),
-                                     values=','.join('%({0})s'.format(entity[f])
+                                     values=','.join('%({0})s'.format(f)
                                                      for f in entity.columns))
         cursor = self._conn.cursor()
         cursor.execute(sql, dict(entity))
@@ -259,23 +152,3 @@ class Store(object):
             except KeyError:
                 continue
         return ordered.get(entitycls, [])
-
-
-import MySQLdb
-
-
-db = MySQLdb.connect(
-                     host='localhost',
-                     db='test',
-                     user='root',
-                     passwd='12345678',
-                     use_unicode=True,
-                     charset='utf8'
-                     )
-
-from pprint import pprint
-
-z = Store(db)
-q = z.query()
-a = z.select(Firm, q(Firm.pk) == 1)
-pprint(a)

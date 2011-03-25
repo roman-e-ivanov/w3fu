@@ -1,5 +1,6 @@
 from w3fu import config
 from w3fu.res.middleware import Middleware
+from w3fu.domain.auth import User, Session
 
 
 class storage(Middleware):
@@ -18,9 +19,9 @@ class user(Middleware):
         res.user = None
         try:
             session_id = req.cookie[config.session_name].value
-            session = res.db.sessions.find(session_id).fetch()
+            session = Session.find(res.db, session_id)
             if session:
-                res.user = res.db.users.find(session['user_id']).fetch()
+                res.user = User.find(session.user_id)
         except KeyError:
             pass
         resp = handler(res, req)
