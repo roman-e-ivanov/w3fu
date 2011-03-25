@@ -43,12 +43,12 @@
     
     div.datepicker-container {
     	font-size: 10pt
-    	}
-    table.datepicker-calendar {
+    }
+    table.datepicker-calendar, table.timetable {
     	border-collapse: collapse;   			
     }
     
-    table.datepicker-calendar td {
+    table.datepicker-calendar td, table.timetable td {
     	border:1px solid #ffffff;
 		padding: 2px 6px;
 		cursor: pointer;
@@ -147,6 +147,25 @@
 	span.display {
 		display: inline;
 	}
+
+/* timetable table */
 	
+	table.timetable {
+    	border-collapse: collapse;
+    	font-size:10pt;   			
+    }
+    
+	table.timetable td {
+    	border:1px solid #ffffff;
+		padding: 2px 6px;
+		cursor: pointer;
+    }
+    
+    table.timetable th {
+    	border:1px solid #ffffff;
+    	background-color:#9999cc;
+    	font-weight:bold;
+		padding: 2px 6px;
+		cursor: default;
 	
 	
