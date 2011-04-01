@@ -1,264 +1,198 @@
-class Property(object):
-
-    def __init__(self, name=None, default=None):
-        self.name = name
-        self._default = default
-
-    def attach(self, name, cls):
-        if self.name is None:
-            self.name = name
-        self.owner = cls
-
-    def __get__(self, obj, cls):
-        if obj is None:
-            return self
-        try:
-            value = obj[self.name]
-        except KeyError:
-            return self._default
-        try:
-            return self._getter(obj, value)
-        except AttributeError:
-            return value
-
-    def __set__(self, obj, value):
-        try:
-            obj[self.name] = self._setter(obj, value)
-        except AttributeError:
-            obj[self.name] = value
-        try:
-            obj.modified.add(self.name)
-        except AttributeError:
-            obj.modified = set([self.name])
-
-    def getter(self, func):
-        self._getter = func
-        return func
-
-    def setter(self, func):
-        self._setter = func
-        return func
-
-
-class Column(Property):
-
-    def __init__(self, name=None, pk=False, fk=False, auto=False):
-        super(Column, self).__init__(name)
-        self._pk = pk
-        self._fk = fk
-        self._auto = auto
-
-    def attach(self, name, cls):
-        super(Column, self).attach(name, cls)
-        if not hasattr(cls, 'columns'):
-            cls.columns = set()
-        cls.columns.add(self.name)
-        if self._pk:
-            cls.pk = self
-        if self._fk:
-            cls.fk = self
-        if self._auto:
-            cls.auto = self
-
-
-class Join(Property):
-
-    def __init__(self, childcls):
-        super(Join, self).__init__(default=[])
-        self._childcls = childcls
-
-    def attach(self, name, cls):
-        super(Join, self).attach(name, cls)
-        if not hasattr(cls, 'join'):
-            cls.join = {}
-        cls.join[self._childcls] = self.name
-
-
-class EntityMeta(type):
-
-    def __init__(cls, name, bases, attrs):
-        for name, attr in attrs.iteritems():
-            if hasattr(attr, 'attach'):
-                attr.attach(name, cls)
-        super(EntityMeta, cls).__init__(name, bases, attrs)
+from json import dumps, loads
 
 
 class Entity(dict):
 
-    __metaclass__ = EntityMeta
-
-    auto = None
+    indexes = []
 
     @classmethod
-    def table(cls):
+    def name(cls):
         return cls.__name__.lower()
 
     @classmethod
     def new(cls, *args, **kwargs):
-        self = cls(*args, **kwargs)
-        self._new()
+        self = cls(cls._id(), cls._data())
+        self.update(*args, **kwargs)
         return self
 
     @classmethod
-    def find(cls, store, id):
-        q = store.query()
-        found = store.select(cls, q(cls.pk) == id)
-        if found:
-            return found[0]
-        else:
-            return None
+    def _id(self):
+        return None
 
-    def _new(self):
-        pass
+    @classmethod
+    def _data(self):
+        return {}
 
+    @classmethod
+    def load(self, s):
+        return loads(s)
 
-class Address(Entity):
+    def __init__(self, id, *args, **kwargs):
+        super(Entity, self).__init__(*args, **kwargs)
+        self.id = id
 
-    id = Column(pk=True, auto=True)
-    service_id = Column(fk=True)
-    name = Column()
-
-
-class Service(Entity):
-
-    id = Column(pk=True, auto=True)
-    firm_id = Column(fk=True)
-    name = Column()
-    addresses = Join(Address)
+    def dump(self):
+        return dumps(self, separators=(',', ':'))
 
 
-class Tag(Entity):
+class Query:
 
-    id = Column(pk=True, auto=True)
-    firm_id = Column(fk=True)
-    name = Column()
+    def __init__(self, expr):
+        self._p = 0
+        self.params = {}
+        self.pattern = self._and(expr)
 
+    def _boolean(op):
+        def func(self, e):
+            return op.join('({0})'.format(getattr(self, '_' + k)(v))
+                           for k, v in e.iteritems())
+        return func
 
-class Firm(Entity):
+    _and = _boolean(' and ')
+    _or = _boolean(' or ')
 
-    id = Column(pk=True, auto=True)
-    name = Column()
-    tags = Join(Tag)
-    services = Join(Service)
+    def _cmp(op):
+        def func(self, e):
+            out = []
+            for name, value in e.iteritems():
+                self._p += 1
+                key = 'p' + str(self._p)
+                self.params[key] = value
+                out.append('{0}{1}%({2})s'.format(name, op, key))
+            return ' and '.join(out)
+        return func
 
-    @name.getter
-    def get_name(self, value):
-        return value.lower()
+    _eq = _cmp('=')
+    _ne = _cmp('!=')
+    _gt = _cmp('>')
+    _lt = _cmp('<')
+    _gte = _cmp('>=')
+    _lte = _cmp('<=')
 
-    @name.setter
-    def set_name(self, value):
-        return value.upper()
-
-
-class Query(object):
-
-    def __init__(self, pattern, params={}):
-        self.pattern = pattern
-        self.params = params
-
-    def _op(self, other, op):
-        params = self.params.copy()
-        params.update(other.params)
-        return Query('({0} {1} {2})'.format(self.pattern, op, other.pattern), params)
-
-    def __and__(self, other):
-        return self._logical_op(other, 'and')
-
-
-class PropertyQuery(object):
-
-    _key = 0
-
-    def __init__(self, property):
-        self._pattern = '{0}.{1}'.format(property.owner.table(), property.name)
-
-    def _op(self, other, op):
-        self.__class__._key += 1
-        key = 'p{0}'.format(self.__class__._key)
-        return Query('{0}{1}%({2})s'.format(self._pattern, op, key), {key: other})
-
-    def __eq__(self, other):
-        return self._op(other, '=')
+    def _in(self, e):
+        out = []
+        for name, values in e.iteritems():
+            keys = ['p' + str(p)
+                    for p in range(self._p + 1, self._p + 1 + len(values))]
+            self._p += len(values)
+            self.params.update(dict(zip(keys, values)))
+            out.append('{0} in ({1})'.format(name, ','.join('%({0})s'.format(k)
+                                                            for k in keys)))
+        return ' and '.join(out)
 
 
 class Store(object):
 
-    insert_sql = 'insert ignore into {table} ({keys}) values ({values})'
-    update_sql = 'update {table} set {set} where {query}'
-    delete_sql = 'delete from {table} where {query}'
-    select_sql = 'select {columns} from {table}{join} where {query}'
+    insert_sql = 'insert ignore into {table} (id,data) values (%(id)s,%(data)s)'
+    update_sql = 'update {table} set data=%(data)s where id=%(id)s'
+    select_sql = 'select id,data from {table} where id=%(id)s'
+    delete_sql = 'delete from {table} where id=%(id)s'
+    clear_index_sql = 'delete from {table}_{index} where id=%(id)s'
+    build_index_sql = 'insert ignore into {table}_{index} ({keys}) values ({values})'
+    select_index_sql = 'select distinct id from {table}_{index} {where}{order}{limit}'
+    select_ids_sql = 'select id,data from {table} where id in ({ids})'
 
     def __init__(self, conn):
         self._conn = conn
 
-    def query(self):
-        def make_query(property):
-            return PropertyQuery(property)
-        return make_query
+    def build_index(self, entity):
+        cursor = self._conn.cursor()
+        for index, values in entity.index().iteritems():
+            for value in values:
+                value['id'] = entity.id
+                sql = self.build_index_sql.format(table=entity.name(), index=index,
+                                                  keys=','.join(values[0]),
+                                                  values=','.join('%({0})s'.format(k)
+                                                                  for k in values[0])
+                                                  )
+                print(sql)
+                cursor.execute(sql, value)
+
+    def clear_index(self, cls, id):
+        cursor = self._conn.cursor()
+        for index in cls.indexes:
+            sql = self.clear_index_sql.format(table=cls.name(), index=index)
+            print(sql)
+            cursor.execute(sql, {'id': id})
 
     def insert(self, entity):
-        sql = self.insert_sql.format(table=entity.table(),
-                                     keys=','.join(entity.columns),
-                                     values=','.join('%({0})s'.format(entity[f])
-                                                     for f in entity.columns))
+        sql = self.insert_sql.format(table=entity.name())
         cursor = self._conn.cursor()
-        cursor.execute(sql, dict(entity))
-        lastid = cursor.lastrowid
-        if lastid and entity.auto is not None:
-            entity[entity.auto] = lastid
-        return cursor.rowcount
+        cursor.execute(sql, {'id': entity.id, 'data': entity.dump()})
+        rowcount = cursor.rowcount
+        if entity.id is None:
+            entity.id = cursor.lastrowid
+        self.build_index(entity)
+        return rowcount
 
     def update(self, entity):
-        sql = self.update_sql.format(table=entity.table(),
-                                     set=','.join('{0}=%({0})s'.format(f)
-                                                  for f in entity.modified),
-                                     query=' and '.join('%0=%({0})s'.format(f)
-                                                        for f in entity.pk))
-        return self._conn.cursor().execute(sql, dict(entity))
+        self.clear_index(entity.__class__, entity.id)
+        sql = self.update_sql.format(table=entity.name())
+        cursor = self._conn.cursor()
+        cursor.execute(sql, {'id': entity.id, 'data': entity.dump()})
+        rowcount = cursor.rowcount
+        self.build_index(entity)
+        return rowcount
 
-    def delete(self, entitycls, exp):
-        sql = self.delete_sql.format(table=entitycls.table(), exp=exp.pattern)
-        return self._conn.cursor().execute(sql, exp.params)
+    def delete(self, cls, id):
+        self.clear_index(cls, id)
+        sql = self.delete_sql.format(table=cls.name())
+        cursor = self._conn.cursor()
+        return cursor.execute(sql, {'id': id})
 
-    def select(self, entitycls, query=Query('1')):
-        tree = [(None, entitycls)]
-        for _, cls in tree:
-            try:
-                tree.extend(zip([cls] * len(cls.join), cls.join.keys()))
-            except AttributeError:
-                continue
-        columns = [(cls, column) for _, cls in tree for column in cls.columns]
-        join = ''.join([' left join {0} on ({0}.{1}={2}.{3})'.format(child.table(), child.fk.name, cls.table(), cls.pk.name)
-                        for cls, child in tree[1:]])
-        sql = self.select_sql.format(
-                                     columns=','.join(['{0}.{1}'.format(cls.table(), column)
-                                                       for cls, column in columns]),
-                                     table=entitycls.table(),
-                                     join=join,
-                                     query=query.pattern
-                                     )
+    def select(self, cls, id):
+        sql = self.select_sql.format(table=cls.name())
+        cursor = self._conn.cursor()
+        cursor.execute(sql, {'id': id})
+        row = cursor.fetchone()
+        if row is None:
+            return None
+        (id, data) = row
+        return cls(id, cls.load(data))
+
+    def select_index(self, cls, index, expr=None, sort=None, count=None, offset=0):
+        if expr is None:
+            where = ''
+            params = None
+        else:
+            query = Query(expr)
+            where = 'where ' + query.pattern
+            params = query.params
+        order = '' if sort is None else ' order by ' + ','.join(sort)
+        limit = '' if count is None else ' limit {0},{1}'.format(offset, count)
+        sql = self.select_index_sql.format(table=cls.name(), index=index,
+                                           where=where, order=order, limit=limit)
         print(sql)
         cursor = self._conn.cursor()
-        cursor.execute(sql, query.params)
-        indexed = {}
-        ordered = {}
-        for row in cursor:
-            temp = {}
-            for value, (cls, column) in zip(row, columns):
-                if value is None:
-                    continue
-                temp.setdefault(cls, cls())[column] = value
-            for cls, entity in temp.iteritems():
-                if entity[cls.pk.name] not in indexed.setdefault(cls, {}):
-                    indexed[cls][entity[cls.pk.name]] = entity
-                    ordered.setdefault(cls, []).append(entity)
-        for cls, child in tree[1:]:
-            try:
-                for entity in ordered[child]:
-                    indexed[cls][entity[child.fk.name]].setdefault(cls.join[child], []).append(entity)
-            except KeyError:
-                continue
-        return ordered.get(entitycls, [])
+        cursor.execute(sql, params)
+        ids = [id for id, in cursor]
+        sql = self.select_ids_sql.format(table=cls.name(),
+                                         ids=','.join(['%s'] * len(ids)))
+        print(sql)
+        cursor.execute(sql, tuple(ids))
+        entities = {}
+        for id, data in cursor:
+            entities[id] = cls(id, cls.load(data))
+        if sort:
+            return [entities[id] for id in ids]
+        else:
+            return entities.values()
+
+
+class Firm(Entity):
+
+    indexes = ['generic', 'special']
+
+    def index(self):
+        return {
+                'generic': [{'f1': 1, 'f2': 2, 'f3': 3}],
+                'special': [
+                            {'f4': self['name']},
+                            {'f4': self['name']},
+                            {'f4': self['name']},
+                            {'f4': self['name']}
+                            ]
+                }
 
 
 import MySQLdb
@@ -266,7 +200,7 @@ import MySQLdb
 
 db = MySQLdb.connect(
                      host='localhost',
-                     db='test',
+                     db='w3fu',
                      user='root',
                      passwd='12345678',
                      use_unicode=True,
@@ -275,7 +209,9 @@ db = MySQLdb.connect(
 
 from pprint import pprint
 
-z = Store(db)
-q = z.query()
-a = z.select(Firm, q(Firm.pk) == 1)
-pprint(a)
+s = Store(db)
+firm = Firm.new()
+firm['name'] = 'Google'
+firm['type'] = 10
+s.insert(firm)
+db.commit()
