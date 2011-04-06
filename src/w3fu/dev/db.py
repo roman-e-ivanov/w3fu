@@ -83,37 +83,17 @@ class Query:
 
 class Store(object):
 
+    build_index_sql = 'insert ignore into {table}_{index} ({keys}) values ({values})'
+    clear_index_sql = 'delete from {table}_{index} where id=%(id)s'
     insert_sql = 'insert ignore into {table} (id,data) values (%(id)s,%(data)s)'
     update_sql = 'update {table} set data=%(data)s where id=%(id)s'
-    select_sql = 'select id,data from {table} where id=%(id)s'
     delete_sql = 'delete from {table} where id=%(id)s'
-    clear_index_sql = 'delete from {table}_{index} where id=%(id)s'
-    build_index_sql = 'insert ignore into {table}_{index} ({keys}) values ({values})'
-    select_index_sql = 'select distinct id from {table}_{index} {where}{order}{limit}'
-    select_ids_sql = 'select id,data from {table} where id in ({ids})'
+    select_sql = 'select id,data from {table} where id=%(id)s'
+    select_many_sql = 'select id,data from {table} where id in ({ids})'
+    query_index_sql = 'select distinct id from {table}_{index} {where}{order}{limit}'
 
     def __init__(self, conn):
         self._conn = conn
-
-    def build_index(self, entity):
-        cursor = self._conn.cursor()
-        for index, values in entity.index().iteritems():
-            for value in values:
-                value['id'] = entity.id
-                sql = self.build_index_sql.format(table=entity.name(), index=index,
-                                                  keys=','.join(values[0]),
-                                                  values=','.join('%({0})s'.format(k)
-                                                                  for k in values[0])
-                                                  )
-                print(sql)
-                cursor.execute(sql, value)
-
-    def clear_index(self, cls, id):
-        cursor = self._conn.cursor()
-        for index in cls.indexes:
-            sql = self.clear_index_sql.format(table=cls.name(), index=index)
-            print(sql)
-            cursor.execute(sql, {'id': id})
 
     def insert(self, entity):
         sql = self.insert_sql.format(table=entity.name())
@@ -150,7 +130,40 @@ class Store(object):
         (id, data) = row
         return cls(id, cls.load(data))
 
-    def select_index(self, cls, index, expr=None, sort=None, count=None, offset=0):
+    def select_many(self, cls, ids, sort=False):
+        sql = self.select_many_sql.format(table=cls.name(),
+                                          ids=','.join(['%s'] * len(ids)))
+        cursor = self._conn.cursor()
+        cursor.execute(sql, tuple(ids))
+        entities = {}
+        for id, data in cursor:
+            entities[id] = cls(id, cls.load(data))
+        if sort:
+            return [entities[id] for id in ids]
+        else:
+            return entities.values()
+
+    def build_index(self, entity):
+        cursor = self._conn.cursor()
+        for index, values in entity.index().iteritems():
+            for value in values:
+                value['id'] = entity.id
+                sql = self.build_index_sql.format(table=entity.name(), index=index,
+                                                  keys=','.join(values[0]),
+                                                  values=','.join('%({0})s'.format(k)
+                                                                  for k in values[0])
+                                                  )
+                print(sql)
+                cursor.execute(sql, value)
+
+    def clear_index(self, cls, id):
+        cursor = self._conn.cursor()
+        for index in cls.indexes:
+            sql = self.clear_index_sql.format(table=cls.name(), index=index)
+            print(sql)
+            cursor.execute(sql, {'id': id})
+
+    def query_index(self, cls, index, expr=None, sort=None, count=None, offset=0):
         if expr is None:
             where = ''
             params = None
@@ -160,23 +173,17 @@ class Store(object):
             params = query.params
         order = '' if sort is None else ' order by ' + ','.join(sort)
         limit = '' if count is None else ' limit {0},{1}'.format(offset, count)
-        sql = self.select_index_sql.format(table=cls.name(), index=index,
+        sql = self.query_index_sql.format(table=cls.name(), index=index,
                                            where=where, order=order, limit=limit)
-        print(sql)
         cursor = self._conn.cursor()
         cursor.execute(sql, params)
-        ids = [id for id, in cursor]
-        sql = self.select_ids_sql.format(table=cls.name(),
-                                         ids=','.join(['%s'] * len(ids)))
-        print(sql)
-        cursor.execute(sql, tuple(ids))
-        entities = {}
-        for id, data in cursor:
-            entities[id] = cls(id, cls.load(data))
-        if sort:
-            return [entities[id] for id in ids]
-        else:
-            return entities.values()
+        return [id for id, in cursor]
+
+    def select_index(self, cls, index, expr=None, sort=None, count=None, offset=0):
+        ids = self.query_index(cls, index, expr, sort, count, offset)
+        if not ids:
+            return []
+        return self.select_many(cls, ids, sort is not None)
 
 
 class Firm(Entity):
