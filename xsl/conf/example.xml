@@ -1,13 +1,81 @@
 <?xml version='1.0'?>
-<providers>
-	<provider id="yandex" has_login="1">1</provider>
-	<provider id="google">2</provider>
-	<provider id="mailru">3</provider>
-	<provider id="loginza">4</provider>
-	<provider id="myopenid">5</provider>
-	<provider id="livejournal">6</provider>
-	<provider id="yahoo">7</provider>
-	<provider id="myspace">8</provider>
-	<provider id="wordpress">9</provider>
-	<provider id="rambler">1010101010</provider>
-</providers>
+<planxml>
+	<id>1</id>
+	<day>
+		<start>1298884200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298887800</start>
+		</cell>
+	</day>
+	<day>
+		<start>1299084200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298887000</start>
+		</cell>
+	</day>
+	<day>
+		<start>1299584200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298897000</start>
+		</cell>
+	</day>
+	<day>
+		<start>1298884200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298887800</start>
+		</cell>
+	</day>
+	<day>
+		<start>1299084200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298887000</start>
+		</cell>
+	</day>
+	<day>
+		<start>1299584200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298897000</start>
+		</cell>
+	</day>
+	<day>
+		<start>1298884200</start>
+		<cell>
+			<type>0</type>
+			<start>1298884200</start>
+		</cell>
+		<cell>
+			<type>1</type>
+			<start>1298887800</start>
+		</cell>
+	</day>
+</planxml>

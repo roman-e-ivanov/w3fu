@@ -21,7 +21,7 @@
     }
     .popup1 {
     	position:absolute;
-  		top:150px; right:10px;
+  		top:50px; right:10px;
   		text-align:right;
     }
 	.popup2 {
@@ -152,9 +152,10 @@
 	
 	table.timetable {
     	border-collapse: collapse;
-    	font-size:10pt;   			
+    	font-size:10pt;
+    	display:inline;    	  			
     }
-    
+	
 	table.timetable td {
     	border:1px solid #ffffff;
 		padding: 2px 6px;
@@ -167,5 +168,5 @@
     	font-weight:bold;
 		padding: 2px 6px;
 		cursor: default;
-	
+    }
 	
