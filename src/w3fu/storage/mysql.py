@@ -1,48 +1,7 @@
-from json import dumps, loads
+import MySQLdb
 
-
-class Entity(dict):
-
-    index = {}
-
-    @classmethod
-    def name(cls):
-        return cls.__name__.lower()
-
-    @classmethod
-    def new(cls, *args, **kwargs):
-        self = cls(cls._id(), cls._data())
-        self.update(*args, **kwargs)
-        return self
-
-    @classmethod
-    def _id(self):
-        return None
-
-    @classmethod
-    def _data(self):
-        return {}
-
-    @classmethod
-    def load(self, s):
-        return loads(s)
-
-    @classmethod
-    def find(cls, db, id):
-        return db.select(cls, id)
-
-    def __init__(self, id, *args, **kwargs):
-        super(Entity, self).__init__(*args, **kwargs)
-        self.id = id
-
-    def dump(self):
-        return dumps(self, separators=(',', ':'))
-
-    def put(self, db):
-        return db.insert(self)
-
-    def save(self, db):
-        return db.update(self)
+from w3fu import config
+from w3fu.storage import StorageError
 
 
 class Query:
@@ -95,41 +54,67 @@ class Database(object):
 
     build_index_sql = 'insert ignore into {table}_{index} ({keys}) values ({values})'
     clear_index_sql = 'delete from {table}_{index} where id=%(id)s'
-    insert_sql = 'insert ignore into {table} (id,data) values (%(id)s,%(data)s)'
+    insert_sql = 'insert ignore into {table} (data) values (%(data)s)'
     update_sql = 'update {table} set data=%(data)s where id=%(id)s'
     delete_sql = 'delete from {table} where id=%(id)s'
     select_sql = 'select id,data from {table} where id=%(id)s'
+    count_sql = 'select count(id) from {table} where id=%(id)s'
     select_many_sql = 'select id,data from {table} where id in ({ids})'
     query_index_sql = 'select distinct id from {table}_{index} where {where}{order}{limit}'
     count_index_sql = 'select count(id) from {table}_{index} where {where}'
 
-    def __init__(self, conn):
-        self._conn = conn
+    def __init__(self):
+        self._connect()
+
+    def _connect(self):
+        try:
+            self._conn = MySQLdb.connect(host=config.conn_host,
+                                         db=config.conn_db,
+                                         user=config.conn_user,
+                                         passwd=config.conn_passwd,
+                                         use_unicode=True,
+                                         charset='utf8')
+        except MySQLdb.DatabaseError as e:
+            raise StorageError(e)
+
+    def _cursor(self):
+        try:
+            return self._conn.cursor()
+        except MySQLdb.OperationalError:
+            self._connect()
+            return self._conn.cursor()
+
+    def commit(self):
+        try:
+            self._conn.commit()
+        except MySQLdb.DatabaseError as e:
+            raise StorageError(e)
+
+    def rollback(self):
+        try:
+            self._conn.rollback()
+        except MySQLdb.DatabaseError as e:
+            raise StorageError(e)
 
     def insert(self, entity):
         sql = self.insert_sql.format(table=entity.name())
         cursor = self._conn.cursor()
-        cursor.execute(sql, {'id': entity.id, 'data': entity.dump()})
-        rowcount = cursor.rowcount
-        if entity.id is None:
-            entity.id = cursor.lastrowid
+        cursor.execute(sql, {'data': entity.dump()})
+        entity.id = cursor.lastrowid
         self.build_index(entity)
-        return rowcount
 
     def update(self, entity):
         self.clear_index(entity.__class__, entity.id)
         sql = self.update_sql.format(table=entity.name())
         cursor = self._conn.cursor()
         cursor.execute(sql, {'id': entity.id, 'data': entity.dump()})
-        rowcount = cursor.rowcount
         self.build_index(entity)
-        return rowcount
 
     def delete(self, cls, id):
         self.clear_index(cls, id)
         sql = self.delete_sql.format(table=cls.name())
         cursor = self._conn.cursor()
-        return cursor.execute(sql, {'id': id})
+        cursor.execute(sql, {'id': id})
 
     def select(self, cls, id):
         sql = self.select_sql.format(table=cls.name())
@@ -140,6 +125,12 @@ class Database(object):
             return None
         (id, data) = row
         return cls(id, cls.load(data))
+
+    def count(self, cls, id):
+        sql = self.count_sql.format(table=cls.name())
+        cursor = self._conn.cursor()
+        cursor.execute(sql, {'id': id})
+        return cursor.fetchone()[0]
 
     def select_many(self, cls, ids, sort=False):
         sql = self.select_many_sql.format(table=cls.name(),
@@ -185,53 +176,14 @@ class Database(object):
 
     def count_index(self, cls, expr, index='index'):
         query = Query(expr)
-        sql = self.query_index_sql.format(table=cls.name(), index=index,
+        sql = self.count_index_sql.format(table=cls.name(), index=index,
                                           where=query.pattern)
         cursor = self._conn.cursor()
         cursor.execute(sql, query.params)
         return cursor.fetchone()[0]
 
-    def select_index(self, cls, expr=None, sort=None, count=None, offset=0,):
-        ids = self.query_index(cls, index, expr, sort, count, offset)
+    def select_index(self, cls, expr, sort=None, count=None, offset=0, index='index'):
+        ids = self.query_index(cls, expr, sort, count, offset, index)
         if not ids:
             return []
         return self.select_many(cls, ids, sort is not None)
-
-
-class Firm(Entity):
-
-    index = {
-             'generic': lambda e: [{'f1': 1, 'f2': 2, 'f3': 3}],
-             'special': lambda e: [
-                                   {'f4': e['name']},
-                                   {'f4': e['name']},
-                                   {'f4': e['name']},
-                                   {'f4': e['name']}
-                                   ]
-             }
-
-
-import MySQLdb
-
-
-conn = MySQLdb.connect(
-                       host='localhost',
-                       db='w3fu',
-                       user='root',
-                       passwd='12345678',
-                       use_unicode=True,
-                       charset='utf8'
-                       )
-
-from pprint import pprint
-
-db = Database(conn)
-#firm = Firm.new()
-#firm['name'] = 'Google'
-#firm['type'] = 10
-
-firm = Firm.find(db, 1)
-print(firm['name'])
-firm['name'] = 'Yandex'
-firm.save(db)
-conn.commit()

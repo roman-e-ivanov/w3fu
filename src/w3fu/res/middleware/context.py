@@ -18,10 +18,10 @@ class user(Middleware):
     def _handler(self, res, req, handler):
         res.user = None
         try:
-            session_id = req.cookie[config.session_name].value
-            session = Session.find(res.db, session_id)
-            if session:
-                res.user = User.find(session.user_id)
+            session_uuid = req.cookie[config.session_name].value
+            session = Session.find_valid(res.db, session_uuid)
+            if session is not None:
+                res.user = User.find(res.db, session['user_id'])
         except KeyError:
             pass
         resp = handler(res, req)
