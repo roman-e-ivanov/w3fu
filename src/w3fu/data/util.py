@@ -1,15 +1,17 @@
 from random import choice
 from string import ascii_letters, digits
 from hashlib import sha1
-from base64 import urlsafe_b64encode
-
-
-def b64encode(bytes):
-    return urlsafe_b64encode(bytes).rstrip('=')
+from base64 import urlsafe_b64encode, urlsafe_b64decode
 
 
 SALT_SIZE = 4
 
+
+def b64encode(b):
+    return urlsafe_b64encode(b).rstrip('=')
+
+def b64decode(s):
+    return urlsafe_b64decode(s + '=' * [0, 2, 1][len(s) % 3])
 
 def salted_hash(value, salted=None):
     if salted is None:

@@ -46,26 +46,27 @@ class Login(Resource):
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          form.src)))
-        user = User.find_by_login(self.db, form.data['login'])
+        user = User.find_login(self.db, form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          dict(error='auth', **form.src))))
-        session = Session.new(user_id=user.id)
+        session = Session.new(user.id)
         session.put(self.db)
         self.db.commit()
-        resp.set_cookie(config.session_name, session['uuid'], session.expires)
+        resp.set_cookie(config.session_name, session['uid'], session.expires)
         return resp.location(str(Url(req.scheme, req.host, '/home', {})))
 
     @storage()
+    @user()
     def delete(self, req):
         url = req.referer
         if url is None:
             url = str(Url(req.scheme, req.host))
         resp = Response(302).location(url)
-        if config.session_name in req.cookie:
-            Session.delete_uuid(self.db, req.cookie[config.session_name].value)
+        if self.session is not None:
+            self.session.remove(self.db)
             self.db.commit()
-            resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
+        resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
 
 
@@ -95,11 +96,10 @@ class Register(Resource):
         if User.login_exists(self.db, form.data['login']):
             return resp.location(str(Url(req.scheme, req.host, self.path(),
                                          dict(error='exists', **form.src))))
-        user = User.new(login=form.data['login'])
-        user.set_password(form.data['password'])
+        user = User.new(form.data['login'], form.data['password'])
         user.put(self.db)
-        session = Session.new(user_id=user.id)
+        session = Session.new(user.id)
         session.put(self.db)
         self.db.commit()
-        resp.set_cookie(config.session_name, session['uuid'], session.expires)
+        resp.set_cookie(config.session_name, session['uid'], session.expires)
         return resp.location(str(Url(req.scheme, req.host, '/home', {})))
