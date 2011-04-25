@@ -73,7 +73,7 @@
 		<w3fu:apply-templates select="day" /> 
 	</w3fu:template>
 	
-	<w3fu:template name="w3fu:days-names">
+	<w3fu:template name="w3fu:timetable-days-names">
 		<w3fu:param name="day" />
 			<w3fu:choose>
 				<w3fu:when test="$day = 0">Пн.</w3fu:when>
@@ -85,6 +85,15 @@
 				<w3fu:when test="$day = 6">Вс.</w3fu:when>
 			</w3fu:choose>
 	</w3fu:template>
+	
+	<w3fu:template name="w3fu:timetable-cell-type">
+		<w3fu:param name="type" />
+			<w3fu:choose>
+				<w3fu:when test="$type = 0">timetable-cell-off</w3fu:when>
+				<w3fu:when test="$type = 1">timetable-cell-free</w3fu:when>
+				<w3fu:when test="$type = 2">timetable-cell-busy</w3fu:when>		
+			</w3fu:choose>
+	</w3fu:template>
  
 	<w3fu:template match="day">
 		<table class="timetable">
@@ -94,7 +103,7 @@
 				</tr>
 				<tr>
 					<th colspan="2">
-						<w3fu:call-template name="w3fu:days-names">
+						<w3fu:call-template name="w3fu:timetable-days-names">
 							<w3fu:with-param name="day" select="time:gmtime(6,number($a))" />
 						</w3fu:call-template>
 					</th>
@@ -114,8 +123,14 @@
 			<th>
 				<w3fu:value-of select="time:gmtime(3,number($cell-start))" />:<w3fu:value-of select="time:gmtime(4,number($cell-start))" />
 			</th>
-			<td><w3fu:value-of select="type" /></td>
-																	
+			<td>
+				<w3fu:attribute name="class">									
+					<w3fu:call-template name="w3fu:timetable-cell-type">
+						<w3fu:with-param name="type" select="type" />
+					</w3fu:call-template>
+				</w3fu:attribute>
+				<a href=""><w3fu:value-of select="type" /></a>
+			</td>																	
 		</tr>
 	</w3fu:template>
 

@@ -44,11 +44,11 @@
     div.datepicker-container {
     	font-size: 10pt
     }
-    table.datepicker-calendar, table.timetable {
+    table.datepicker-calendar {
     	border-collapse: collapse;   			
     }
     
-    table.datepicker-calendar td, table.timetable td {
+    table.datepicker-calendar td {
     	border:1px solid #ffffff;
 		padding: 2px 6px;
 		cursor: pointer;
@@ -61,7 +61,7 @@
 		padding: 2px 6px;
 		cursor: default;
     }
-.datepicker-next, .datepicker-prev {cursor:pointer;}
+	.datepicker-next, .datepicker-prev {cursor:pointer;}
     
     input.datepicker-day, input.datepicker-month, input.datepicker-year {border:1px solid #444444;}
 
@@ -159,14 +159,21 @@
 	table.timetable td {
     	border:1px solid #ffffff;
 		padding: 2px 6px;
-		cursor: pointer;
     }
     
     table.timetable th {
     	border:1px solid #ffffff;
     	background-color:#9999cc;
     	font-weight:bold;
-		padding: 2px 6px;
-		cursor: default;
+		padding: 2px 6px;		
     }
+    
+    td.timetable-cell-free {background-color:#99cc99; cursor: pointer}
+	td.timetable-cell-free:hover {background-color:#ccffcc;}
+	
+	td.timetable-cell-busy {background-color:#cc9999;}
+	/*td.timetable-cell-busy:hover {background-color:#ffcccc;}*/
+	
+	td.timetable-cell-off {background-color:#cccccc; color:#888888;}
+	/*td.timetable-cell-off:hover {background-color:#eeeeee; color:#444444;}*/
 	
