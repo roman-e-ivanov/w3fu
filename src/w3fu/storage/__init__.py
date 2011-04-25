@@ -3,8 +3,8 @@ class StorageError(Exception): pass
 
 class Storage(object):
 
-    def __init__(self, factory):
-        self._factory = factory
+    def __init__(self, dbcls):
+        self._dbcls = dbcls
         self._pool = []
 
     def push(self, conn):
@@ -14,4 +14,4 @@ class Storage(object):
         try:
             return self._pool.pop()
         except IndexError:
-            return self._factory(self)
+            return self._dbcls()

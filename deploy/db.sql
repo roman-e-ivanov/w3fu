@@ -67,55 +67,99 @@ LOCK TABLES `nonces` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `sessions`
+-- Table structure for table `session`
 --
 
-DROP TABLE IF EXISTS `sessions`;
+DROP TABLE IF EXISTS `session`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `sessions` (
-  `id` char(22) NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
-  `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `expires` (`expires`)
-) ENGINE=MEMORY DEFAULT CHARSET=utf8;
+CREATE TABLE `session` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `data` blob NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `sessions`
+-- Dumping data for table `session`
 --
 
-LOCK TABLES `sessions` WRITE;
-/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+LOCK TABLES `session` WRITE;
+/*!40000 ALTER TABLE `session` DISABLE KEYS */;
+/*!40000 ALTER TABLE `session` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `users`
+-- Table structure for table `session_index`
 --
 
-DROP TABLE IF EXISTS `users`;
+DROP TABLE IF EXISTS `session_index`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
+CREATE TABLE `session_index` (
+  `id` int(10) unsigned NOT NULL,
+  `uid` char(22) NOT NULL,
+  `expires` int(10) unsigned NOT NULL,
+  UNIQUE KEY `uid` (`uid`),
+  KEY `expires` (`expires`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session_index`
+--
+
+LOCK TABLES `session_index` WRITE;
+/*!40000 ALTER TABLE `session_index` DISABLE KEYS */;
+/*!40000 ALTER TABLE `session_index` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `login` (`login`)
+  `data` blob NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `user`
 --
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'testuser','1234VfqPs7QDdc7FX1beaKKGLOtwLkE');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'{\"login\":\"testuser\",\"password\":\"IhPNv_Nn7qEQXcjE4JX-RU2YLRx_Kd0\"}');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_index`
+--
+
+DROP TABLE IF EXISTS `user_index`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_index` (
+  `id` int(10) unsigned NOT NULL,
+  `login` varchar(32) NOT NULL,
+  UNIQUE KEY `login` (`login`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_index`
+--
+
+LOCK TABLES `user_index` WRITE;
+/*!40000 ALTER TABLE `user_index` DISABLE KEYS */;
+INSERT INTO `user_index` VALUES (1,'testuser');
+/*!40000 ALTER TABLE `user_index` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -127,4 +171,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-02-24 15:14:30
+-- Dump completed on 2011-04-22 12:13:57

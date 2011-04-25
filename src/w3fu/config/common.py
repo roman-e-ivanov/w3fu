@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 xslt_ext_prefix = 'http://w3fu/'
 
 cli_http_host = 'localhost'
@@ -14,4 +12,4 @@ conn_user = 'root'
 conn_passwd = '12345678'
 
 session_name = 'u'
-session_ttl = timedelta(days=1)
+session_ttl = 3600 * 24
