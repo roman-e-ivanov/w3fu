@@ -33,11 +33,8 @@ class Form(object):
         self.data = {}
         self._process()
 
-    def content(self):
-        return {
-                'values': self.src,
-                'errors': self.err
-                }
+    def dump(self):
+        return {'source': self.src, 'errors': self.err}
 
     def _process(self):
         for name, arg in self.args.iteritems():

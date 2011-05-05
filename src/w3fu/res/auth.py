@@ -32,7 +32,7 @@ class Login(Resource):
         form = LoginForm(req.query)
         error = form.src.get('error')
         resp = Response(200, {})
-        resp.content['form'] = form.content()
+        resp.content['form'] = form.dump()
         if error is None:
             return resp
         if error == 'auth':
@@ -79,7 +79,7 @@ class Register(Resource):
         form = RegisterForm(req.query)
         error = form.src.get('error')
         resp = Response(200, {})
-        resp.content['form'] = form.content()
+        resp.content['form'] = form.dump()
         if error is None:
             return resp
         if error == 'exists':
