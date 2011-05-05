@@ -1,7 +1,8 @@
+from datetime import datetime
+
 from w3fu import config
 from w3fu.res.middleware import Middleware
-from w3fu.domain.auth import User, Session
-
+from w3fu.domain.auth import Session
 
 class storage(Middleware):
 
@@ -13,20 +14,18 @@ class storage(Middleware):
             res.app.storage.push(res.db)
 
 
-class user(Middleware):
+class session(Middleware):
 
     def _handler(self, res, req, handler):
-        res.user = None
         res.session = None
         try:
-            session_uid = req.cookie[config.session_name].value
-            session = Session.find_valid_uid(res.db, session_uid)
+            uid = req.cookie[config.session_name].value
+            session = Session.find_valid_uid(res.db, uid=uid, time=datetime.utcnow())
             if session is not None:
                 res.session = session
-                res.user = User.find(res.db, session['user_id'])
         except KeyError:
             pass
         resp = handler(res, req)
-        if res.user is not None and resp.status == 200:
-            resp.content['user'] = res.user.dump()
+        if res.session is not None and resp.status == 200:
+            resp.content['session'] = res.session
         return resp
