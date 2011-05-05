@@ -1,16 +1,21 @@
 from lxml import etree
+from time import mktime
 
 
 def element(name, data):
-    def worker(root, name, data):
+    def worker(root, name, data, extend=True):
+        name = name.replace('_', '-')
         if isinstance(data, basestring):
-            etree.SubElement(root, name).text = data
+            if extend:
+                etree.SubElement(root, name).text = data
+            else:
+                root.set(name, data)
             return
         try:
             i = data.iteritems()
             e = etree.SubElement(root, name)
             for k, v in i:
-                worker(e, k, v)
+                worker(e, k, v, False)
             return
         except AttributeError:
             pass
@@ -20,7 +25,12 @@ def element(name, data):
             return
         except TypeError:
             pass
-        etree.SubElement(root, name).text = str(data)
+        if hasattr(data, 'timetuple'):
+            data = int(mktime(data.timetuple()))
+        if extend:
+            etree.SubElement(root, name).text = str(data)
+        else:
+            root.set(name, str(data))
     e = etree.Element(name)
     for k, v in data.iteritems():
         worker(e, k, v)
