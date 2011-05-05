@@ -41,7 +41,7 @@ class Login(Resource):
 
     @storage()
     def post(self, req):
-        form = LoginForm(req.query)
+        form = LoginForm(req.content)
         resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
@@ -88,7 +88,7 @@ class Register(Resource):
 
     @storage()
     def post(self, req):
-        form = RegisterForm(req.query)
+        form = RegisterForm(req.content)
         resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
