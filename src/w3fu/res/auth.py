@@ -31,10 +31,7 @@ class Login(Resource):
     def get(self, req):
         form = LoginForm(req.query)
         error = form.src.get('error')
-        resp = Response(200, {})
-        resp.content['form'] = form.dump()
-        if error is None:
-            return resp
+        resp = Response(200, {'form': form.dump()})
         if error == 'auth':
             resp.content['error'] = {'auth': {}}
         return resp
@@ -78,10 +75,7 @@ class Register(Resource):
     def get(self, req):
         form = RegisterForm(req.query)
         error = form.src.get('error')
-        resp = Response(200, {})
-        resp.content['form'] = form.dump()
-        if error is None:
-            return resp
+        resp = Response(200, {'form': form.dump()})
         if error == 'exists':
             resp.content['error'] = {'exists': {}}
         return resp
