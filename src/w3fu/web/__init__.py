@@ -1,6 +1,7 @@
 from urlparse import parse_qsl, urlunsplit
 from urllib import urlencode
 from Cookie import SimpleCookie, Morsel
+from cgi import FieldStorage
 
 
 class Application(object):
@@ -21,26 +22,14 @@ class Request(object):
     def __init__(self, app, env):
         self.app = app
         self._env = env
-        self._init_args()
-        self._init_headers()
-
-    def _init_args(self):
-        self.query = dict(parse_qsl(self._env.get('QUERY_STRING', ''), True))
-        self.content = dict(parse_qsl(self._content(), True))
-
-    def _init_headers(self):
-        self.method = self._env.get('REQUEST_METHOD', '').lower()
-        self.scheme = self._env.get('wsgi.url_scheme')
-        self.host = self._env.get('HTTP_HOST')
-        self.referer = self._env.get('HTTP_REFERER')
-        self.path = self._env.get('PATH_INFO', '')
-        self.cookie = SimpleCookie(self._env.get('HTTP_COOKIE', ''))
-
-    def _content(self):
-        content_length = int(self._env.get('CONTENT_LENGTH', '0'))
-        if content_length:
-            return self._env['wsgi.input'].read(content_length)
-        return ''
+        self.method = env.get('REQUEST_METHOD', '').lower()
+        self.scheme = env.get('wsgi.url_scheme')
+        self.host = env.get('HTTP_HOST')
+        self.referer = env.get('HTTP_REFERER')
+        self.path = env.get('PATH_INFO', '')
+        self.cookie = SimpleCookie(env.get('HTTP_COOKIE', ''))
+        self.fs = FieldStorage(fp=env['wsgi.input'], environ=env,
+                               keep_blank_values=True)
 
 
 STATUS_STRINGS = {

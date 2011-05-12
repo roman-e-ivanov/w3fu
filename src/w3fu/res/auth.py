@@ -29,7 +29,7 @@ class Login(Resource):
     @storage()
     @session()
     def get(self, req):
-        form = LoginForm(req.query)
+        form = LoginForm(req.fs)
         error = form.src.get('error')
         resp = Response(200, {'form': form.dump()})
         if error == 'auth':
@@ -38,7 +38,7 @@ class Login(Resource):
 
     @storage()
     def post(self, req):
-        form = LoginForm(req.content)
+        form = LoginForm(req.fs)
         resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),
@@ -73,7 +73,7 @@ class Register(Resource):
     @xml('register-html')
     @storage()
     def get(self, req):
-        form = RegisterForm(req.query)
+        form = RegisterForm(req.fs)
         error = form.src.get('error')
         resp = Response(200, {'form': form.dump()})
         if error == 'exists':
@@ -82,7 +82,7 @@ class Register(Resource):
 
     @storage()
     def post(self, req):
-        form = RegisterForm(req.content)
+        form = RegisterForm(req.fs)
         resp = Response(302)
         if form.err:
             return resp.location(str(Url(req.scheme, req.host, self.path(),

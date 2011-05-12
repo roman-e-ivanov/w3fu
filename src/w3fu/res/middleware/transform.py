@@ -21,7 +21,7 @@ class xml(Middleware):
 
     def _handler(self, res, req, handler):
         resp = handler(res, req)
-        t = None if 'no-xslt' in req.query else self._xslt
+        t = None if 'no-xslt' in req.fs else self._xslt
         ctype = 'application/xml' if t is None else 'text/html'
         if resp.status == 200:
             resp.ctype = ctype

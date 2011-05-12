@@ -47,12 +47,9 @@ class Resource(object):
     def run(self, req):
         method = req.method
         if method == 'post':
-            try:
-                overloaded = req.content['method']
-                if overloaded in OVERLOADABLE:
-                    method = overloaded
-            except KeyError:
-                pass
+            overloaded = req.fs.getfirst('method')
+            if overloaded in OVERLOADABLE:
+                method = overloaded
         try:
             handler = getattr(self, method)
         except AttributeError:

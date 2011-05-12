@@ -27,8 +27,8 @@ class Form(object):
 
     __metaclass__ = FormMeta
 
-    def __init__(self, src):
-        self.src = dict(src)
+    def __init__(self, fs):
+        self.src = dict([(k, fs.getfirst(k).decode('utf-8')) for k in fs.keys()])
         self.err = {}
         self.data = {}
         self._process()
