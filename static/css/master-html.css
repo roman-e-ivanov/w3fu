@@ -99,7 +99,7 @@
 	form.fast-login {
 		padding:10px 20px 20px 20px;
 	}
-	p {
+	form.fast-login p {
 		color:#666;
 	}
 	
@@ -131,6 +131,12 @@
 		font-size: 8pt;
 		text-align:right;
 		margin-top:1px;
+		display:block;
+		
+	}
+/*login form*/
+	
+	form.login {
 		
 	}
 	
@@ -141,10 +147,10 @@
 		border-bottom: 1px dashed #666;
 		cursor:pointer;
 	}
-	span.nodisplay {
+	.nodisplay {
 		display: none;
 	}
-	span.display {
+	.display {
 		display: inline;
 	}
 

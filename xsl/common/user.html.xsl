@@ -2,14 +2,14 @@
 	
 	<w3fu:template name="w3fu:user-not-login">
 	
-	<w3fu:if test="not(*/user)">	
+	<w3fu:if test="not(*/session)">	
 	
 		<div class="fast-login">
-		<a class="dropdown-button"><span>Войти</span></a>		
+		<a href="/login" class="display">Войти</a><span class="dropdown-button nodisplay">Войти</span>		
 		<div class="dropdown-content">
 			<form method="post" action="/login" class="fast-login">
 				<p class="fast-login">Логин</p><input type="text" name="login" maxlength="32" class="val-required val-login fast-login-def" /> 
-				<p class="fast-login">Пароль (<span class="display-toggle">показать</span>)</p><input type="password" name="password" maxlength="32" class="val-required val-password fast-login-def display-element" />
+				<p class="fast-login">Пароль <span class="display-toggle">676767</span></p><input type="password" name="password" maxlength="32" class="val-required val-password fast-login-def display-element" />
 				<p class="display"><span>&#160;</span><span class="display-monitor nodisplay"></span></p>
 				<p><input type="submit" class="button" value="ОК" /></p>
 			</form>
@@ -23,9 +23,9 @@
 	
 	<w3fu:template name="w3fu:user-login">	
 	
-	<w3fu:if test="*/user">
+	<w3fu:if test="*/session">
 		
-			<w3fu:value-of select="*/user/login" />
+			<w3fu:value-of select="*/session/@user-name" />
 			<form method="post" action="/login" class="exit-form">				
 				<input type="hidden" name="method" value="delete" /> 
 				<input type="submit" class="exit-button" value="Выход" />

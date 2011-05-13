@@ -25,7 +25,7 @@ $.dropdown = function (container, type) {
 			this.content.find('input.val-login').attr('value','').removeClass('fast-login-val').removeClass('fast-login-err').addClass('fast-login-def');
 			this.content.find('input.val-password').attr('value','').removeClass('fast-login-val').removeClass('fast-login-err').addClass('fast-login-def');
 			this.content.find('.display-monitor').text('').removeClass('display').addClass('nodisplay');
-			this.content.find('.display-toggle').text('показать');
+			this.content.find('.display-toggle').text('(показать)');
 			
 		}
 		

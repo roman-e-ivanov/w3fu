@@ -21,8 +21,8 @@ $.extend(
 						monitor.toggleClass('nodisplay');
 						monitor.toggleClass('display');
 						
-						if (toggle.text() == 'скрыть') {toggle.text('показать');}
-						else {toggle.text('скрыть');}
+						if (toggle.text() == '(скрыть)') {toggle.text('(показать)');}
+						else {toggle.text('(скрыть)');}
 					});
 					
 				});																		 

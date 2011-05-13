@@ -39,18 +39,17 @@
 						<w3fu:apply-templates select="*/nav" />
 					</div> -->
 
-					<div class="grid_16 l-main">
-						<form method="post" action="/login" class="validate">
-							<p>Вход</p>
-							<p>Логин:
-															
+					<div class="grid_16 l-main">						
+						<form method="post" action="/login" class="login">
+							
+								<p class="fast-login">Логин</p>							
 								<input type="text" name="login" maxlength="32">
 									<w3fu:attribute name="value">
-										<w3fu:value-of select="login/form/values/login" />
+										<w3fu:value-of select="login/form/source/@login" />
 									</w3fu:attribute>
 									
 									<w3fu:attribute name="class">									
-										<w3fu:text>val-required val-login </w3fu:text>						
+										<w3fu:text>val-required val-login fast-login-def </w3fu:text>						
 										<w3fu:call-template name="w3fu:login-status-class">
 											<w3fu:with-param name="status" select="login/form/errors/login" />
 										</w3fu:call-template>
@@ -59,23 +58,23 @@
 								<w3fu:call-template name="w3fu:login-status-msg">
 									<w3fu:with-param name="status" select="login/form/errors/login" />
 								</w3fu:call-template>
-							</p> 
-							<p>Пароль:
-								<input type="text" name="password" maxlength="32">
+							<p class="fast-login">Пароль <span class="display-toggle nodisplay">(показать)</span></p> 
+								<input type="password" name="password" maxlength="32">
 									<w3fu:attribute name="value">
 										<w3fu:value-of select="login/form/values/password" />
 									</w3fu:attribute>
 									<w3fu:attribute name="class">
+									<w3fu:text>val-required val-password fast-login-def display-element </w3fu:text>	
 										<w3fu:call-template name="w3fu:password-status-class">
 											<w3fu:with-param name="status" select="login/form/errors/password" />
 										</w3fu:call-template>
 									</w3fu:attribute>
 								</input>
-								<w3fu:call-template name="w3fu:login-status-msg">
+							<p class="display"><span>&#160;</span><span class="display-monitor nodisplay"></span></p>					
+							<p><input type="submit" class="button" value="ОК" /></p>
+							<w3fu:call-template name="w3fu:login-status-msg">
 									<w3fu:with-param name="status" select="login/form/errors/password" />
 								</w3fu:call-template>
-							</p>
-							<p><input type="submit" class="button" value="ОК" /></p>
 							 <w3fu:apply-templates select="login/error" />
 						</form>
 					</div>
