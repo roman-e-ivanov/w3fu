@@ -16,13 +16,13 @@ from w3fu.res.test import PlanJson, PlanXml, TestHtml
 from w3fu.res.auth import Login, Register
 from w3fu.res._openid import OpenIdAuth
 from w3fu.res.home import Home
+from w3fu.res.firms import FirmSearch, FirmShow, FirmAdmin
 
 
 controller = Controller([Index, Home,
-                         PlanJson, PlanXml, TestHtml,
-                         Login,
-                         Register,
-                         OpenIdAuth])
+                         Login, Register, OpenIdAuth,
+                         FirmSearch, FirmShow, FirmAdmin,
+                         PlanJson, PlanXml, TestHtml])
 
 xslt = XSLT(config.xsl_path, {
                               'time': _time,

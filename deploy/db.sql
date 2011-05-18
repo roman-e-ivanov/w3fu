@@ -43,6 +43,31 @@ LOCK TABLES `assocs` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `firm`
+--
+
+DROP TABLE IF EXISTS `firm`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `firm` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `owner_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `firm`
+--
+
+LOCK TABLES `firm` WRITE;
+/*!40000 ALTER TABLE `firm` DISABLE KEYS */;
+INSERT INTO `firm` VALUES (1,'Рога & Копыта',1);
+/*!40000 ALTER TABLE `firm` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `nonces`
 --
 
@@ -78,9 +103,10 @@ CREATE TABLE `session` (
   `uid` char(22) NOT NULL,
   `expires` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(10) unsigned NOT NULL,
-  `user_name` varchar(32) NOT NULL,
+  `user_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uid` (`uid`)
+  UNIQUE KEY `uid` (`uid`),
+  KEY `expires` (`expires`) USING BTREE
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -102,11 +128,11 @@ DROP TABLE IF EXISTS `user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `login` varchar(32) NOT NULL,
-  `password` varchar(32) NOT NULL,
+  `login` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,4 +154,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-05 17:04:18
+-- Dump completed on 2011-05-18 14:23:21
