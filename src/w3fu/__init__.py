@@ -15,9 +15,10 @@ from w3fu.res.index import Index
 from w3fu.res.test import PlanJson, PlanXml, TestHtml
 from w3fu.res.auth import Login, Register
 from w3fu.res._openid import OpenIdAuth
+from w3fu.res.home import Home
 
 
-controller = Controller([Index,
+controller = Controller([Index, Home,
                          PlanJson, PlanXml, TestHtml,
                          Login,
                          Register,
