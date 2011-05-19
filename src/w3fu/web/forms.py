@@ -55,10 +55,9 @@ class Arg(object):
 
     def process(self, src, err):
         try:
-            try:
-                value = src[self._name]
-            except KeyError:
-                raise ArgAbsent()
+            value = src.get(self._name)
+            if value is None:
+                raise ArgAbsent
             return self._process(value)
         except ArgAbsent as e:
             if self._default is not None:
@@ -90,12 +89,9 @@ class StrArg(Arg):
         if self._trim:
             s = value.strip()
         if not self._min_size <= len(s) <= self._max_size:
-            raise ArgSizeError()
-        try:
-            if not self._pattern.match(s):
-                raise ArgTypeError()
-        except AttributeError:
-            pass
+            raise ArgSizeError
+        if self._pattern and not self._pattern.match(s):
+            raise ArgTypeError
         return s
 
 
@@ -110,8 +106,8 @@ class IntArg(Arg):
         try:
             x = int(value)
         except ValueError:
-            raise ArgTypeError()
+            raise ArgTypeError
         if ((self._min is not None and x < self._min) or
             (self._max is not None and x > self._max)):
-            raise ArgRangeError()
+            raise ArgRangeError
         return x

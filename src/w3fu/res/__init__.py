@@ -50,8 +50,7 @@ class Resource(object):
             overloaded = req.fs.getfirst('method')
             if overloaded in OVERLOADABLE:
                 method = overloaded
-        try:
-            handler = getattr(self, method)
-        except AttributeError:
+        handler = getattr(self, method, None)
+        if handler is None:
             return Response(405)
         return handler(req)

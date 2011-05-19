@@ -19,13 +19,12 @@ class session(Middleware):
 
     def _handler(self, res, req, handler):
         res.session = None
-        try:
-            uid = req.cookie[config.session_name].value
-            session = Session.find_valid_uid(res.db, uid=uid, time=datetime.utcnow())
+        uid = req.cookie.get(config.session_name)
+        if uid is not None:
+            session = Session.find_valid_uid(res.db, uid=uid.value,
+                                             time=datetime.utcnow())
             if session is not None:
                 res.session = session
-        except KeyError:
-            pass
         resp = handler(res, req)
         if res.session is not None and resp.status == 200:
             resp.content['session'] = res.session
