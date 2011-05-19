@@ -4,6 +4,7 @@ from w3fu import config
 from w3fu.res.middleware import Middleware
 from w3fu.domain.auth import Session
 
+
 class storage(Middleware):
 
     def _handler(self, res, req, handler):
