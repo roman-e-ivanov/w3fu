@@ -4,11 +4,13 @@
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="common/nav.html.xsl" />
-
+	<w3fu:include href="common/errors.html.xsl" />
+	<w3fu:include href="common/user.html.xsl" />
+	
 	<w3fu:template match="/">
 		<html>
 			<head>
-			<title>Регистрация</title>
+			<title>Вход на сайт</title>
 			<w3fu:call-template name="w3fu:keywords">
 				<w3fu:with-param name="keywords" select="'войти, вход, залогиниться'" />
 			</w3fu:call-template>
@@ -21,43 +23,68 @@
 			</head>
 			
 			<body>
-				
-				<div class="l-header">
-					<p>Заголовок<br /><br /></p>
-
-					
+				<w3fu:call-template name="w3fu:statnav" />
+			
+				<div class="container_16">
+				<div class="grid_12 l-header">
+					<p>Заголовок</p>
+				</div>
+				<div class="grid_4 l-header">
+					<w3fu:call-template name="w3fu:user-login" />
 				</div>
 				
-				
-				<div class="l-main">
+				<div class="clear"></div>
 				 	
-					<div class="l-main-sidebar">
+					<!--<div class="l-main-sidebar">
 						<w3fu:apply-templates select="*/nav" />
-						<w3fu:call-template name="w3fu:statnav" />
-					</div>
+					</div> -->
 
-					<div class="l-main-content">
-						<form method="post" action="/register" class="validate">
-							<p>Регистрации</p>
-							<p>Логин:
-							<input type="text" name="password" class="text_login val-required"
-								maxlength="255" value="12345678" /></p>
-							<p>Пароль:
-							<input type="text" name="password" class="text_login val-required"
-								maxlength="255" value="12345678" /></p>
+					<div class="grid_16 l-main">						
+						<form method="post" action="/login" class="login">
 							
+								<p class="fast-login">Логин</p>							
+								<input type="text" name="login" maxlength="32">
+									<w3fu:attribute name="value">
+										<w3fu:value-of select="login/form/source/@login" />
+									</w3fu:attribute>
+									
+									<w3fu:attribute name="class">									
+										<w3fu:text>val-required val-login fast-login-def </w3fu:text>						
+										<w3fu:call-template name="w3fu:login-status-class">
+											<w3fu:with-param name="status" select="login/form/errors/login" />
+										</w3fu:call-template>
+									</w3fu:attribute>
+								</input>
+								<w3fu:call-template name="w3fu:login-status-msg">
+									<w3fu:with-param name="status" select="login/form/errors/login" />
+								</w3fu:call-template>
+							<p class="fast-login">Пароль <span class="display-toggle nodisplay">(показать)</span></p> 
+								<input type="password" name="password" maxlength="32">
+									<w3fu:attribute name="value">
+										<w3fu:value-of select="login/form/values/password" />
+									</w3fu:attribute>
+									<w3fu:attribute name="class">
+									<w3fu:text>val-required val-password fast-login-def display-element </w3fu:text>	
+										<w3fu:call-template name="w3fu:password-status-class">
+											<w3fu:with-param name="status" select="login/form/errors/password" />
+										</w3fu:call-template>
+									</w3fu:attribute>
+								</input>
+							<p class="display"><span>&#160;</span><span class="display-monitor nodisplay"></span></p>					
 							<p><input type="submit" class="button" value="ОК" /></p>
-							
-							
+							<w3fu:call-template name="w3fu:login-status-msg">
+									<w3fu:with-param name="status" select="login/form/errors/password" />
+								</w3fu:call-template>
+							 <w3fu:apply-templates select="login/error" />
 						</form>
 					</div>
+					<div class="clear"></div>
 
-				</div>
-
-				<div class="l-footer">
+				<div class="grid_16 l-footer">
 					<w3fu:call-template name="w3fu:footer" />
-					
-					
+				</div>
+				<div class="clear"></div>
+				<w3fu:call-template name="w3fu:user-not-login" />
 				</div>
 			</body>
 		</html>

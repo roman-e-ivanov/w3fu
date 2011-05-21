@@ -27,23 +27,23 @@ $.val = function (form, type) {
 		
 		this.showError = function(element){
 			
-			$(element).removeClass('fast-login-def');
-			$(element).removeClass('fast-login-val');
-			$(element).addClass('fast-login-err');
+			$(element).removeClass('def');
+			$(element).removeClass('val');
+			$(element).addClass('err');
 		}
 		
 		this.showValid = function(element){
 			
-			$(element).removeClass('fast-login-def');
-			$(element).removeClass('fast-login-err');
-			$(element).addClass('fast-login-val');
+			$(element).removeClass('def');
+			$(element).removeClass('err');
+			$(element).addClass('val');
 		}
 		
 		this.showDefault = function(element){
 			
-			$(element).removeClass('fast-login-val');
-			$(element).removeClass('fast-login-err');
-			$(element).addClass('fast-login-def');
+			$(element).removeClass('val');
+			$(element).removeClass('err');
+			$(element).addClass('def');
 		}		
 	}	
 }

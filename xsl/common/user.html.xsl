@@ -7,15 +7,15 @@
 		<div class="fast-login">
 		<a href="/login" class="display">Войти</a><span class="dropdown-button nodisplay">Войти</span>		
 		<div class="dropdown-content">
-			<form method="post" action="/login" class="fast-login">
-				<p class="fast-login">Логин</p><input type="text" name="login" maxlength="32" class="val-required val-login fast-login-def" /> 
-				<p class="fast-login">Пароль <span class="display-toggle">676767</span></p><input type="password" name="password" maxlength="32" class="val-required val-password fast-login-def display-element" />
-				<p class="display"><span>&#160;</span><span class="display-monitor nodisplay"></span></p>
-				<p><input type="submit" class="button" value="ОК" /></p>
-			</form>
-			<a href="/register">Зарегестрироваться</a>
-	<!-- 		<w3fu:apply-templates select="document('../conf/providers.xml')/*" /> -->
+			<div class="fast-login-container">
+				<form method="post" action="/login" class="login">
+					<w3fu:call-template name="w3fu:edit-login" /> 
+					<w3fu:call-template name="w3fu:edit-password" />
+					<p><input type="submit" class="button" value="ОК" /></p>
+				</form>
+				<a href="/register">Зарегестрироваться</a>
 			</div>
+		</div>
 		</div>
 		
 	</w3fu:if>

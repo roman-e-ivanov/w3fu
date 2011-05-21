@@ -6,13 +6,12 @@
 		doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" 
 		doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" />
 	
-	<w3fu:include href="../icons/icon.html.xsl" />
 	<w3fu:include href="../css/css.html.xsl" />
 	<w3fu:include href="../js/js.html.xsl" />
 
 	<w3fu:template name="w3fu:links">
 
-		<w3fu:call-template name="w3fu:icon" />
+		<link rel="shortcut" href="img/favicon.ico" />
 		<w3fu:call-template name="w3fu:css" />
 		<w3fu:call-template name="w3fu:js" />
 

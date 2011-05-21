@@ -1,14 +1,9 @@
-/*@import url("reset-html.css");*/
 @import url("reset960-html.css");
-/*@import url("double.column.fixed-html.css");*/
 @import url("nav-html.css");
 @import url("debugging.css");
 @import url("960-html.css");
 
-
-	.login-ok, .text_login, .text_reg, .login-argabsent, .password-ok, .password-argabsent {background:#f0f0f0; border:1px solid #909090;}
-	.login-argabsent, .password-argabsent {background:#ff9999;}
-     
+   
     .container_16 {
      	position: relative;
 		background: #fff url("/s/img/16_col.gif") repeat-y;
@@ -93,51 +88,83 @@
 	div.fast-login {
     	position:absolute;
   		top:0px; right:10px;
-  		text-align:right;
+  		text-align:right; 		
     }
     
-	form.fast-login {
+	div.fast-login-container {
 		padding:10px 20px 20px 20px;
 	}
-	form.fast-login p {
-		color:#666;
-	}
 	
-	p.fast-login {
-		font-size: 10pt;
-		margin:10px 0 4px 0;		
-	}
+/* common forms elements */	
 	
-	input.fast-login-def, input.fast-login-err, input.fast-login-val {		
-		font-size: 14pt;
-		padding:3px;
-		margin:0 0 0px 0;
+	input.def, input.err, input.val {		
+		font-size: 12pt;
+		padding:8px;
 		border:1px solid #909090;
+		width:442px;
 	}
 	
-	input.fast-login-def {
+	input.def {
 		background-color:#f0f0f0;
 	}
 	
-	input.fast-login-err {
+	input.err {
 		background-color:#ffcccc;
 	}
 	
-	input.fast-login-val {
+	input.val {
 		background-color:#ccffcc;
 	}
 	
-	p.display {
-		font-size: 8pt;
-		text-align:right;
-		margin-top:1px;
-		display:block;
+	form div.top-label {
+		margin:25px 0 4px 0;
+/*		border: 1px solid green;*/
 		
 	}
+	
+	form div.bottom-label {
+		margin:0;
+	/*	border: 1px solid green;*/
+		
+	}
+	
+	form div.title {
+		font-size: 12pt;
+		/*font-weight: bold;*/
+		display:inline;
+		/*border: 1px solid black;*/
+	
+	}
+	
+	form div.tip, form div.tip-error {
+		font-size: 8pt;
+	/*	border: 1px solid green;*/
+		float:right;
+		display:inline;				
+		padding:5px 0 0 0;
+	}
+	form div.tip-error {
+		color:red;
+	}
+	
+	form div.display-monitor {
+		font-size: 8pt;				
+	/*	border:1px solid black;*/
+		
+	}
+	
+	form div.error-display {
+		font-size: 8pt;
+		float:right;
+		display:inline;
+		color:red;
+	}
+	
 /*login form*/
 	
 	form.login {
-		
+		width:460px;
+		/*border:1px solid red;*/
 	}
 	
 /* password show/hide toggle */
