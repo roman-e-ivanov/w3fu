@@ -9,22 +9,18 @@ $.extend(
 					var monitor = $(this).find('.display-monitor');
 					var toggle =  $(this).find('.display-toggle');
 										
-					element.bind('keyup',function(){
-						monitor.text($(this).attr('value'));
-					});
+					element.bind('keyup',function(){monitor.text($(this).attr('value'));});
 					
-					element.bind('blur',function(){
-						monitor.find('span.password-nodisplay').text($(this).attr('value'));
-					});
+					element.bind('blur',function(){monitor.text($(this).attr('value'));});
 					
 					toggle.bind('click',function(){
+						element.focus();
 						monitor.toggleClass('nodisplay');
 						monitor.toggleClass('display');
 						
 						if (toggle.text() == '(скрыть)') {toggle.text('(показать)');}
 						else {toggle.text('(скрыть)');}
-					});
-					
+					});					
 				});																		 
 			}
 		}
