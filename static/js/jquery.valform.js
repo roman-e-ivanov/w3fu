@@ -68,7 +68,7 @@ $.extend($.val, {
 			regexp: {
 				email: /^[-0-9a-z!#$%&'*+\/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+\/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)+(?:museum|travel|(?:[a-z]{2,4}))$/i,
 				integer: /^-?\d+$/,
-				login: /^\s*[\w-]{4,32}\s*$/,
+				login: /^\s*[а-яА-Я\w\.-]{4,32}\s*$/,
 				password: /^[\x20-\x7e]{4,32}$/
 			},
 			
@@ -80,16 +80,16 @@ $.extend($.val, {
 						$(validator.form).submit(function(){return validator.submitForm();});						
 						
 						validator.email.bind('blur', function(){ validator.validateText(this, $.val.regexp.email);});
-						validator.email.bind('keyup',function(){ validator.validateText(this, $.val.regexp.email);});
+						validator.email.bind('keyup',function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.email);}});
 						
 						validator.login.bind('blur', function(){ validator.validateText(this, $.val.regexp.login);});
-						validator.login.bind('keyup', function(){ validator.validateText(this, $.val.regexp.login);});
+						validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
 						validator.password.bind('blur', function(){ validator.validateText(this, $.val.regexp.password);});
-						validator.password.bind('keyup', function(){ validator.validateText(this, $.val.regexp.password);});
+						validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
 															
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
-						validator.integer.bind('keyup', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});
+						validator.integer.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateInteger(this, $.val.regexp.integer,0,2999);}});
 						
 						validator.toggle.click(function(){ validator.validateToggle(this); });
 						
