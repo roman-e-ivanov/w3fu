@@ -145,7 +145,8 @@
 		font-style:italic;
 	}
 	form div.tip-error {
-		color:red;
+		background-color: red;
+		color:white;
 	}
 	
 	form div.display-monitor {

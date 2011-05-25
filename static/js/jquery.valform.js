@@ -20,7 +20,9 @@ $.val = function (form, type) {
 	this.integer = $(this.form).find($.val.valElements.integer);
 	this.toggle = $(this.form).find($.val.valElements.toggle);
 	this.login = $(this.form).find($.val.valElements.login);
+	this.loginTip = $(this.form).find($.val.valElements.loginTip);
 	this.password = $(this.form).find($.val.valElements.password);
+	this.passwordTip = $(this.form).find($.val.valElements.passwordTip);
 	this.showError = this.showValid = this.showDefault = function(){};
 	
 	if (type = 'fast-login') {
@@ -60,16 +62,15 @@ $.extend($.val, {
 				integer: "input.val-integer",
 				toggle: "input.val-toggle",
 				login: "input.val-login",
+				loginTip: ".val-login-tip",
 				password: "input.val-password",
-				passtogle: ".password-toggle",
-				passdisplay: ".password-display"
-				
+				passwordTip: ".val-password-tip"
 			},
 			regexp: {
 				email: /^[-0-9a-z!#$%&'*+\/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+\/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)+(?:museum|travel|(?:[a-z]{2,4}))$/i,
 				integer: /^-?\d+$/,
 				login: /^\s*[а-яА-Я\w\.-]{4,32}\s*$/,
-				password: /^[\x20-\x7e]{4,32}$/
+				password: /^[а-яА-Я\x20-\x7e]{4,32}$/
 			},
 			
 			prototype: {
@@ -78,21 +79,21 @@ $.extend($.val, {
 					(function (validator) {
 						
 						$(validator.form).submit(function(){return validator.submitForm();});						
-						
+					/*	
 						validator.email.bind('blur', function(){ validator.validateText(this, $.val.regexp.email);});
 						validator.email.bind('keyup',function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.email);}});
-						
-						validator.login.bind('blur', function(){ validator.validateText(this, $.val.regexp.login);});
+					*/	
+						validator.login.bind('blur', function(){ validator.showTip($.val.valElements.loginTip, validator.validateText(this, $.val.regexp.login));});
 						validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
-						validator.password.bind('blur', function(){ validator.validateText(this, $.val.regexp.password);});
+						validator.password.bind('blur', function(){ validator.showTip($.val.valElements.passwordTip, validator.validateText(this, $.val.regexp.password));});
 						validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
-															
+					/*										
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
 						validator.integer.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateInteger(this, $.val.regexp.integer,0,2999);}});
 						
 						validator.toggle.click(function(){ validator.validateToggle(this); });
-						
+					*/	
 					})(this);
 				},
 				validateText: function(element, regexp) {
@@ -123,6 +124,14 @@ $.extend($.val, {
 						else {this.showValid(element); return true; }
 					}
 					return true;
+				},
+				showTip:function(tipElement, valid) {
+					if (!valid) {
+						$(tipElement).removeClass('tip');
+						$(tipElement).addClass('tip-error'); }
+					else {
+						$(tipElement).removeClass('tip-error');
+						$(tipElement).addClass('tip'); }
 				},
 				submitForm:function(){
 					var send = true;
@@ -155,9 +164,9 @@ $.extend($.val, {
 					
 					return send;
 				},
-				showError: function(element) { this.showError(element); },				
+			/*	showError: function(element) { this.showError(element); },				
 				showValid: function(element) { this.showValid(element); },				
-				showDefault: function(element) { this.showValid(element); }				
+				showDefault: function(element) { this.showValid(element); }*/				
 			}
 		}
 );
