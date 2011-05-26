@@ -41,11 +41,11 @@
 			<div class="title">Пароль <span class="display-toggle nodisplay">(показать)</span></div>
 			<div>
 		 		<w3fu:attribute name="class">
-				<w3fu:if test="not(login/form/errors/password)">
+				<w3fu:if test="not(login/form/errors/password/argsizeerror)">
 					<w3fu:text>tip val-password-tip</w3fu:text>	
 				</w3fu:if>
 				
-				<w3fu:if test="login/form/errors/password">
+				<w3fu:if test="login/form/errors/password/argsizeerror">
 					<w3fu:text>tip-error val-password-tip</w3fu:text>	
 				</w3fu:if>			
 				</w3fu:attribute>
@@ -55,11 +55,11 @@
 		<input type="password" name="password" maxlength="32">
 			
 			<w3fu:attribute name="class">
-				<w3fu:if test="not(login/form/errors/password)">
+				<w3fu:if test="not(login/form/errors/password/argabsent)">
 					<w3fu:text>val-required val-password def display-element </w3fu:text>	
 				</w3fu:if>
 				
-				<w3fu:if test="login/form/errors/password">
+				<w3fu:if test="login/form/errors/password/argabsent">
 					<w3fu:text>val-required val-password err display-element </w3fu:text>	
 				</w3fu:if>			
 			</w3fu:attribute>
