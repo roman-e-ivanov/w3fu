@@ -4,6 +4,7 @@ from w3fu import config
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.context import storage, session
 from w3fu.res.middleware.transform import xml
+from w3fu.res.home import Home
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.util import Url
@@ -52,7 +53,7 @@ class Login(Resource):
         session.insert(self.db)
         self.db.commit()
         resp.set_cookie(config.session_name, session['uid'], session['expires'])
-        return resp.location(str(Url(req.scheme, req.host, '/home', {})))
+        return resp.location(str(Url(req.scheme, req.host, Home.path())))
 
     @storage()
     @session()
@@ -97,4 +98,4 @@ class Register(Resource):
         session.insert(self.db)
         self.db.commit()
         resp.set_cookie(config.session_name, session['uid']), session['expires']
-        return resp.location(str(Url(req.scheme, req.host, '/home', {})))
+        return resp.location(str(Url(req.scheme, req.host, Home.path())))
