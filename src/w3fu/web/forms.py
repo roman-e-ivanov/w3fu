@@ -82,15 +82,14 @@ class StrArg(Arg):
         self._trim = trim
         self._min_size = min_size
         self._max_size = max_size
-        if pattern is not None:
-            self._pattern = re.compile(pattern)
+        self._pattern = None if pattern is None else re.compile(pattern)
 
     def _process(self, value):
         if self._trim:
             s = value.strip()
         if not self._min_size <= len(s) <= self._max_size:
             raise ArgSizeError
-        if self._pattern and not self._pattern.match(s):
+        if self._pattern is not None and not self._pattern.match(s):
             raise ArgTypeError
         return s
 
