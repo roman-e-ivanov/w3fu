@@ -3,11 +3,11 @@ $.extend(
 		$.fn, {
 			valForm : function (type) {
 			
-				if (!$(this).length) {return;}
+				if (!$(this).length) {return;}				
 				
-				$(this).each (function() {
+				$(this).each (function() {					
 					var val = new $.val(this, type);			
-					val.init();								
+					val.init();
 				}); 
 			}
 		}
@@ -83,10 +83,10 @@ $.extend($.val, {
 						validator.email.bind('blur', function(){ validator.validateText(this, $.val.regexp.email);});
 						validator.email.bind('keyup',function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.email);}});
 					*/	
-						validator.login.bind('blur', function(){ validator.showTip($.val.valElements.loginTip, validator.validateText(this, $.val.regexp.login));});
+						validator.login.bind('blur', function(){ validator.showTip(validator.loginTip, validator.validateText(this, $.val.regexp.login));});
 						validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
-						validator.password.bind('blur', function(){ validator.showTip($.val.valElements.passwordTip, validator.validateText(this, $.val.regexp.password));});
+						validator.password.bind('blur', function(){ validator.showTip(validator.passwordTip, validator.validateText(this, $.val.regexp.password));});
 						validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
 					/*										
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
@@ -94,6 +94,7 @@ $.extend($.val, {
 						
 						validator.toggle.click(function(){ validator.validateToggle(this); });
 					*/	
+						
 					})(this);
 				},
 				validateText: function(element, regexp) {
