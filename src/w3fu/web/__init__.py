@@ -32,17 +32,15 @@ class Request(object):
                                keep_blank_values=True)
 
 
-STATUS_STRINGS = {
-                  200: '200 OK',
+STATUS_STRINGS = {200: '200 OK',
                   301: '301 Moved Permanently',
                   302: '302 Found',
                   304: '304 Not Modified',
-                  403: '404 Forbidden',
+                  403: '403 Forbidden',
                   404: '404 Not Found',
                   405: '405 Method Not Allowed',
                   500: '500 Internal Server Error',
-                  503: '503 Service Unavailable'
-                  }
+                  503: '503 Service Unavailable'}
 
 
 class Response(object):
