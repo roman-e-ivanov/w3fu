@@ -13,9 +13,9 @@ from w3fu.domain.auth import User, Session
 
 class AuthForm(Form):
 
-    login = StrArg('login', pattern='^[\w-]+$',
+    login = StrArg('login', pattern='^[\wа-яА-Я\._-]+$',
                    min_size=4, max_size=32)
-    password = StrArg('password', pattern='^[\x20-\x7e]+$', clear=True,
+    password = StrArg('password', pattern='^[а-яА-Я\x20-\x7e]+$', clear=True,
                       min_size=4, max_size=32)
 
 
