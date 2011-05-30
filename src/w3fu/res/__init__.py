@@ -1,5 +1,8 @@
 from re import compile
+from urlparse import urlunsplit
+from urllib import urlencode
 
+from w3fu import config
 from w3fu.web import Response
 
 
@@ -33,13 +36,19 @@ OVERLOADABLE = frozenset(('put', 'delete'))
 
 class Resource(object):
 
+    _secure = False
+
     @classmethod
     def name(cls):
         return cls.__name__.lower()
 
     @classmethod
-    def path(cls, *args, **kwargs):
-        return cls.pattern.format(*args, **kwargs)
+    def url(cls, query={}, **kwargs):
+        scheme = 'https' if cls._secure else 'http'
+        path = cls.pattern.format(**kwargs)
+        return urlunsplit((scheme, config.domain, path,
+                           urlencode([(k, v.encode('utf-8'))
+                                      for k, v in query.iteritems()]), ''))
 
     def __init__(self, app):
         self.app = app

@@ -3,7 +3,9 @@ from datetime import timedelta
 
 xslt_ext_prefix = 'http://w3fu/'
 
-cli_http_host = 'localhost'
+domain = 'localhost'
+
+cli_http_host = domain
 cli_request_method = 'GET'
 cli_path_info = '/register'
 cli_query_string = ''

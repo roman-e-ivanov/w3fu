@@ -1,6 +1,5 @@
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
-from w3fu.web.util import Url
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.context import storage, session
 from w3fu.res.middleware.transform import xml
@@ -45,12 +44,11 @@ class FirmsAdmin(Resource):
         resp = Response(302)
         form = FirmCreateForm(req.fs)
         if form.err:
-            return resp.location(str(Url(req.scheme, req.host, Home.path())))
+            return resp.location(Home.url())
         firm = Firm.new(name=form.data['name'], owner_id=self.session['user_id'])
         firm.insert(self.db)
         self.db.commit()
-        return resp.location(str(Url(req.scheme, req.host,
-                                     FirmAdmin.path(id=firm['id']))))
+        return resp.location(FirmAdmin.url(id=firm['id']))
 
 
 @bind('/admin/firms/{id}', id='\d+')
