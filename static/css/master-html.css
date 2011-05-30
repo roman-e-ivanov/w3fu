@@ -122,6 +122,15 @@
 		
 	}
 	
+	form div.bottom-label {
+		margin:2px 0 0 0;
+		font-size: 8pt;
+		text-align:right;
+		font-style:italic;
+	/*	border: 1px solid green;*/
+		
+	}	
+
 	form div.title {
 		font-size: 12pt;
 		/*font-weight: bold;*/

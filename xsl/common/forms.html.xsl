@@ -12,8 +12,8 @@
 				<w3fu:if test="login/form/errors/login/argsizeerror">
 					<w3fu:text>tip-error val-login-tip</w3fu:text>
 				</w3fu:if>										
-				</w3fu:attribute>
-				4-32 символа: буквы, цифры, ( - ) , ( _ ) , ( . )
+				</w3fu:attribute> 
+				<!-- 4-32 символа: буквы, цифры, ( - ) , ( _ ) , ( . )-->
 			</div>
 		</div>
 		<input type="text" name="login" maxlength="32">
@@ -32,6 +32,7 @@
 				</w3fu:if>										
 			</w3fu:attribute>
 		</input>
+		<div class="bottom-label">4-32 символа: буквы, цифры, ( - ) , ( _ ) , ( . )</div>
 		
 	</w3fu:template> 
 	
@@ -48,7 +49,7 @@
 					<w3fu:text>tip-error val-password-tip</w3fu:text>	
 				</w3fu:if>			
 				</w3fu:attribute>
-				4-32 символа: любые, кроме пробела
+				<!-- 4-32 символа: любые, кроме пробела -->
 			</div>
 		</div>
 		<input type="text" value="" class="val-required val-password def display-monitor" style="display: none;" />
@@ -63,7 +64,10 @@
 					<w3fu:text>val-required val-password err display-element </w3fu:text>	
 				</w3fu:if>			
 			</w3fu:attribute>
-		</input>		
+		</input>
+		<div class="bottom-label">
+			4-32 символа: любые, кроме пробела
+		</div>
 	</w3fu:template>
 
 </w3fu:stylesheet>

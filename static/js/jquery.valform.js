@@ -53,11 +53,7 @@ $.val = function (form, type) {
 }
 
 $.extend($.val, {			
-			msg: {
-				required: "This field is required.",
-				digits: "Please enter only digits.",
-				email: "Please enter a valid email address."				
-			},			
+						
 			valElements: {
 				required: "val-required",
 				email: "input.val-email",
@@ -166,10 +162,8 @@ $.extend($.val, {
 					})(this);
 					
 					return send;
-				},
-			/*	showError: function(element) { this.showError(element); },				
-				showValid: function(element) { this.showValid(element); },				
-				showDefault: function(element) { this.showValid(element); }*/				
+				}
+							
 			}
 		}
 );

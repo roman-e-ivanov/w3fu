@@ -1,8 +1,6 @@
 $(document).ready(function(){
-	
-	$("form.fast-login").valForm('fast-login');	
+		
 	$("form.login").valForm('fast-login');	
-	
 	$("form.login").display();
 		
 	
