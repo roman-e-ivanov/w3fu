@@ -32,7 +32,6 @@
 				</w3fu:if>										
 			</w3fu:attribute>
 		</input>
-		<div class="bottom-label">&#160;</div>
 		
 	</w3fu:template> 
 	
@@ -52,6 +51,7 @@
 				4-32 символа: любые, кроме пробела
 			</div>
 		</div>
+		<input type="text" value="" class="val-required val-password def display-monitor" style="display: none;" />
 		<input type="password" name="password" maxlength="32">
 			
 			<w3fu:attribute name="class">
@@ -63,10 +63,7 @@
 					<w3fu:text>val-required val-password err display-element </w3fu:text>	
 				</w3fu:if>			
 			</w3fu:attribute>
-		</input>
-		<div class="bottom-label">
-			<div class="display-monitor nodisplay"></div><span>&#160;</span>
-		</div>
+		</input>		
 	</w3fu:template>
 
 </w3fu:stylesheet>

@@ -32,6 +32,7 @@ $.val = function (form, type) {
 			$(element).removeClass('def');
 			$(element).removeClass('val');
 			$(element).addClass('err');
+			$(element).css('background', '#fff url("/s/img/icon_error.png") right no-repeat');
 		}
 		
 		this.showValid = function(element){
@@ -39,6 +40,7 @@ $.val = function (form, type) {
 			$(element).removeClass('def');
 			$(element).removeClass('err');
 			$(element).addClass('val');
+			$(element).css('background', '#fff url("/s/img/icon_success.png") right no-repeat');
 		}
 		
 		this.showDefault = function(element){
@@ -84,10 +86,10 @@ $.extend($.val, {
 						validator.email.bind('keyup',function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.email);}});
 					*/	
 						validator.login.bind('blur', function(){ validator.showTip(validator.loginTip, validator.validateText(this, $.val.regexp.login));});
-						validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
+					//	validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
 						validator.password.bind('blur', function(){ validator.showTip(validator.passwordTip, validator.validateText(this, $.val.regexp.password));});
-						validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
+					//	validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
 					/*										
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
 						validator.integer.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateInteger(this, $.val.regexp.integer,0,2999);}});
