@@ -57,10 +57,7 @@ class Login(Resource):
     @storage()
     @session()
     def delete(self, req):
-        url = req.referer
-        if url is None:
-            url = Index.url()
-        resp = Response(302).location(url)
+        resp = Response(302).location(req.referer or Index.url())
         if self.session is not None:
             Session.delete_uid(self.db, uid=self.session['uid'])
             self.db.commit()
