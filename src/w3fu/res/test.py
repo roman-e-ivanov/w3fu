@@ -27,8 +27,8 @@ PLAN_DATA = {
 
 class PlanForm(Form):
 
-    t_from = IntArg('from', default=0)
-    t_to = IntArg('to', default=0)
+    t_from = IntArg('from')
+    t_to = IntArg('to')
 
 
 class Plan(Resource):

@@ -38,6 +38,12 @@ class FirmCreateForm(Form):
 @bind('/admin/firms')
 class FirmsAdmin(Resource):
 
+    @xml()
+    @storage()
+    @session(required=True)
+    def get(self, req):
+        return Response(200, {'form': FirmCreateForm(req.fs).dump()})
+
     @storage()
     @session(required=True)
     def post(self, req):
@@ -56,7 +62,7 @@ class FirmAdmin(Resource):
 
     @xml()
     @storage()
-    @session()
+    @session(required=True)
     def get(self, req):
         firm = Firm.find(self.db, id=req.args['id'])
         if firm is None:

@@ -8,7 +8,6 @@ class ArgError(Exception):
         return cls.__name__.lower()
 
 
-class ArgAbsent(ArgError): pass
 class ArgSizeError(ArgError): pass
 class ArgTypeError(ArgError): pass
 class ArgRangeError(ArgError): pass
@@ -43,9 +42,8 @@ class Form(object):
 
 class Arg(object):
 
-    def __init__(self, name, default=None, clear=False):
+    def __init__(self, name, clear=False):
         self._name = name
-        self._default = default
         self._clear = clear
 
     def attach(self, name, cls):
@@ -57,20 +55,13 @@ class Arg(object):
         try:
             value = src.get(self._name)
             if value is None:
-                raise ArgAbsent
+                return None
             return self._process(value)
-        except ArgAbsent as e:
-            if self._default is not None:
-                return self._default
-            err[self._name] = {e.name(): {}}
         except ArgError as e:
             err[self._name] = {e.name(): {}}
         finally:
-            if self._clear:
-                try:
-                    del src[self._name]
-                except KeyError:
-                    pass
+            if self._clear and value is not None:
+                src[self._name] = ''
         return None
 
 

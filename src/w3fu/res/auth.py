@@ -31,12 +31,9 @@ class Login(Resource):
     @storage()
     @session()
     def get(self, req):
-        form = LoginForm(req.fs)
-        resp = Response(200, {})
-        if form.src:
-            resp.content['form'] = form.dump()
-            if form.src.get('error') == 'auth':
-                resp.content['error'] = {'auth': {}}
+        resp = Response(200, {'form': LoginForm(req.fs).dump()})
+        if req.fs.getfirst('error') == 'auth':
+            resp.content['error'] = {'auth': {}}
         return resp
 
     @storage()
@@ -71,12 +68,9 @@ class Register(Resource):
     @xml('register-html')
     @storage()
     def get(self, req):
-        form = RegisterForm(req.fs)
-        resp = Response(200, {})
-        if form.src:
-            resp.content['form'] = form.dump()
-            if form.src.get('error') == 'exists':
-                resp.content['error'] = {'exists': {}}
+        resp = Response(200, {'form': RegisterForm(req.fs).dump()})
+        if req.fs.getfirst('error') == 'exists':
+            resp.content['error'] = {'exists': {}}
         return resp
 
     @storage()
