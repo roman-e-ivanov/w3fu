@@ -16,13 +16,13 @@ $.extend(
 $.val = function (form, type) {
 	
 	this.form = form;
-	this.email = $(this.form).find($.val.valElements.email);
-	this.integer = $(this.form).find($.val.valElements.integer);
-	this.toggle = $(this.form).find($.val.valElements.toggle);
+	//this.email = $(this.form).find($.val.valElements.email);
+	//this.integer = $(this.form).find($.val.valElements.integer);
+	//this.toggle = $(this.form).find($.val.valElements.toggle);
 	this.login = $(this.form).find($.val.valElements.login);
-	this.loginTip = $(this.form).find($.val.valElements.loginTip);
+	$(this.login).data('msg', $(this.form).find($.val.valElements.loginMsg));
 	this.password = $(this.form).find($.val.valElements.password);
-	this.passwordTip = $(this.form).find($.val.valElements.passwordTip);
+	$(this.password).data('msg', $(this.form).find($.val.valElements.passwordMsg));
 	this.showError = this.showValid = this.showDefault = function(){};
 	
 	if (type = 'fast-login') {
@@ -32,7 +32,7 @@ $.val = function (form, type) {
 			$(element).removeClass('def');
 			$(element).removeClass('val');
 			$(element).addClass('err');
-			$(element).css('background', '#fff url("/s/img/icon_error.png") right no-repeat');
+			$($(element).data('msg')).text('Дебил');
 		}
 		
 		this.showValid = function(element){
@@ -40,7 +40,8 @@ $.val = function (form, type) {
 			$(element).removeClass('def');
 			$(element).removeClass('err');
 			$(element).addClass('val');
-			$(element).css('background', '#fff url("/s/img/icon_success.png") right no-repeat');
+			$($(element).data('msg')).text('Умничка');
+			
 		}
 		
 		this.showDefault = function(element){
@@ -48,6 +49,7 @@ $.val = function (form, type) {
 			$(element).removeClass('val');
 			$(element).removeClass('err');
 			$(element).addClass('def');
+			$($(element).data('msg')).text('');
 		}		
 	}	
 }
@@ -60,9 +62,9 @@ $.extend($.val, {
 				integer: "input.val-integer",
 				toggle: "input.val-toggle",
 				login: "input.val-login",
-				loginTip: ".val-login-tip",
+				loginMsg: ".val-login-msg",
 				password: "input.val-password",
-				passwordTip: ".val-password-tip"
+				passwordMsg: ".val-password-msg"
 			},
 			regexp: {
 				email: /^[-0-9a-z!#$%&'*+\/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+\/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)+(?:museum|travel|(?:[a-z]{2,4}))$/i,

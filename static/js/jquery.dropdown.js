@@ -22,14 +22,18 @@ $.dropdown = function (container, type) {
 	if (type == 'fast-login') {
 		
 		this.beforeShow = function() {			
-			this.content.find('input.val-login').attr('value','').removeClass('fast-login-val').removeClass('fast-login-err').addClass('fast-login-def');
-			this.content.find('input.val-password').attr('value','').removeClass('fast-login-val').removeClass('fast-login-err').addClass('fast-login-def');
-			this.content.find('.display-monitor').text('').removeClass('display').addClass('nodisplay');
-			this.content.find('.display-toggle').text('(показать)');			
+			var login = this.content.find('input.val-login');
+			var password = this.content.find('input.val-password');
+			$(login).val('').removeClass('val').removeClass('err').addClass('def');
+			$(password).val('').removeClass('val').removeClass('err').addClass('def').attr('name','password').css('display','inline');
+			this.content.find('input.display-monitor').val('').removeClass('val').removeClass('err').addClass('def').attr('name','').css('display','none');
+			this.content.find('.display-toggle').text('показать');
+			$($(login).data('msg')).text('');
+			$($(password).data('msg')).text('');
 		}
 		
 		this.afterShow = function() {
-			this.content.find('input').get(0).focus();
+			/*this.content.find('input').get(0).focus();*/
 		}
 		
 	}

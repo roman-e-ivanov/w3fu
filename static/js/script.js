@@ -17,8 +17,8 @@ $(document).ready(function(){
 	$("div.fast-login").find("a").toggleClass('nodisplay');
 	$("div.fast-login").find("a").toggleClass('display');
 	
-	$("form.login").find("span.display-toggle").toggleClass('nodisplay');
-	$("form.login").find("span.display-toggle").toggleClass('display');
+	$("form.login").find("div.display-toggle").toggleClass('nodisplay');
+	$("form.login").find("div.display-toggle").toggleClass('display');
 	
 	
 	$("table.timetable").timeTable();

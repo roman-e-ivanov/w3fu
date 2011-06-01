@@ -2,8 +2,7 @@
 @import url("nav-html.css");
 @import url("debugging.css");
 @import url("960-html.css");
-
-   
+ 
     .container_16 {
      	position: relative;
 		background: #fff url("/s/img/16_col.gif") repeat-y;
@@ -98,36 +97,40 @@
 /* common forms elements */	
 	
 	input.def, input.err, input.val {		
-		font-size: 12pt;
+		font-size: 10pt;
 		padding:8px;
+		font-weight:bold;
 		border:1px solid #909090;
-		width:442px;
+		width:342px;
+		background:#fff;
 	}
 	
 	input.def {
-		background-color:#f0f0f0;
+		background: #fff;
 	}
 	
 	input.err {
-		background-color:#ffcccc;
+		background:#fff url("/s/img/icon_error.png") right no-repeat;
 	}
 	
 	input.val {
-		background-color:#ccffcc;
+		background:#fff url("/s/img/icon_success.png") right no-repeat;
 	}
 	
 	form div.top-label {
 		margin:25px 0 4px 0;
-/*		border: 1px solid green;*/
+		width:360px;
+		/*border: 1px solid green;*/
 		
 	}
 	
 	form div.bottom-label {
 		margin:2px 0 0 0;
 		font-size: 8pt;
-		text-align:right;
-		font-style:italic;
-	/*	border: 1px solid green;*/
+		/*text-align:right;*/
+		/*font-style:italic;*/
+		color:#777;
+		/*border: 1px solid green;*/
 		
 	}	
 
@@ -135,35 +138,12 @@
 		font-size: 12pt;
 		/*font-weight: bold;*/
 		display:inline;
+		float:rleft;
 		/*border: 1px solid black;*/
-	
 	}
 	
-	form div.tip, form div.tip-error {
-		font-size: 8pt;
-	/*	border: 1px solid green;*/
-		float:right;
-		display:inline;				
-		padding:5px 0 0 0;
-		font-style:italic;
-	}
-	form div.tip-error {
-		background-color: red;
-		color:white;
-	}
 	
-	form div.display-monitor {
-		font-size: 8pt;				
-	/*	border:1px solid black;*/
-		
-	}
 	
-	form div.error-display {
-		font-size: 8pt;
-		float:right;
-		display:inline;
-		color:red;
-	}
 	
 /*login form*/
 	
@@ -175,9 +155,11 @@
 /* password show/hide toggle */
 
 	.display-toggle {
-		text-decoration: none; 
-		border-bottom: 1px dashed #666;
+		text-decoration:none; 
+		border-bottom:1px dashed #666;
 		cursor:pointer;
+		display:inline;
+		float:right;
 	}
 	.nodisplay {
 		display: none;
