@@ -13,23 +13,20 @@ $.extend(
 );
 
 $.dropdown = function (container, type) {	
+	
 	this.container = $(container);
 	this.content = this.container.find($.dropdown.elements.content);
 	this.button = this.container.find($.dropdown.elements.button);
 	this.display = false;
-	this.beforeShow = this.afterShow = this.beforeHide = this.afterHide = function(){};
+	this.beforeShow = this.afterShow = this.beforeHide = this.afterHide = function(){};	
 	
-	if (type == 'fast-login') {
+	if (type == 'login') {
 		
 		this.beforeShow = function() {			
-			var login = this.content.find('input.val-login');
-			var password = this.content.find('input.val-password');
-			$(login).val('').removeClass('val').removeClass('err').addClass('def');
-			$(password).val('').removeClass('val').removeClass('err').addClass('def').attr('name','password').css('display','inline');
-			this.content.find('input.display-monitor').val('').removeClass('val').removeClass('err').addClass('def').attr('name','').css('display','none');
-			this.content.find('.display-toggle').text('показать');
-			$($(login).data('msg')).text('');
-			$($(password).data('msg')).text('');
+		
+			var validator = this.content.find('form.login').data('validator');
+			validator.reset(validator.login);
+			validator.reset(validator.password);
 		}
 		
 		this.afterShow = function() {

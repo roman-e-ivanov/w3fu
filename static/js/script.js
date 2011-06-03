@@ -1,11 +1,9 @@
 $(document).ready(function(){
 		
-	$("form.login").valForm('fast-login');	
+	$("form.login").valForm('login');	
 	$("form.login").display();
-		
 	
-	$("div.fast-login").dropDown('fast-login');
-	
+	$("div.fast-login").dropDown('login');	
 	
 	$("div.popup1").dropDown();
 	$("div.popup1").datePicker();
@@ -17,9 +15,7 @@ $(document).ready(function(){
 	$("div.fast-login").find("a").toggleClass('nodisplay');
 	$("div.fast-login").find("a").toggleClass('display');
 	
-	$("form.login").find("div.display-toggle").toggleClass('nodisplay');
-	$("form.login").find("div.display-toggle").toggleClass('display');
-	
+	$("form.login").find("div.toggle-display").css('display','inline');
 	
 	$("table.timetable").timeTable();
 /*	$("div.popup2").dropDown();
