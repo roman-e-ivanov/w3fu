@@ -2,7 +2,13 @@
 @import url("nav-html.css");
 @import url("debugging.css");
 @import url("960-html.css");
- 
+	
+	a:visited {
+		color:black;
+	}
+	a:hover {
+		color:green;
+	} 
     .container_16 {
      	position: relative;
 		background: #fff url("/s/img/16_col.gif") repeat-y;
@@ -117,6 +123,15 @@
 		background:#fff url("/s/img/icon_success.png") right no-repeat;
 	}
 	
+	input.button-enter {
+		font-size: 12pt;
+		padding:3px 0;
+		width:80px;
+		margin-left:280px;
+		display:block;
+				
+	}
+	
 	form div.top-label {
 		margin:25px 0 4px 0;
 		width:360px;
@@ -138,27 +153,30 @@
 		font-size: 12pt;
 		/*font-weight: bold;*/
 		display:inline;
-		float:rleft;
 		/*border: 1px solid black;*/
 	}
 	
-	
-	
+	form div.error-auth {
+		padding:20px 0;
+		width:360px;
+		color:red;
+		text-align:center;
+	}
+		
 	
 /*login form*/
 	
 	form.login {
-		width:460px;
-		/*border:1px solid red;*/
+		width:580px;
 	}
 	
 /* password show/hide toggle */
 
-	.display-toggle {
+	.toggle-display, .toggle-hide {
 		text-decoration:none; 
 		border-bottom:1px dashed #666;
 		cursor:pointer;
-		display:inline;
+		display:none;
 		float:right;
 	}
 	.nodisplay {

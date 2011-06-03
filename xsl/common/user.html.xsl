@@ -11,9 +11,9 @@
 				<form method="post" action="/login" class="login">
 					<w3fu:call-template name="w3fu:edit-login" /> 
 					<w3fu:call-template name="w3fu:edit-password" />
-					<p><input type="submit" class="button" value="ОК" /></p>
+					<input type="submit" class="button-enter" value="Войти" />
+					<a href="/register">Зарегестрироваться</a>
 				</form>
-				<a href="/register">Зарегестрироваться</a>
 			</div>
 		</div>
 		</div>

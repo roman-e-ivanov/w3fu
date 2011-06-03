@@ -6,7 +6,8 @@ $.extend(
 				if (!$(this).length) {return;}				
 				
 				$(this).each (function() {					
-					var val = new $.val(this, type);			
+					var val = new $.val(this, type);
+					$(this).data('validator', val);
 					val.init();
 				}); 
 			}
@@ -25,14 +26,14 @@ $.val = function (form, type) {
 	$(this.password).data('msg', $(this.form).find($.val.valElements.passwordMsg));
 	this.showError = this.showValid = this.showDefault = function(){};
 	
-	if (type = 'fast-login') {
+	if (type == 'login') {
 		
 		this.showError = function(element){
 			
 			$(element).removeClass('def');
 			$(element).removeClass('val');
 			$(element).addClass('err');
-			$($(element).data('msg')).text('Дебил');
+			$($(element).data('msg')).text('Проверьте формат');
 		}
 		
 		this.showValid = function(element){
@@ -40,7 +41,7 @@ $.val = function (form, type) {
 			$(element).removeClass('def');
 			$(element).removeClass('err');
 			$(element).addClass('val');
-			$($(element).data('msg')).text('Умничка');
+			$($(element).data('msg')).text('Хорошая работа!');
 			
 		}
 		
@@ -83,10 +84,10 @@ $.extend($.val, {
 						validator.email.bind('blur', function(){ validator.validateText(this, $.val.regexp.email);});
 						validator.email.bind('keyup',function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.email);}});
 					*/	
-						validator.login.bind('blur', function(){ validator.showTip(validator.loginTip, validator.validateText(this, $.val.regexp.login));});
+						validator.login.bind('blur', function(){ validator.validateLogin(this);});
 					//	validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
-						validator.password.bind('blur', function(){ validator.showTip(validator.passwordTip, validator.validateText(this, $.val.regexp.password));});
+						validator.password.bind('blur', function(){ validator.validatePassword(this);});
 					//	validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
 					/*										
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
@@ -97,12 +98,22 @@ $.extend($.val, {
 						
 					})(this);
 				},
+				reset: function(element) {
+					$(element).val('');
+					this.showDefault(element);
+				},
+				validatePassword: function(element) {
+					 return this.validateText(element, $.val.regexp.password);
+				},
+				validateLogin: function(element) {
+					 return this.validateText(element, $.val.regexp.login);
+				},
 				validateText: function(element, regexp) {
-					if (element.value == ""){
+					if ($(element).val() == ""){
 						if ($(element).hasClass($.val.valElements.required)) {this.showError(element); return false;}	
 						else  {this.showDefault(element); return true;}
 					}
-					if (regexp.test(element.value)) {this.showValid(element); return true;}
+					if (regexp.test($(element).val())) {this.showValid(element); return true;}
 					
 					this.showError(element); return false;							
 				},				
@@ -126,19 +137,11 @@ $.extend($.val, {
 					}
 					return true;
 				},
-				showTip:function(tipElement, valid) {
-					if (!valid) {
-						$(tipElement).removeClass('tip');
-						$(tipElement).addClass('tip-error'); }
-					else {
-						$(tipElement).removeClass('tip-error');
-						$(tipElement).addClass('tip'); }
-				},
 				submitForm:function(){
 					var send = true;
 					(function (validator) {
 						
-						validator.email.each(function(){
+				/*		validator.email.each(function(){
 							if (!validator.validateText(this,$.val.regexp.email)){send = false;}
 						});
 						
@@ -149,17 +152,17 @@ $.extend($.val, {
 						validator.toggle.each(function(){
 							if (!validator.validateToggle(this)){send = false;}
 						});
-						
+			*/			
 						validator.login.each(function(){
-							if (!validator.validateText(this,$.val.regexp.login)){send = false;}
+							if (!validator.validateLogin(this)){send = false;}
 						});
 						
 						validator.password.each(function(){
-							if (!validator.validateText(this,$.val.regexp.password)){send = false;}
+							if (!validator.validatePassword(this)){send = false;}
 						});
 						
 						/*отладочная функция*/
-						if (!send) {$(validator.form).css('border','3px solid red');}
+						//if (!send) {$(validator.form).css('border','3px solid red');}
 						/*отладочная функция*/					
 					})(this);
 					
