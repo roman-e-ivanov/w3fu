@@ -57,6 +57,28 @@
 		</div>
 	</w3fu:template>
 	
+	<w3fu:template name="w3fu:edit-firm">	
+		<div class="top-label">
+			<div class="title">Название</div>
+		</div>
+		<input type="text" name="name" maxlength="32">
+			
+			<w3fu:attribute name="class">
+				<w3fu:if test="not(login/form/errors/password/argabsent)">
+					<w3fu:text>val-required val-firm def</w3fu:text>	
+				</w3fu:if>
+				
+				<w3fu:if test="login/form/errors/password/argabsent">
+					<w3fu:text>val-required val-firm err</w3fu:text>	
+				</w3fu:if>			
+			</w3fu:attribute>
+		</input>
+		<span class="val-firm-msg"></span>
+		<div class="bottom-label">
+			1-32 символа: любые
+		</div>
+	</w3fu:template>
+	
 	<w3fu:template name="w3fu:error-auth">
 		<div class="error-auth">
 			<w3fu:if test="login/error/auth">

@@ -12,7 +12,7 @@
 					<w3fu:call-template name="w3fu:edit-login" /> 
 					<w3fu:call-template name="w3fu:edit-password" />
 					<input type="submit" class="button-enter" value="Войти" />
-					<a href="/register">Зарегестрироваться</a>
+					<a href="/register">Зарегистрироваться</a>
 				</form>
 			</div>
 		</div>

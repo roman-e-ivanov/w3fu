@@ -20,6 +20,8 @@ $.val = function (form, type) {
 	//this.email = $(this.form).find($.val.valElements.email);
 	//this.integer = $(this.form).find($.val.valElements.integer);
 	//this.toggle = $(this.form).find($.val.valElements.toggle);
+	this.firm = $(this.form).find($.val.valElements.firm);
+	$(this.firm).data('msg', $(this.form).find($.val.valElements.firmMsg));
 	this.login = $(this.form).find($.val.valElements.login);
 	$(this.login).data('msg', $(this.form).find($.val.valElements.loginMsg));
 	this.password = $(this.form).find($.val.valElements.password);
@@ -65,13 +67,16 @@ $.extend($.val, {
 				login: "input.val-login",
 				loginMsg: ".val-login-msg",
 				password: "input.val-password",
-				passwordMsg: ".val-password-msg"
+				passwordMsg: ".val-password-msg",
+				firm:"input.val-firm",
+				firmMsg:".val-firm-msg"
 			},
 			regexp: {
 				email: /^[-0-9a-z!#$%&'*+\/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+\/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)+(?:museum|travel|(?:[a-z]{2,4}))$/i,
 				integer: /^-?\d+$/,
 				login: /^\s*[а-яА-Я\w\.-]{4,32}\s*$/,
-				password: /^[а-яА-Я\x20-\x7e]{4,32}$/
+				password: /^\s*[№а-яА-Я\x21-\x7e]{4,32}\s*$/,
+				firm: /^\s*[№а-яА-Я\x21-\x7e][№а-яА-Я\x20-\x7e]{0,31}\s*$/
 			},
 			
 			prototype: {
@@ -88,6 +93,7 @@ $.extend($.val, {
 					//	validator.login.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.login);}});
 						
 						validator.password.bind('blur', function(){ validator.validatePassword(this);});
+						validator.firm.bind('blur', function(){ validator.validateFirm(this);});
 					//	validator.password.bind('keyup', function(e){ if (e.keyCode != 9) {validator.validateText(this, $.val.regexp.password);}});
 					/*										
 						validator.integer.bind('blur', function(){ validator.validateInteger(this, $.val.regexp.integer,0,2999);});						
@@ -107,6 +113,9 @@ $.extend($.val, {
 				},
 				validateLogin: function(element) {
 					 return this.validateText(element, $.val.regexp.login);
+				},
+				validateFirm: function(element) {
+					 return this.validateText(element, $.val.regexp.firm);
 				},
 				validateText: function(element, regexp) {
 					if ($(element).val() == ""){
@@ -159,6 +168,10 @@ $.extend($.val, {
 						
 						validator.password.each(function(){
 							if (!validator.validatePassword(this)){send = false;}
+						});
+						
+						validator.firm.each(function(){
+							if (!validator.validateFirm(this)){send = false;}
 						});
 						
 						/*отладочная функция*/

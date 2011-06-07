@@ -3,6 +3,8 @@ $(document).ready(function(){
 	$("form.login").valForm('login');	
 	$("form.login").display();
 	
+	$("form.firm-create").valForm('login');	
+	
 	$("div.fast-login").dropDown('login');	
 	
 	$("div.popup1").dropDown();

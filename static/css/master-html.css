@@ -8,7 +8,12 @@
 	}
 	a:hover {
 		color:green;
-	} 
+	}
+	
+	li.с-nav-line {
+		font-size: 8pt;
+	}
+	 
     .container_16 {
      	position: relative;
 		background: #fff url("/s/img/16_col.gif") repeat-y;

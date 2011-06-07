@@ -38,7 +38,7 @@ class FirmCreateForm(Form):
 @bind('/admin/firms')
 class FirmsAdmin(Resource):
 
-    @xml()
+    @xml('firms-html')
     @storage()
     @session(required=True)
     def get(self, req):
