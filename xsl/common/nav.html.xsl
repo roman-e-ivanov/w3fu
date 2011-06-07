@@ -53,7 +53,7 @@
 				
 				
 			<li class="с-nav-line">
-					<a title="" href="/plans/1?from=1298884200&amp;to=1398884200">/plans/1</a>
+					<a title="" href="/admin/firms">/admin/firms</a>
 				</li>
 			
 			</ul>
@@ -78,7 +78,7 @@
 			</li>
 			
 			<li class="с-nav-line">
-					<a title="" href="/plans/1?from=1298884200&amp;to=1398884200&amp;no-xslt">/plans/1?no-xslt</a>
+					<a title="" href="/admin/firms?no-xslt">/admin/firms?no-xslt</a>
 			</li>
 			
 			</ul>

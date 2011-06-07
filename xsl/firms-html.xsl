@@ -31,14 +31,13 @@
 				<div class="clear"></div>
 				
 					<div class="grid_3 l-main"><br/></div>	
-					<div class="grid_10">						
+					<div class="grid_10">
+					<div>Создать компанию</div>						
 						
-						<form method="post" action="/login" class="login">												
-							<w3fu:call-template name="w3fu:edit-login" />
-							<w3fu:call-template name="w3fu:edit-password" />
-							<input type="submit" class="button-enter" value="Войти" />
-							<a href="/register">Зарегистрироваться</a>
-							<w3fu:call-template name="w3fu:error-auth" />
+						<form method="post" action="/admin/firms" class="firm-create">												
+							<w3fu:call-template name="w3fu:edit-firm" />
+							<input type="submit" class="button-enter" value="Создать" />
+							
 						</form>
 					</div>
 					<div class="grid_3 l-main"><br/></div>
