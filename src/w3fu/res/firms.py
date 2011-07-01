@@ -3,7 +3,6 @@ from w3fu.web.forms import Form, StrArg
 from w3fu.res import bind, Resource
 from w3fu.res.middleware.context import storage, session
 from w3fu.res.middleware.transform import xml
-from w3fu.res.home import Home
 from w3fu.domain.firms import Firm
 
 
@@ -24,7 +23,7 @@ class FirmPublic(Resource):
     @storage()
     @session()
     def get(self, req):
-        firm = Firm.find(self.db, id=req.args['id'])
+        firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:
             return Response(404)
         return Response(200, {'firm': firm})
@@ -51,9 +50,9 @@ class FirmsAdmin(Resource):
         form = FirmCreateForm(req.fs)
         if form.err:
             return resp.location(self.url(form.src))
-        firm = Firm.new(name=form.data['name'], owner_id=self.session['user_id'])
-        firm.insert(self.db)
-        self.db.commit()
+        firm = Firm.new(name=form.data['name'], owner_id=req.session['user_id'])
+        firm.insert(req.db)
+        req.db.commit()
         return resp.location(FirmAdmin.url(id=firm['id']))
 
 
@@ -64,7 +63,7 @@ class FirmAdmin(Resource):
     @storage()
     @session(required=True)
     def get(self, req):
-        firm = Firm.find(self.db, id=req.args['id'])
+        firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:
             return Response(404)
         return Response(200, {'firm': firm})

@@ -22,7 +22,7 @@ class OpenIdAuth(Resource):
 
     @storage()
     def post(self, req):
-        store = self.db.openidstore
+        store = req.db.openidstore
         session = {}
         consumer = Consumer(session, store)
         try:
@@ -32,5 +32,5 @@ class OpenIdAuth(Resource):
             return Response(401, 'Unauthorized')
         url = authrequest.redirectURL('http://localhost',
                                       return_to='http://localhost/profile')
-        self.db.commit()
+        req.db.commit()
         return Response(302).location(url)

@@ -42,12 +42,12 @@ class Login(Resource):
         resp = Response(302)
         if form.err:
             return resp.location(self.url(form.src))
-        user = User.find_login(self.db, login=form.data['login'])
+        user = User.find_login(req.db, login=form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             return resp.location(self.url(dict(error='auth', **form.src)))
         session = Session.new(user)
-        session.insert(self.db)
-        self.db.commit()
+        session.insert(req.db)
+        req.db.commit()
         resp.set_cookie(config.session_name, session['uid'], session['expires'])
         return resp.location(Home.url())
 
@@ -55,9 +55,9 @@ class Login(Resource):
     @session()
     def delete(self, req):
         resp = Response(302).location(req.referer or Index.url())
-        if self.session is not None:
-            Session.delete_uid(self.db, uid=self.session['uid'])
-            self.db.commit()
+        if req.session is not None:
+            Session.delete_uid(req.db, uid=req.session['uid'])
+            req.db.commit()
         resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -80,10 +80,10 @@ class Register(Resource):
         if form.err:
             return resp.location(self.url(form.src))
         user = User.new(form.data['login'], form.data['password'])
-        if not user.insert(self.db):
+        if not user.insert(req.db):
             return resp.location(self.url(dict(error='exists', **form.src)))
         session = Session.new(user)
-        session.insert(self.db)
-        self.db.commit()
+        session.insert(req.db)
+        req.db.commit()
         resp.set_cookie(config.session_name, session['uid']), session['expires']
         return resp.location(Home.url())

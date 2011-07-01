@@ -9,11 +9,11 @@ from w3fu.domain.auth import Session
 class storage(Middleware):
 
     def _handler(self, res, req, handler):
-        res.db = res.app.storage.pull()
+        req.db = res.app.storage.pull()
         try:
             return handler(res, req)
         finally:
-            res.app.storage.push(res.db)
+            res.app.storage.push(req.db)
 
 
 class session(Middleware):
@@ -22,14 +22,14 @@ class session(Middleware):
         self._required = required
 
     def _handler(self, res, req, handler):
-        res.session = None
+        req.session = None
         uid = req.cookie.get(config.session_name)
         if uid is not None:
-            res.session = Session.find_valid_uid(res.db, uid=uid.value,
+            req.session = Session.find_valid_uid(req.db, uid=uid.value,
                                              time=datetime.utcnow())
-        if self._required and res.session is None:
+        if self._required and req.session is None:
             return Response(403)
         resp = handler(res, req)
-        if res.session is not None and resp.status == 200:
-            resp.content['session'] = res.session
+        if req.session is not None and resp.status == 200:
+            resp.content['session'] = req.session
         return resp
