@@ -34,13 +34,23 @@ CREATE TABLE `assocs` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `assocs`
+-- Table structure for table `city`
 --
 
-LOCK TABLES `assocs` WRITE;
-/*!40000 ALTER TABLE `assocs` DISABLE KEYS */;
-/*!40000 ALTER TABLE `assocs` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `city`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `city` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `tz` varchar(255) NOT NULL DEFAULT 'Europe/Moscow',
+  `country` char(2) NOT NULL DEFAULT 'ru',
+  `region` varchar(255) NOT NULL,
+  `district` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=3017 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `firm`
@@ -54,18 +64,26 @@ CREATE TABLE `firm` (
   `name` varchar(255) NOT NULL,
   `owner_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `firm`
+-- Table structure for table `iprange`
 --
 
-LOCK TABLES `firm` WRITE;
-/*!40000 ALTER TABLE `firm` DISABLE KEYS */;
-INSERT INTO `firm` VALUES (1,'Рога & Копыта',1);
-/*!40000 ALTER TABLE `firm` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `iprange`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `iprange` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `city_id` int(10) unsigned NOT NULL,
+  `start` int(10) unsigned NOT NULL,
+  `end` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `start` (`start`),
+  KEY `end` (`end`)
+) ENGINE=InnoDB AUTO_INCREMENT=36375 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `nonces`
@@ -81,15 +99,6 @@ CREATE TABLE `nonces` (
   PRIMARY KEY (`url`,`timestamp`,`salt`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `nonces`
---
-
-LOCK TABLES `nonces` WRITE;
-/*!40000 ALTER TABLE `nonces` DISABLE KEYS */;
-/*!40000 ALTER TABLE `nonces` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `session`
@@ -111,15 +120,6 @@ CREATE TABLE `session` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `session`
---
-
-LOCK TABLES `session` WRITE;
-/*!40000 ALTER TABLE `session` DISABLE KEYS */;
-/*!40000 ALTER TABLE `session` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user`
 --
 
@@ -134,16 +134,6 @@ CREATE TABLE `user` (
   UNIQUE KEY `login` (`login`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user`
---
-
-LOCK TABLES `user` WRITE;
-/*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'testuser','Mq3eRLGsc-D3A1WtRsacQXESnBLA4Q0');
-/*!40000 ALTER TABLE `user` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -154,4 +144,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2011-05-18 14:23:21
+-- Dump completed on 2011-07-22 17:49:00
