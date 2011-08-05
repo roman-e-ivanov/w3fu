@@ -3,17 +3,15 @@ from datetime import datetime
 from w3fu import config
 from w3fu.web import Response
 from w3fu.res.middleware import Middleware
-from w3fu.domain.auth import Session
 
 
 class storage(Middleware):
 
     def _handler(self, res, req, handler):
-        req.db = res.app.storage.pull()
         try:
             return handler(res, req)
         finally:
-            res.app.storage.push(req.db)
+            res.app.db.free()
 
 
 class session(Middleware):
@@ -23,13 +21,13 @@ class session(Middleware):
 
     def _handler(self, res, req, handler):
         req.session = None
-        uid = req.cookie.get(config.session_name)
-        if uid is not None:
-            req.session = Session.find_valid_uid(req.db, uid=uid.value,
-                                             time=datetime.utcnow())
+        sid = req.cookie.get(config.session_name)
+        if sid is not None:
+            req.user = res.app.db.users.find_valid_session(sid.value,
+                                                           datetime.utcnow())
         if self._required and req.session is None:
             return Response(403)
         resp = handler(res, req)
-        if req.session is not None and resp.status == 200:
-            resp.content['session'] = req.session
+        if req.user is not None and resp.status == 200:
+            resp.content['user'] = req.user
         return resp

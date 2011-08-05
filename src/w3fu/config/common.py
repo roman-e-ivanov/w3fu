@@ -11,10 +11,9 @@ cli_path_info = '/register'
 cli_query_string = ''
 cli_http_cookie = ''
 
-conn_host = 'localhost'
-conn_db = 'w3fu'
-conn_user = 'root'
-conn_passwd = '12345678'
+db_host = 'localhost'
+db_port = 27017
+db_name = 'w3fu'
 
 session_name = 'u'
 session_ttl = timedelta(days=1)

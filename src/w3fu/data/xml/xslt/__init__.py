@@ -6,7 +6,7 @@ from w3fu import config
 
 class XSLT(object):
 
-    def __init__(self, root, extensions):
+    def __init__(self, extensions):
         for name, extension in extensions.iteritems():
             ns = etree.FunctionNamespace(config.xslt_ext_prefix + name)
             ns.prefix = name
@@ -15,8 +15,8 @@ class XSLT(object):
                     continue
                 ns[func] = getattr(extension, func)
         self._templates = {}
-        for name in os.listdir(root):
-            path = os.path.join(root, name)
+        for name in os.listdir(config.xsl_path):
+            path = os.path.join(config.xsl_path, name)
             if not os.path.isfile(path):
                 continue
             name, ext = os.path.splitext(name)

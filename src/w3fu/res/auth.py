@@ -9,7 +9,7 @@ from w3fu.res.home import Home
 from w3fu.res.index import Index
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
-from w3fu.domain.auth import User, Session
+from w3fu.storage.documents.auth import User, Session
 
 
 class AuthForm(Form):
@@ -42,22 +42,21 @@ class Login(Resource):
         resp = Response(302)
         if form.err:
             return resp.location(self.url(form.src))
-        user = User.find_login(req.db, login=form.data['login'])
+        user = self.app.db.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             return resp.location(self.url(dict(error='auth', **form.src)))
-        session = Session.new(user)
-        session.insert(req.db)
-        req.db.commit()
-        resp.set_cookie(config.session_name, session['uid'], session['expires'])
+        session = Session.new()
+        self.app.db.users.push_session(user, session)
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())
 
     @storage()
     @session()
     def delete(self, req):
         resp = Response(302).location(req.referer or Index.url())
-        if req.session is not None:
-            Session.delete_uid(req.db, uid=req.session['uid'])
-            req.db.commit()
+        sid = req.cookie.get(config.session_name)
+        if sid is not None:
+            self.app.db.users.pull_session(sid.value)
         resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -80,10 +79,9 @@ class Register(Resource):
         if form.err:
             return resp.location(self.url(form.src))
         user = User.new(form.data['login'], form.data['password'])
-        if not user.insert(req.db):
+        session = Session.new()
+        user.sessions = [session]
+        if not self.app.db.users.insert(user):
             return resp.location(self.url(dict(error='exists', **form.src)))
-        session = Session.new(user)
-        session.insert(req.db)
-        req.db.commit()
-        resp.set_cookie(config.session_name, session['uid']), session['expires']
+        resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())
