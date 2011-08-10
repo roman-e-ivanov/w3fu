@@ -1,11 +1,25 @@
 from w3fu.data.util import b64e
 
 
+class DocumentMeta(type):
+
+    def __init__(cls, name, bases, attrs):
+        pass
+
+
 class Document(dict):
+
+    @classmethod
+    def ensure_indexes(cls, storage):
+        pass
 
     @classmethod
     def new(cls, *args, **kwargs):
         return cls(*args, **kwargs)
+
+    @classmethod
+    def c(cls, storage):
+        return storage.db[cls.__name__.lower()]
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)

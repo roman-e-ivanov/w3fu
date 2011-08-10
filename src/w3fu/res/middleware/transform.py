@@ -6,8 +6,8 @@ from w3fu.data.xml import element
 
 class json(Middleware):
 
-    def _handler(self, res, req, handler):
-        resp = handler(res, req)
+    def _handler(self, res, app, req, handler):
+        resp = handler(res, app, req)
         if resp.status == 200:
             resp.ctype = 'application/json'
             resp.content = dumps(resp.content)
@@ -19,12 +19,12 @@ class xml(Middleware):
     def __init__(self, xslt=None):
         self._xslt = xslt
 
-    def _handler(self, res, req, handler):
-        resp = handler(res, req)
+    def _handler(self, res, app, req, handler):
+        resp = handler(res, app, req)
         t = None if 'no-xslt' in req.fs else self._xslt
         ctype = 'application/xml' if t is None else 'text/html'
         if resp.status == 200:
             resp.ctype = ctype
             e = element(res.name(), resp.content)
-            resp.content = res.app.xslt.transform(e, t)
+            resp.content = app.xslt.transform(e, t)
         return resp

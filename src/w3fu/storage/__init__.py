@@ -3,13 +3,13 @@ from pymongo import Connection
 from w3fu import config
 
 
-class Database(object):
+class Storage(object):
 
     def __init__(self, collections):
-        self._conn = Connection(config.db_host, config.db_port)
-        db = self._conn[config.db_name]
+        self._connection = Connection(config.db_host, config.db_port)
+        self.db = self._connection[config.db_name]
         for collection in collections:
-            setattr(self, collection.name(), collection(db))
+            collection.ensure_indexes(self)
 
     def free(self):
-        self._conn.end_request()
+        self._connection.end_request()

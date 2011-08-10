@@ -27,11 +27,11 @@ class Controller(object):
             match = rescls.cpattern.match(req.path)
             if match:
                 req.args = match.groupdict()
-                return rescls(app).run(req)
+                return rescls(app, req).run(app, req)
         return Response(404)
 
 
-OVERLOADABLE = frozenset(('put', 'delete'))
+OVERLOADABLE = frozenset(['put', 'delete'])
 
 
 class Resource(object):
@@ -50,10 +50,11 @@ class Resource(object):
                            urlencode([(k, v.encode('utf-8'))
                                       for k, v in query.iteritems()]), ''))
 
-    def __init__(self, app):
+    def __init__(self, app, req):
         self.app = app
+        self.req = req
 
-    def run(self, req):
+    def run(self, app, req):
         method = req.method
         if method == 'post':
             overloaded = req.fs.getfirst('method')
@@ -62,4 +63,4 @@ class Resource(object):
         handler = getattr(self, method, None)
         if handler is None:
             return Response(405)
-        return handler(req)
+        return handler(app, req)
