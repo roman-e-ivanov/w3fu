@@ -4,7 +4,7 @@ from pymongo.errors import DuplicateKeyError
 
 from w3fu import config
 from w3fu.storage.errors import storagemethod
-from w3fu.storage.documents import Document, Property, Container
+from w3fu.storage.documents import Document, Property, ListContainer
 from w3fu.data.util import b64e, salted_hash
 
 
@@ -22,8 +22,8 @@ class Session(Document):
 class User(Document):
 
     login = Property('login')
-    password = Property('password')
-    sessions = Container('sessions', Session)
+    password = Property('password', [])
+    sessions = ListContainer('sessions', Session, [])
 
     def check_password(self, password):
         return self.password == salted_hash(password, self.password)
@@ -35,7 +35,7 @@ class User(Document):
     @storagemethod
     def push_session(self, storage, session):
         self.c(storage).update({'_id': self.id},
-                              {'$push': {'sessions': session}})
+                               {'$push': {'sessions': session}})
 
     @classmethod
     @storagemethod

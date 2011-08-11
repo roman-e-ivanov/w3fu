@@ -3,7 +3,7 @@ from datetime import datetime
 
 from w3fu import config
 from w3fu.res import bind, Resource
-from w3fu.res.middleware.context import session
+from w3fu.res.middleware.context import user
 from w3fu.res.middleware.transform import xml
 from w3fu.res.home import Home
 from w3fu.res.index import Index
@@ -28,7 +28,7 @@ RegisterForm = AuthForm
 class Login(Resource):
 
     @xml('login-html')
-    @session()
+    @user(dump='xml')
     def get(self, app, req):
         resp = Response(200, {'form': LoginForm(req.fs).dump()})
         if req.fs.getfirst('error') == 'auth':
@@ -48,7 +48,6 @@ class Login(Resource):
         resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())
 
-    @session()
     def delete(self, app, req):
         resp = Response(302).location(req.referer or Index.url())
         sid = req.cookie.get(config.session_name)
