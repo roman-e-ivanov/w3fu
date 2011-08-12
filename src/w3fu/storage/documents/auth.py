@@ -34,27 +34,26 @@ class User(Document):
         return cls(login=login, password=salted_hash(password))
 
     @storagemethod
-    def push_session(self, storage, session):
-        self.c(storage).update({'_id': self.id},
-                               {'$push': {'sessions': session}})
+    def push_session(self, session):
+        self.c.update({'_id': self.id}, {'$push': {'sessions': session}})
 
     @classmethod
     @storagemethod
     def pull_session(cls, storage, id):
-        cls.c(storage).update({'sessions.id': id},
-                              {'$pull': {'sessions': {'id': id}}})
+        cls._c(storage).update({'sessions.id': id},
+                               {'$pull': {'sessions': {'id': id}}})
 
     @classmethod
     @storagemethod
     def ensure_indexes(cls, storage):
-        cls.c(storage).ensure_index('login', unique=True)
-        cls.c(storage).ensure_index('sessions.id')
+        cls._c(storage).ensure_index('login', unique=True)
+        cls._c(storage).ensure_index('sessions.id')
 
     @classmethod
     @storagemethod
     def insert(cls, storage, doc):
         try:
-            cls.c(storage).insert(doc, safe=True)
+            cls._c(storage).insert(doc, safe=True)
             return True
         except DuplicateKeyError:
             return False
@@ -62,11 +61,11 @@ class User(Document):
     @classmethod
     @storagemethod
     def find_login(cls, storage, login):
-        return cls.c(storage).find_one({'login': login}, as_class=cls)
+        return cls._c(storage).find_one({'login': login}, as_class=cls)
 
     @classmethod
     @storagemethod
     def find_valid_session(cls, storage, id, expires):
-        return cls.c(storage).find_one({'sessions.id': id,
-                                        'sessions.expires': {'$gt': expires}},
-                                       as_class=cls)
+        return cls._c(storage).find_one({'sessions.id': id,
+                                         'sessions.expires': {'$gt': expires}},
+                                        as_class=cls)

@@ -1,4 +1,5 @@
 from time import mktime
+from pymongo.dbref import DBRef
 
 from w3fu.data.util import b64e
 
@@ -26,8 +27,12 @@ class Document(dict):
         return cls(*args, **kwargs)
 
     @classmethod
-    def c(cls, storage):
-        return storage.db[cls.__name__.lower()]
+    def name(cls):
+        return cls.__name__.lower()
+
+    @classmethod
+    def _c(cls, storage):
+        return storage.db[cls.name()]
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
@@ -90,20 +95,39 @@ class Container(Property):
     def __get__(self, doc, owner):
         attr = super(Container, self).__get__(doc, owner)
         if self._name not in doc.ready:
-            for k, v in self._items(attr):
-                attr[k] = self._cls(v)
-            doc.ready.add(self._name)
+            attr = self._wrap(doc, attr)
+            self.__set__(doc, attr)
         return attr
 
     def __set__(self, doc, value):
         super(Container, self).__set__(doc, value)
         doc.ready.add(self._name)
 
+    def _make_embedded(self, doc, value):
+        embedded = self._cls(value)
+        embedded.c = doc.c
+        return embedded
+
+    def _wrap(self, doc, attr):
+        return self._make_embedded(doc, attr)
+
+    def _dump(self, attr, format):
+        return attr.dump(format)
+
+
+class Reference(Container):
+
+    def _wrap(self, doc, attr):
+        return self._make_embedded(doc, doc.c.database.dereference(attr))
+
+    def __set__(self, doc, value):
+        super(Container, self).__set__(doc, DBRef(value.name(), value.id))
+
 
 class ListContainer(Container):
 
-    def _items(self, attr):
-        return enumerate(attr)
+    def _wrap(self, doc, attr):
+        return [self._make_embedded(doc, v) for v in attr]
 
     def _dump(self, attr, format):
         return [doc.dump(format) for doc in attr]
@@ -111,8 +135,8 @@ class ListContainer(Container):
 
 class DictContainer(Container):
 
-    def _items(self, attr):
-        return attr.iteritems()
+    def _wrap(self, doc, attr):
+        return dict([(k, self._make_embedded(doc, v)) for k, v in attr])
 
     def _dump(self, attr, format):
-        return dict([(key, doc.dump(format)) for key, doc in attr])
+        return dict([(k, doc.dump(format)) for k, doc in attr])

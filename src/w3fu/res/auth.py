@@ -44,7 +44,7 @@ class Login(Resource):
         if user is None or not user.check_password(form.data['password']):
             return resp.location(self.url(dict(error='auth', **form.src)))
         session = Session.new()
-        user.push_session(app.storage, session)
+        user.push_session(session)
         resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())
 
