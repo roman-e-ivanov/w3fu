@@ -33,22 +33,10 @@ class Document(dict):
         super(Document, self).__init__(*args, **kwargs)
         self.ready = set()
 
-    @property
-    def id(self):
-        return self['_id']
-
-    @property
-    def b64id(self):
-        return b64e(self['_id'].binary)
-
-    @property
-    def ts(self):
-        return self['_id'].generation_time
-
     def dump(self, format):
-        doc = {} if self.get('_id') is None else {'id': self.b64id, 'ts': self.ts}
+        doc = {}
         for name, prop in self.props.iteritems():
-            value = prop.dump(self, format)
+            value = prop.dump(self, name, format)
             if value is not None:
                 doc[name] = value
         return doc
@@ -69,10 +57,28 @@ class Property(object):
     def __set__(self, doc, value):
         doc[self._name] = value
 
-    def dump(self, doc, format):
+    def dump(self, doc, name, format):
         if self._formats is not None and format not in self._formats:
             return None
-        return getattr(doc, self._name)
+        return self._dump(getattr(doc, name), format)
+
+    def _dump(self, attr, format):
+        return attr
+
+
+class Identity(Property):
+
+    def __init__(self, name='_id', formats=None):
+        super(Identity, self).__init__(name, formats)
+
+    def _dump(self, attr, format):
+        return b64e(attr.binary)
+
+
+class Timestamp(Property):
+
+    def _dump(self, attr, format):
+        return int(mktime(attr.timetuple()))
 
 
 class Container(Property):
@@ -99,10 +105,7 @@ class ListContainer(Container):
     def _items(self, attr):
         return enumerate(attr)
 
-    def dump(self, doc, format):
-        attr = super(Container, self).dump(doc, format)
-        if attr is None:
-            return None
+    def _dump(self, attr, format):
         return [doc.dump(format) for doc in attr]
 
 
@@ -111,8 +114,5 @@ class DictContainer(Container):
     def _items(self, attr):
         return attr.iteritems()
 
-    def dump(self, doc, format):
-        attr = super(Container, self).dump(doc, format)
-        if attr is None:
-            return None
+    def _dump(self, attr, format):
         return dict([(key, doc.dump(format)) for key, doc in attr])

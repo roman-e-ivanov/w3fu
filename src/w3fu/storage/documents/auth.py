@@ -4,14 +4,14 @@ from pymongo.errors import DuplicateKeyError
 
 from w3fu import config
 from w3fu.storage.errors import storagemethod
-from w3fu.storage.documents import Document, Property, ListContainer
+from w3fu.storage.documents import Document, Property, Identity, Timestamp, ListContainer
 from w3fu.data.util import b64e, salted_hash
 
 
 class Session(Document):
 
     id = Property('id')
-    expires = Property('expires')
+    expires = Timestamp('expires')
 
     @classmethod
     def new(cls):
@@ -21,6 +21,7 @@ class Session(Document):
 
 class User(Document):
 
+    id = Identity()
     login = Property('login')
     password = Property('password', [])
     sessions = ListContainer('sessions', Session, [])

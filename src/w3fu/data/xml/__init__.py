@@ -25,8 +25,6 @@ def element(name, data):
             return
         except TypeError:
             pass
-        if hasattr(data, 'timetuple'):
-            data = int(mktime(data.timetuple()))
         if extend:
             etree.SubElement(root, name).text = str(data)
         else:
