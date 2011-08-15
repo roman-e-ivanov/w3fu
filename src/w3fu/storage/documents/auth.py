@@ -26,6 +26,9 @@ class User(Document):
     password = Property('password', [])
     sessions = ListContainer('sessions', Session, [])
 
+    _indexes = [('login', {'unique': True}),
+                ('sessions.id', {})]
+
     def check_password(self, password):
         return self.password == salted_hash(password, self.password)
 
@@ -42,12 +45,6 @@ class User(Document):
     def pull_session(cls, storage, id):
         cls._c(storage).update({'sessions.id': id},
                                {'$pull': {'sessions': {'id': id}}})
-
-    @classmethod
-    @storagemethod
-    def ensure_indexes(cls, storage):
-        cls._c(storage).ensure_index('login', unique=True)
-        cls._c(storage).ensure_index('sessions.id')
 
     @classmethod
     @storagemethod

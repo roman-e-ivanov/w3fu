@@ -18,9 +18,12 @@ class Document(dict):
 
     __metaclass__ = DocumentMeta
 
+    _indexes = []
+
     @classmethod
     def ensure_indexes(cls, storage):
-        pass
+        for index, kwargs in cls._indexes:
+            cls._c(storage).ensure_index(index, **kwargs)
 
     @classmethod
     def new(cls, *args, **kwargs):
