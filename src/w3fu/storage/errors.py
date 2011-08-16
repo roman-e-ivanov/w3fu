@@ -1,4 +1,4 @@
-from pymongo.errors import PyMongoError, AutoReconnect
+from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
 
 
 class StorageError(Exception): pass
@@ -14,6 +14,8 @@ def storagemethod(handler):
                 if many:
                     raise StorageError(e)
                 many = True
+            except DuplicateKeyError:
+                return False
             except PyMongoError as e:
                 raise StorageError(e)
     return f

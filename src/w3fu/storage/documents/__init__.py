@@ -1,6 +1,7 @@
 from time import mktime
 from pymongo.dbref import DBRef
 
+from w3fu.storage.errors import storagemethod
 from w3fu.data.util import b64e
 
 
@@ -30,12 +31,18 @@ class Document(dict):
         return cls(*args, **kwargs)
 
     @classmethod
-    def name(cls):
+    def c_name(cls):
         return cls.__name__.lower()
 
     @classmethod
     def _c(cls, storage):
-        return storage.db[cls.name()]
+        return storage.db[cls.c_name()]
+
+    @classmethod
+    @storagemethod
+    def insert(cls, storage, doc, safe=True):
+        cls._c(storage).insert(doc, safe=safe)
+        return True
 
     def __init__(self, *args, **kwargs):
         super(Document, self).__init__(*args, **kwargs)
@@ -124,7 +131,7 @@ class Reference(Container):
         return self._make_embedded(doc, doc.c.database.dereference(attr))
 
     def __set__(self, doc, value):
-        super(Container, self).__set__(doc, DBRef(value.name(), value.id))
+        super(Container, self).__set__(doc, DBRef(value.c_name(), value.id))
 
 
 class ListContainer(Container):

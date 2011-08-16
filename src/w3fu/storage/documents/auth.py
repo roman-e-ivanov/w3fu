@@ -1,6 +1,5 @@
 from datetime import datetime
 from uuid import uuid4
-from pymongo.errors import DuplicateKeyError
 
 from w3fu import config
 from w3fu.storage.errors import storagemethod
@@ -45,15 +44,6 @@ class User(Document):
     def pull_session(cls, storage, id):
         cls._c(storage).update({'sessions.id': id},
                                {'$pull': {'sessions': {'id': id}}})
-
-    @classmethod
-    @storagemethod
-    def insert(cls, storage, doc):
-        try:
-            cls._c(storage).insert(doc, safe=True)
-            return True
-        except DuplicateKeyError:
-            return False
 
     @classmethod
     @storagemethod
