@@ -12,7 +12,7 @@ for line in sys.stdin:
         end = int(end)
     except ValueError:
         continue
-    cities.setdefault(ext_id, []).append((start, end))
+    cities.setdefault(ext_id, []).append({'a': start, 'b': end})
 for ext_id, ips in cities.iteritems():
     if not City.replace_ips(storage, ext_id, ips):
         print(ext_id)

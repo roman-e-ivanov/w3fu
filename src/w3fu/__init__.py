@@ -14,11 +14,13 @@ from w3fu.res.index import Index
 from w3fu.res.test import PlanJson, PlanXml, TestHtml
 from w3fu.res.auth import Login, Register
 from w3fu.res.home import Home
+from w3fu.res.cities import CitySuggest
 #from w3fu.res.firms import FirmsPublic, FirmPublic, FirmsAdmin, FirmAdmin
 
 
 controller = Controller([Index, Home,
                          Login, Register,
+                         CitySuggest,
 #                         FirmsPublic, FirmPublic, FirmsAdmin, FirmAdmin,
                          PlanJson, PlanXml, TestHtml])
 
