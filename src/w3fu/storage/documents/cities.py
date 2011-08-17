@@ -13,7 +13,7 @@ class City(Document):
     ips = Property('ips', [])
 
     _indexes = [('ext_id', {'unique': True}),
-               ('name_lc', {}),
+               ('pattern', {}),
                ('ips.a', {})]
 
     @classmethod
