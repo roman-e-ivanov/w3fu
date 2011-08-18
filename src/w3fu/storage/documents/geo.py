@@ -2,7 +2,17 @@ from w3fu.storage.errors import storagemethod
 from w3fu.storage.documents import Document, Property, Identity
 
 
-class City(Document):
+class IpRange(Document):
+
+    a = Property('a')
+    b = Property('b')
+
+    @classmethod
+    def new(cls, begin, end):
+        return cls(a=begin, b=end)
+
+
+class Place(Document):
 
     id = Identity()
     ext_id = Property('ext_id', [])
@@ -35,6 +45,6 @@ class City(Document):
 
     @classmethod
     @storagemethod
-    def find_name_prefix(cls, storage, prefix):
-        return cls._c(storage).find({'pattern': {'$regex': '^' + prefix.lower()}},
+    def find_pattern(cls, storage, pattern):
+        return cls._c(storage).find({'pattern': {'$regex': '^' + pattern.lower()}},
                                     as_class=cls).sort('pattern').limit(10)

@@ -1,18 +1,18 @@
 import sys
 
 from w3fu import storage
-from w3fu.storage.documents.cities import City
+from w3fu.storage.documents.geo import Place, IpRange
 
-cities = {}
+places = {}
 for line in sys.stdin:
-    (start, end, _, country, ext_id) = line.split('\t')[:5]
+    (begin, end, _, country, ext_id) = line.split('\t')[:5]
     try:
         ext_id = int(ext_id)
-        start = int(start)
+        begin = int(begin)
         end = int(end)
     except ValueError:
         continue
-    cities.setdefault(ext_id, []).append({'a': start, 'b': end})
-for ext_id, ips in cities.iteritems():
-    if not City.replace_ips(storage, ext_id, ips):
+    places.setdefault(ext_id, []).append(IpRange.new(begin, end))
+for ext_id, ips in places.iteritems():
+    if not Place.replace_ips(storage, ext_id, ips):
         print(ext_id)

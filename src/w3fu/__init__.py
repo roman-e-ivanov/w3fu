@@ -7,23 +7,23 @@ from w3fu.data.xml.xslt.extensions import _time
 
 from w3fu.storage import Storage
 from w3fu.storage.documents.auth import User
-from w3fu.storage.documents.cities import City
+from w3fu.storage.documents.geo import Place
 
 from w3fu.res import Controller
 from w3fu.res.index import Index
 from w3fu.res.test import PlanJson, PlanXml, TestHtml
 from w3fu.res.auth import Login, Register
 from w3fu.res.home import Home
-from w3fu.res.cities import CitySuggest
+from w3fu.res.geo import PlaceSuggest
 #from w3fu.res.firms import FirmsPublic, FirmPublic, FirmsAdmin, FirmAdmin
 
 
 controller = Controller([Index, Home,
                          Login, Register,
-                         CitySuggest,
+                         PlaceSuggest,
 #                         FirmsPublic, FirmPublic, FirmsAdmin, FirmAdmin,
                          PlanJson, PlanXml, TestHtml])
 
 xslt = XSLT({'time': _time})
-storage = Storage([User, City])
+storage = Storage([User, Place])
 app = Application(controller, storage, xslt)

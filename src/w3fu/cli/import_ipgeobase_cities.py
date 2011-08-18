@@ -2,7 +2,7 @@ import sys
 import codecs
 
 from w3fu import storage
-from w3fu.storage.documents.cities import City
+from w3fu.storage.documents.geo import Place
 
 
 for line in codecs.getreader('cp1251')(sys.stdin):
@@ -11,6 +11,6 @@ for line in codecs.getreader('cp1251')(sys.stdin):
         ext_id = int(ext_id)
     except ValueError:
         continue
-    city = City.new(ext_id, name, region, district)
-    if City.insert(storage, city):
+    place = Place.new(ext_id, name, region, district)
+    if Place.insert(storage, place):
         print('\t'.join([str(ext_id), name, region, district]))
