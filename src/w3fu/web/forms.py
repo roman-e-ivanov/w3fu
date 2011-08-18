@@ -43,22 +43,22 @@ class Form(object):
 
 class Arg(object):
 
-    def __init__(self, name, clear=False):
+    def __init__(self, name, default=None, clear=False):
         self._name = name
+        self._default = default
         self._clear = clear
 
     def process(self, src, err):
         try:
-            value = src.get(self._name)
-            if value is None:
-                return None
-            return self._process(value)
+            return self._process(src[self._name])
+        except KeyError:
+            return self._default
         except ArgError as e:
             err[self._name] = {e.name(): {}}
         finally:
-            if self._clear and value is not None:
+            if self._clear:
                 src[self._name] = ''
-        return None
+        return self._default
 
 
 class StrArg(Arg):
