@@ -57,7 +57,7 @@ class Arg(object):
             err[self._name] = {e.name(): {}}
         finally:
             if self._clear:
-                src[self._name] = ''
+                del src[self._name]
         return self._default
 
 
