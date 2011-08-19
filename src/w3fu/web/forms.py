@@ -56,7 +56,7 @@ class Arg(object):
         except ArgError as e:
             err[self._name] = {e.name(): {}}
         finally:
-            if self._clear:
+            if self._clear and self._name in src:
                 del src[self._name]
         return self._default
 
