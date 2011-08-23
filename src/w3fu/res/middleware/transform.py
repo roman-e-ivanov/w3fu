@@ -10,7 +10,7 @@ class json(Middleware):
         resp = handler(res, app, req)
         if resp.status == 200:
             resp.ctype = 'application/json'
-            resp.content = dumps(resp.content, indent=4, ensure_ascii=False)
+            resp.content = dumps(resp.content, indent=4, ensure_ascii=False).encode('utf-8')
         return resp
 
 
