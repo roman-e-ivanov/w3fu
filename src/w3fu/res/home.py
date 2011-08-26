@@ -7,7 +7,7 @@ from w3fu.res.middleware.transform import xml
 @bind('/home')
 class Home(Resource):
 
-    @xml()
+    @xml('home-html')
     @user(dump='xml')
     def get(self, app, req):
         return Response(200, {})

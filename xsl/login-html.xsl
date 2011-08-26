@@ -35,8 +35,12 @@
 						
 						<form method="post" action="/login" class="login">												
 							<w3fu:call-template name="w3fu:edit-login" />
+							<w3fu:call-template name="w3fu:val-login-msg" />
+							<w3fu:call-template name="w3fu:login-label" />
 							<w3fu:call-template name="w3fu:edit-password" />
-							<input type="submit" class="button-enter" value="Войти" />
+							<w3fu:call-template name="w3fu:val-password-msg" />
+							<w3fu:call-template name="w3fu:password-label" />
+							<input type="submit" class="button-enter-login" value="Войти" />
 							<a href="/register">Зарегистрироваться</a>
 							<w3fu:call-template name="w3fu:error-auth" />
 						</form>

@@ -3,6 +3,9 @@
 @import url("debugging.css");
 @import url("960-html.css");
 	
+	a {
+		cursor:pointer;
+	}
 	a:visited {
 		color:black;
 	}
@@ -10,9 +13,7 @@
 		color:green;
 	}
 	
-	li.с-nav-line {
-		font-size: 8pt;
-	}
+	
 	 
     .container_16 {
      	position: relative;
@@ -98,7 +99,13 @@
 	div.fast-login {
     	position:absolute;
   		top:0px; right:10px;
-  		text-align:right; 		
+  		text-align:right;		
+    }
+    
+    
+    div.fast-firm {
+   		background:#fff;
+   		padding:20px;
     }
     
 	div.fast-login-container {
@@ -109,10 +116,10 @@
 	
 	input.def, input.err, input.val {		
 		font-size: 10pt;
-		padding:8px;
+		padding:8px 40px 8px 8px;
 		font-weight:bold;
 		border:1px solid #909090;
-		width:342px;
+		width:306px;
 		background:#fff;
 	}
 	
@@ -128,13 +135,25 @@
 		background:#fff url("/s/img/icon_success.png") right no-repeat;
 	}
 	
-	input.button-enter {
+	input.button-enter-login, input.button-enter-reg, input.button-enter-create {
 		font-size: 12pt;
-		padding:3px 0;
+		padding-top:5px;
+		padding-bottom:5px;
+		margin-top:20px;		
+		display:block;			
+	}
+	input.button-enter-login {
 		width:80px;
 		margin-left:280px;
-		display:block;
-				
+	}
+	
+	input.button-enter-reg {
+		width:180px;
+		margin-left:180px;
+	}
+	input.button-enter-create {
+		padding-left:10px;
+		padding-right:10px;		
 	}
 	
 	form div.top-label {
@@ -169,11 +188,20 @@
 	}
 		
 	
-/*login form*/
+/*forms*/
 	
 	form.login {
 		width:580px;
 	}
+	
+	form.fast-login {
+		width:380px;
+	}
+	
+	form.region {
+		/*border:1px solid black;*/
+	}
+	
 	
 /* password show/hide toggle */
 
@@ -220,3 +248,43 @@
 	td.timetable-cell-off {background-color:#cccccc; color:#888888;}
 	/*td.timetable-cell-off:hover {background-color:#eeeeee; color:#444444;}*/
 	
+	
+    
+    .f2popup, .f3popup, #f4popup {
+    	position:absolute;   
+    	display:none;
+    }
+    
+    #f4popup {
+    	background: #fff;
+    
+    }
+/*region list*/
+
+
+.region-list {
+	
+	padding:1px;
+	/*position:absolute;*/
+	left:0; top:0;
+	display:block;
+}
+
+.region-line {
+	
+	margin:5px;	
+	font-size: 10pt;
+	
+}
+
+.region-line a {
+	display:block; 
+	background:#fff;
+	padding:5px;
+ 
+}
+
+.region-line a:hover {
+	background:#ccccff;
+	color:#000;
+}

@@ -50,7 +50,11 @@
 			<li class="с-nav-line">
 					<a title="" href="/register">/register</a>
 			</li>
-				
+			
+			<li class="с-nav-line">
+					<a title="" href="/home">/home</a>
+			</li>
+						
 				
 			<li class="с-nav-line">
 					<a title="" href="/admin/firms">/admin/firms</a>
@@ -75,6 +79,10 @@
 			
 			<li class="с-nav-line">
 					<a title="" href="/register?no-xslt">/register?no-xslt</a>
+			</li>
+			
+			<li class="с-nav-line">
+					<a title="" href="/home?no-xslt">/home?no-xslt</a>
 			</li>
 			
 			<li class="с-nav-line">
