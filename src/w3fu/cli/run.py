@@ -3,13 +3,11 @@ from wsgiref.util import setup_testing_defaults
 from w3fu import config, app
 
 
-environ = {
-           'HTTP_HOST': config.cli_http_host,
+environ = {'HTTP_HOST': config.cli_http_host,
            'REQUEST_METHOD': config.cli_request_method,
            'PATH_INFO': config.cli_path_info,
            'HTTP_COOKIE': config.cli_http_cookie,
-           'QUERY_STRING': config.cli_query_string
-           }
+           'QUERY_STRING': config.cli_query_string}
 
 setup_testing_defaults(environ)
 

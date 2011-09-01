@@ -8,6 +8,6 @@ from w3fu.res.middleware.transform import xml
 class Home(Resource):
 
     @xml()
-    @user(dump='xml')
+    @user()
     def get(self, app, req):
         return Response(200, {})

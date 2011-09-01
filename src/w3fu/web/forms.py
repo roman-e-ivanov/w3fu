@@ -33,7 +33,7 @@ class Form(object):
         self.data = {}
         self._process()
 
-    def dump(self):
+    def dump(self, format):
         return {'source': self.src, 'errors': self.err}
 
     def _process(self):

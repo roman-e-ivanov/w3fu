@@ -1,7 +1,7 @@
 import sys
 
 from w3fu import storage
-from w3fu.storage.documents.geo import Place, IpRange
+from w3fu.storage.documents.geo import IpRange
 
 places = {}
 for line in sys.stdin:
@@ -12,7 +12,7 @@ for line in sys.stdin:
         end = int(end)
     except ValueError:
         continue
-    places.setdefault(ext_id, []).append(IpRange.new(begin, end))
+    places.setdefault(ext_id, []).append(IpRange.new(storage.places, begin, end))
 for ext_id, ips in places.iteritems():
-    if not Place.replace_ips(storage, ext_id, ips):
+    if not storage.places.replace_ips(ext_id, ips):
         print(ext_id)

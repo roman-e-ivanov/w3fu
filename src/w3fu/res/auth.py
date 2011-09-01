@@ -28,9 +28,9 @@ RegisterForm = AuthForm
 class Login(Resource):
 
     @xml('login-html')
-    @user(dump='xml')
+    @user()
     def get(self, app, req):
-        resp = Response(200, {'form': LoginForm(req.fs).dump()})
+        resp = Response(200, {'form': LoginForm(req.fs)})
         if req.fs.getfirst('error') == 'auth':
             resp.content['error'] = {'auth': {}}
         return resp
@@ -38,12 +38,12 @@ class Login(Resource):
     def post(self, app, req):
         form = LoginForm(req.fs)
         resp = Response(302)
-        if form.err:
+        if form.err or not form.data['login']:
             return resp.location(self.url(form.src))
-        user = User.find_login(app.storage, form.data['login'])
+        user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             return resp.location(self.url(dict(error='auth', **form.src)))
-        session = Session.new()
+        session = Session.new(app.storage.users)
         user.push_session(session)
         resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())
@@ -52,7 +52,7 @@ class Login(Resource):
         resp = Response(302).location(req.referer or Index.url())
         sid = req.cookie.get(config.session_name)
         if sid is not None:
-            User.pull_session(app.storage, sid.value)
+            app.storage.users.pull_session(sid.value)
         resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -62,7 +62,7 @@ class Register(Resource):
 
     @xml('register-html')
     def get(self, app, req):
-        resp = Response(200, {'form': RegisterForm(req.fs).dump()})
+        resp = Response(200, {'form': RegisterForm(req.fs)})
         if req.fs.getfirst('error') == 'exists':
             resp.content['error'] = {'exists': {}}
         return resp
@@ -70,12 +70,12 @@ class Register(Resource):
     def post(self, app, req):
         form = RegisterForm(req.fs)
         resp = Response(302)
-        if form.err:
+        if form.err or not form.data['login']:
             return resp.location(self.url(form.src))
-        user = User.new(form.data['login'], form.data['password'])
-        session = Session.new()
+        user = User.new(app.storage.users, form.data['login'], form.data['password'])
+        session = Session.new(app.storage.users)
         user.sessions = [session]
-        if not User.insert(app.storage, user):
+        if not user.insert():
             return resp.location(self.url(dict(error='exists', **form.src)))
         resp.set_cookie(config.session_name, session.id, session.expires)
         return resp.location(Home.url())

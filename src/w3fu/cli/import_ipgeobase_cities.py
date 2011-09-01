@@ -11,6 +11,6 @@ for line in codecs.getreader('cp1251')(sys.stdin):
         ext_id = int(ext_id)
     except ValueError:
         continue
-    place = Place.new(ext_id, name, region, district)
-    if Place.insert(storage, place):
+    place = Place.new(storage.places, ext_id, name, region, district)
+    if place.insert():
         print('\t'.join([str(ext_id), name, region, district]))

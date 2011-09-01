@@ -6,8 +6,8 @@ from w3fu.data.xml.xslt import XSLT
 from w3fu.data.xml.xslt.extensions import _time
 
 from w3fu.storage import Storage
-from w3fu.storage.documents.auth import User
-from w3fu.storage.documents.geo import Place
+from w3fu.storage.collections.auth import Users
+from w3fu.storage.collections.geo import Places
 
 from w3fu.res import Controller
 from w3fu.res.index import Index
@@ -25,5 +25,5 @@ controller = Controller([Index, Home,
                          PlanJson, PlanXml, TestHtml])
 
 xslt = XSLT({'time': _time})
-storage = Storage([User, Place])
+storage = Storage([Users, Places])
 app = Application(controller, storage, xslt)

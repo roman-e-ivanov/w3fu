@@ -1,7 +1,6 @@
-from time import mktime
 from pymongo.dbref import DBRef
+from time import mktime
 
-from w3fu.storage.errors import storagemethod
 from w3fu.data.util import b64e
 
 
@@ -15,38 +14,26 @@ class DocumentMeta(type):
         super(DocumentMeta, cls).__init__(name, bases, attrs)
 
 
-class Document(dict):
+class Document(object):
 
     __metaclass__ = DocumentMeta
 
-    _indexes = []
-
     @classmethod
-    def ensure_indexes(cls, storage):
-        for index, kwargs in cls._indexes:
-            cls._c(storage).ensure_index(index, **kwargs)
+    def new(cls, collection, *args, **kwargs):
+        doc = cls(collection, {})
+        doc._new(*args, **kwargs)
+        return doc
 
-    @classmethod
-    def new(cls, *args, **kwargs):
-        return cls(*args, **kwargs)
+    def __init__(self, collection, raw):
+        self.collection = collection
+        self.raw = raw
+        self.containers = {}
 
-    @classmethod
-    def c_name(cls):
-        return cls.__name__.lower()
+    def _new(self, *args, **kwargs):
+        self.raw = dict(*args, **kwargs)
 
-    @classmethod
-    def _c(cls, storage):
-        return storage.db[cls.c_name()]
-
-    @classmethod
-    @storagemethod
-    def insert(cls, storage, doc, safe=True):
-        cls._c(storage).insert(doc, safe=safe)
-        return True
-
-    def __init__(self, *args, **kwargs):
-        super(Document, self).__init__(*args, **kwargs)
-        self.ready = set()
+    def ref(self):
+        return DBRef(self.collection.name(), self.id)
 
     def dump(self, format):
         doc = {}
@@ -55,6 +42,9 @@ class Document(dict):
             if value is not None:
                 doc[name] = value
         return doc
+
+    def insert(self):
+        return self.collection.insert(self)
 
 
 class Property(object):
@@ -65,12 +55,12 @@ class Property(object):
 
     def __get__(self, doc, owner):
         try:
-            return doc[self._name]
+            return doc.raw[self._name]
         except KeyError:
             raise AttributeError
 
     def __set__(self, doc, value):
-        doc[self._name] = value
+        doc.raw[self._name] = value
 
     def dump(self, doc, name, format):
         if self._formats is not None and format not in self._formats:
@@ -103,50 +93,55 @@ class Container(Property):
         self._cls = cls
 
     def __get__(self, doc, owner):
-        attr = super(Container, self).__get__(doc, owner)
-        if self._name not in doc.ready:
-            attr = self._wrap(doc, attr)
+        try:
+            attr = doc.containers[self._name]
+        except KeyError:
+            attr = self._wrap(doc, super(Container, self).__get__(doc, owner))
             self.__set__(doc, attr)
         return attr
 
     def __set__(self, doc, value):
-        super(Container, self).__set__(doc, value)
-        doc.ready.add(self._name)
+        super(Container, self).__set__(doc, self._unwrap(value))
+        doc.containers[self._name] = value
 
-    def _make_embedded(self, doc, value):
-        embedded = self._cls(value)
-        embedded.c = doc.c
-        return embedded
+    def _wrap(self, doc, raw):
+        return self._cls(doc.collection, raw)
 
-    def _wrap(self, doc, attr):
-        return self._make_embedded(doc, attr)
+    def _unwrap(self, doc):
+        return doc.raw
 
-    def _dump(self, attr, format):
-        return attr.dump(format)
+    def _dump(self, doc, format):
+        return doc.dump(format)
 
 
 class Reference(Container):
 
-    def _wrap(self, doc, attr):
-        return self._make_embedded(doc, doc.c.database.dereference(attr))
+    def _wrap(self, doc, raw):
+        return self._cls(doc.collection, doc.collection.storage.deref(raw))
 
-    def __set__(self, doc, value):
-        super(Container, self).__set__(doc, DBRef(value.c_name(), value.id))
+    def _unwrap(self, doc):
+        return doc.ref()
 
 
 class ListContainer(Container):
 
-    def _wrap(self, doc, attr):
-        return [self._make_embedded(doc, v) for v in attr]
+    def _wrap(self, doc, raw):
+        return [self._cls(doc.collection, v) for v in raw]
 
-    def _dump(self, attr, format):
-        return [doc.dump(format) for doc in attr]
+    def _unwrap(self, docs):
+        return [doc.raw for doc in docs]
+
+    def _dump(self, docs, format):
+        return [doc.dump(format) for doc in docs]
 
 
 class DictContainer(Container):
 
-    def _wrap(self, doc, attr):
-        return dict([(k, self._make_embedded(doc, v)) for k, v in attr])
+    def _wrap(self, doc, raw):
+        return dict([(k, self._cls(doc.collection, v)) for k, v in raw.iteritems()])
 
-    def _dump(self, attr, format):
-        return dict([(k, doc.dump(format)) for k, doc in attr])
+    def _unwrap(self, docs):
+        return dict([(k, doc.raw) for k, doc in docs.iteritems()])
+
+    def _dump(self, docs, format):
+        return dict([(k, doc.dump(format)) for k, doc in docs.iteritems()])

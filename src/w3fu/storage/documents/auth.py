@@ -2,7 +2,6 @@ from datetime import datetime
 from uuid import uuid4
 
 from w3fu import config
-from w3fu.storage.errors import storagemethod
 from w3fu.storage.documents import Document, Property, Identity, Timestamp, ListContainer
 from w3fu.data.util import b64e, salted_hash
 
@@ -12,10 +11,9 @@ class Session(Document):
     id = Property('id')
     expires = Timestamp('expires')
 
-    @classmethod
-    def new(cls):
-        return cls(id=b64e(uuid4().bytes),
-                   expires=datetime.utcnow() + config.session_ttl)
+    def _new(self):
+        self.id = b64e(uuid4().bytes)
+        self.expires = datetime.utcnow() + config.session_ttl
 
 
 class User(Document):
@@ -25,34 +23,13 @@ class User(Document):
     password = Property('password', [])
     sessions = ListContainer('sessions', Session, [])
 
-    _indexes = [('login', {'unique': True}),
-                ('sessions.id', {})]
+    def _new(self, login, password):
+        self.login = login
+        self.password = salted_hash(password)
 
     def check_password(self, password):
         return self.password == salted_hash(password, self.password)
 
-    @classmethod
-    def new(cls, login, password):
-        return cls(login=login, password=salted_hash(password))
-
-    @storagemethod
     def push_session(self, session):
-        self.c.update({'_id': self.id}, {'$push': {'sessions': session}})
-
-    @classmethod
-    @storagemethod
-    def pull_session(cls, storage, id):
-        cls._c(storage).update({'sessions.id': id},
-                               {'$pull': {'sessions': {'id': id}}})
-
-    @classmethod
-    @storagemethod
-    def find_login(cls, storage, login):
-        return cls._c(storage).find_one({'login': login}, as_class=cls)
-
-    @classmethod
-    @storagemethod
-    def find_valid_session(cls, storage, id, expires):
-        return cls._c(storage).find_one({'sessions.id': id,
-                                         'sessions.expires': {'$gt': expires}},
-                                        as_class=cls)
+        self.collection.push_session(self.id, session)
+        return session

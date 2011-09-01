@@ -23,11 +23,11 @@ class Controller(object):
         self._resources = resources
 
     def dispatch(self, app, req):
-        for rescls in self._resources:
-            match = rescls.cpattern.match(req.path)
+        for res_cls in self._resources:
+            match = res_cls.cpattern.match(req.path)
             if match:
                 req.args = match.groupdict()
-                return rescls(app, req).run(app, req)
+                return res_cls(app, req).run(app, req)
         return Response(404)
 
 
