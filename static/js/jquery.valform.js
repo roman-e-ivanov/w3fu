@@ -28,7 +28,7 @@ $.val = function (form, type) {
 	$(this.password).data('msg', $(this.form).find($.val.valElements.passwordMsg));
 	this.showError = this.showValid = this.showDefault = function(){};
 	
-	if (type == 'login') {
+	if (type == 'default') {
 		
 		this.showError = function(element){
 			
@@ -75,8 +75,8 @@ $.extend($.val, {
 				email: /^[-0-9a-z!#$%&'*+\/=?^_`{|}~]+(?:\.[-a-z0-9!#$%&'*+\/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\.)+(?:museum|travel|(?:[a-z]{2,4}))$/i,
 				integer: /^-?\d+$/,
 				login: /^\s*[а-яА-Я\w\.-]{4,32}\s*$/,
-				password: /^\s*[№а-яА-Я\x21-\x7e]{4,32}\s*$/,
-				firm: /^\s*[№а-яА-Я\x21-\x7e][№а-яА-Я\x20-\x7e]{0,31}\s*$/
+				password: /^\s*[№ёа-яЁА-Я\x21-\x7e]{4,32}\s*$/,
+				firm: /^\s*[№а-яА-Я\x21-\x7e][№а-яА-Я\x20-\x7e]{0,99}\s*$/
 			},
 			
 			prototype: {

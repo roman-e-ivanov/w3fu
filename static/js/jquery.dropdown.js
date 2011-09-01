@@ -15,16 +15,16 @@ $.extend(
 $.dropdown = function (container, type) {	
 	
 	this.container = $(container);
-	this.content = this.container.find($.dropdown.elements.content);
-	this.button = this.container.find($.dropdown.elements.button);
+	this.content = $(this.container).find($.dropdown.elements.content);
+	this.button = $(this.container).find($.dropdown.elements.button);
 	this.display = false;
-	this.beforeShow = this.afterShow = this.beforeHide = this.afterHide = function(){};	
+	this.beforeShow = this.afterShow = this.beforeHide = this.afterHide = function(){};
 	
-	if (type == 'login') {
+	if (type == 'fast-login') {
 		
 		this.beforeShow = function() {			
 		
-			var validator = this.content.find('form.login').data('validator');
+			var validator = this.content.find('form.fast-login').data('validator');
 			validator.reset(validator.login);
 			validator.reset(validator.password);
 		}
@@ -46,21 +46,21 @@ $.extend($.dropdown, {
 		
 		init: function () {
 			(function (dropdown) {
-				
-				dropdown.button.click(function(){ 							
+				dropdown.container.css('z-index','9000');
+				dropdown.button.bind('click',(function(){ 											 
 					if (!dropdown.display) { dropdown.show(); }
 					else { dropdown.hide(); }
-				});
+				}));
 				
-				$(document).mouseup(function(e) {										
+				$(document).bind('mouseup', (function(e) {										
 					if($(e.target).parents('.' + dropdown.container.attr('class')).length == 0) { dropdown.hide(); }
-				});				
+				}));				
 			})(this);
 		},
 		show: function() {
 			this.beforeShow();
 			this.content.css('display','block');
-			this.container.css('z-index','9000');						
+		//	this.container.css('z-index','9000');						
 			this.display = true;
 			this.afterShow();
 			
@@ -68,7 +68,7 @@ $.extend($.dropdown, {
 		hide: function() {
 			this.beforeHide();
 			this.content.css('display','none');
-			this.container.css('z-index','auto');			
+		//	this.container.css('z-index','auto');			
 			this.display = false;
 			this.afterHide();
 		}		

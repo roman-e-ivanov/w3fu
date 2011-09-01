@@ -1,48 +1,72 @@
 $(document).ready(function(){
-		
-	$("form.login").valForm('login');	
+	$('<script type="text/javascript" src="/s/js/jquery.valform.js" /><script type="text/javascript" src="/s/js/jquery.dropdown.js" /><script type="text/javascript" src="/s/js/jquery.datepicker.js" /><script type="text/javascript" src="/s/js/jquery.display.js" /><script type="text/javascript" src="/s/js/jquery.timetable.js" /><script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
+	
+	/*login & reg forms*/
+	$("form.login").valForm('default');	
 	$("form.login").display();
+	$("form.login").find(".toggle-display").css('display','inline');
+
+	/*fast login form*/
+	$("form.fast-login").valForm('default');	
+	$("div.fast-login").dropDown('fast-login');
+	$("div.fast-login").find("a").css('display','none');
+	$("div.fast-login").find("span.dropdown-button").css('display','inline');
 	
-	$("form.firm-create").valForm('login');	
+	/*firm create form*/
+	$("form.firm-create").valForm('default');
+	$('.f2').popUp('class');
+	$('.f3').popUp('class');
+	$("div.fast-firm").find("span.dropdown-button").toggleClass('nodisplay');
+	$("div.fast-firm").find("span.dropdown-button").toggleClass('display');
+	$("div.fast-firm").find("a").toggleClass('nodisplay');
+	$("div.fast-firm").find("a").toggleClass('display');
 	
-	$("div.fast-login").dropDown('login');	
+	/*region select form*/
+	$('#f4').popUp('id',0,20);
+	$('#f4').json();
 	
-	$("div.popup1").dropDown();
+	
+	
+	$("div.popup1").dropDown('date');
 	$("div.popup1").datePicker();
 	
 	
-	$("div.fast-login").find("span.dropdown-button").toggleClass('nodisplay');
-	$("div.fast-login").find("span.dropdown-button").toggleClass('display');
-	
-	$("div.fast-login").find("a").toggleClass('nodisplay');
-	$("div.fast-login").find("a").toggleClass('display');
-	
-	$("form.login").find("div.toggle-display").css('display','inline');
 	
 	$("table.timetable").timeTable();
 /*	$("div.popup2").dropDown();
 	$("div.popup2").datePicker();
 */
-	var d = new Date(2010,1,29);
 	
-//	alert(d.getDate() +'/'+ d.getMonth() +'/'+ d.getFullYear());
-	
-	//alert ($("select.datepicker-month").selectedIndex);
+
+/*
 	var p = {
 			type:'DELETE',
 			url:'test.json'
 	};
 	
-	$("input.b-ajax").click(function(){
-		/*$.getJSON('test.json', function(data){     
-			$.each(data, function(index, entry){
-				m += entry;
-			});
-			alert(data['data1']);
+	$("#f4").bind('click', (function(){
+		$.getJSON('/place-sugg7st?pattern=са', function(data){     
+				
+				var s = "";
+			$.each(data.found, function(i, found){
+				
+				s = s + found.name + '_';
 			
-        });  */         
-	$.ajax(p);
-	});
+			});
+			
+			
+			alert(s);
+			
+        })
+        
+        .error(function() { alert("error"); })
+        
+		
+		alert(9);
+	//$.ajax(p);
+	}));
+*/	
+	
 	  	
 });
 //----------------------------------------------------------------------------
