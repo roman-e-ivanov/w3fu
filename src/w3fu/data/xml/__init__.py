@@ -24,8 +24,10 @@ def to_xml(name, data, format):
         except AttributeError:
             pass
         try:
-            for v in data:
-                worker(root, name, v)
+            i = iter(data)
+            e = etree.SubElement(root, name)
+            for v in i:
+                worker(e, 'i', v)
             return
         except TypeError:
             pass
