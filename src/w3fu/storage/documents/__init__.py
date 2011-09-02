@@ -71,21 +71,6 @@ class Property(object):
         return attr
 
 
-class Identity(Property):
-
-    def __init__(self, name='_id', formats=None):
-        super(Identity, self).__init__(name, formats)
-
-    def _dump(self, attr, format):
-        return b64e(attr.binary)
-
-
-class Timestamp(Property):
-
-    def _dump(self, attr, format):
-        return int(mktime(attr.timetuple()))
-
-
 class Container(Property):
 
     def __init__(self, name, cls, formats=None):

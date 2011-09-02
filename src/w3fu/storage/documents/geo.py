@@ -1,4 +1,4 @@
-from w3fu.storage.documents import Document, Property, Identity
+from w3fu.storage.documents import Document, Property
 
 
 class IpRange(Document):
@@ -16,13 +16,13 @@ class IpRange(Document):
 
 class Place(Document):
 
-    id = Identity()
+    id = Property('_id')
     ext_id = Property('ext_id', [])
     name = Property('name')
     pattern = Property('pattern', [])
     region = Property('region')
     district = Property('district')
-    ranges = Property('ips', [])
+    ranges = Property('ranges', [])
 
     def _new(self, ext_id, name, region, district):
         self.ext_id = ext_id

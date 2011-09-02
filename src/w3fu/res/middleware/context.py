@@ -12,9 +12,9 @@ class user(Middleware):
 
     def _handler(self, res, app, req, handler):
         req.user = None
-        sid = req.cookie.get(config.session_name)
-        if sid is not None:
-            req.user = app.storage.users.find_valid_session(sid.value,
+        session_id = req.cookie.get(config.session_cookie)
+        if session_id is not None:
+            req.user = app.storage.users.find_valid_session(session_id.value,
                                                             datetime.utcnow())
         if self._required and req.session is None:
             return Response(403)

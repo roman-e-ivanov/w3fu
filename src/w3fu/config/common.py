@@ -15,5 +15,5 @@ db_host = 'localhost'
 db_port = 27017
 db_name = 'w3fu'
 
-session_name = 'u'
+session_cookie = 'u'
 session_ttl = timedelta(days=1)

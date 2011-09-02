@@ -2,14 +2,14 @@ from datetime import datetime
 from uuid import uuid4
 
 from w3fu import config
-from w3fu.storage.documents import Document, Property, Identity, Timestamp, ListContainer
+from w3fu.storage.documents import Document, Property, ListContainer
 from w3fu.data.util import b64e, salted_hash
 
 
 class Session(Document):
 
     id = Property('id')
-    expires = Timestamp('expires')
+    expires = Property('expires')
 
     def _new(self):
         self.id = b64e(uuid4().bytes)
@@ -18,7 +18,7 @@ class Session(Document):
 
 class User(Document):
 
-    id = Identity()
+    id = Property('_id')
     login = Property('login')
     password = Property('password', [])
     sessions = ListContainer('sessions', Session, [])

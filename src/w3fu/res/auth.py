@@ -45,15 +45,15 @@ class Login(Resource):
             return resp.location(self.url(dict(error='auth', **form.src)))
         session = Session.new(app.storage.users)
         user.push_session(session)
-        resp.set_cookie(config.session_name, session.id, session.expires)
+        resp.set_cookie(config.session_cookie, session.id, session.expires)
         return resp.location(Home.url())
 
     def delete(self, app, req):
         resp = Response(302).location(req.referer or Index.url())
-        sid = req.cookie.get(config.session_name)
-        if sid is not None:
-            app.storage.users.pull_session(sid.value)
-        resp.set_cookie(config.session_name, 0, datetime.utcfromtimestamp(0))
+        session_id = req.cookie.get(config.session_cookie)
+        if session_id is not None:
+            app.storage.users.pull_session(session_id.value)
+        resp.set_cookie(config.session_cookie, 0, datetime.utcfromtimestamp(0))
         return resp
 
 
@@ -77,5 +77,5 @@ class Register(Resource):
         user.sessions = [session]
         if not user.insert():
             return resp.location(self.url(dict(error='exists', **form.src)))
-        resp.set_cookie(config.session_name, session.id, session.expires)
+        resp.set_cookie(config.session_cookie, session.id, session.expires)
         return resp.location(Home.url())

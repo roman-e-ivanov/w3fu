@@ -13,6 +13,6 @@ for line in sys.stdin:
     except ValueError:
         continue
     places.setdefault(ext_id, []).append(IpRange.new(storage.places, begin, end))
-for ext_id, ips in places.iteritems():
-    if not storage.places.replace_ips(ext_id, ips):
+for ext_id, ranges in places.iteritems():
+    if not storage.places.replace_ranges(ext_id, ranges):
         print(ext_id)

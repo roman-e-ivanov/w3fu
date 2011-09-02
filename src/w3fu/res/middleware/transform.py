@@ -1,7 +1,6 @@
-from json import dumps
-
 from w3fu.res.middleware import Middleware
 from w3fu.data.xml import to_xml
+from w3fu.data._json import to_json
 
 
 class json(Middleware):
@@ -10,16 +9,10 @@ class json(Middleware):
         self._format = format
 
     def _handler(self, res, app, req, handler):
-        def default(obj):
-            try:
-                return obj.dump(self._format)
-            except AttributeError:
-                raise TypeError
         resp = handler(res, app, req)
         if resp.status == 200:
             resp.ctype = 'application/json'
-            resp.content = dumps(resp.content, indent=4, ensure_ascii=False,
-                                 default=default).encode('utf-8')
+            resp.content = to_json(resp.content, self._format).encode('utf-8')
         return resp
 
 

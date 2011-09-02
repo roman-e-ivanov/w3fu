@@ -1,6 +1,10 @@
 from lxml import etree
 from time import mktime
 
+from time import mktime
+
+from w3fu.data.util import b64e
+
 
 def to_xml(name, data, format):
     def worker(root, name, data, extend=True):
@@ -27,6 +31,24 @@ def to_xml(name, data, format):
             pass
         try:
             worker(root, name, data.dump(format), extend)
+            return
+        except AttributeError:
+            pass
+        try:
+            s = b64e(data.binary)
+            if extend:
+                etree.SubElement(root, name).text = s
+            else:
+                root.set(name, s)
+            return
+        except AttributeError:
+            pass
+        try:
+            s = str(int(mktime(data.timetuple())))
+            if extend:
+                etree.SubElement(root, name).text = s
+            else:
+                root.set(name, s)
             return
         except AttributeError:
             pass
