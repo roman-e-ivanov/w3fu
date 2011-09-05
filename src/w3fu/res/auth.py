@@ -11,7 +11,6 @@ from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.storage.documents.auth import User, Session
 
-
 class AuthForm(Form):
 
     login = StrArg('login', pattern=u'^[\wа-яА-Я\._-]+$',
@@ -36,9 +35,9 @@ class Login(Resource):
         return resp
 
     def post(self, app, req):
-        form = LoginForm(req.fs)
+        form = LoginForm(req.fs, True)
         resp = Response(302)
-        if form.err or not form.data['login']:
+        if form.err:
             return resp.location(self.url(form.src))
         user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
@@ -68,9 +67,9 @@ class Register(Resource):
         return resp
 
     def post(self, app, req):
-        form = RegisterForm(req.fs)
+        form = RegisterForm(req.fs, True)
         resp = Response(302)
-        if form.err or not form.data['login']:
+        if form.err:
             return resp.location(self.url(form.src))
         user = User.new(app.storage.users, form.data['login'], form.data['password'])
         session = Session.new(app.storage.users)

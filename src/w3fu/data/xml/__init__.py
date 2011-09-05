@@ -1,8 +1,6 @@
 from lxml import etree
 from time import mktime
 
-from time import mktime
-
 from w3fu.data.util import b64e
 
 
@@ -15,22 +13,16 @@ def to_xml(name, data, format):
             else:
                 root.set(name, data)
             return
-        try:
-            i = data.iteritems()
+        if isinstance(data, dict):
             e = etree.SubElement(root, name)
-            for k, v in i:
+            for k, v in data.iteritems():
                 worker(e, k, v, False)
             return
-        except AttributeError:
-            pass
-        try:
-            i = iter(data)
+        if isinstance(data, (list, tuple)):
             e = etree.SubElement(root, name)
-            for v in i:
+            for v in data:
                 worker(e, 'i', v)
             return
-        except TypeError:
-            pass
         try:
             worker(root, name, data.dump(format), extend)
             return

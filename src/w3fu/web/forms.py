@@ -3,11 +3,13 @@ import re
 
 class ArgError(Exception):
 
-    @classmethod
-    def name(cls):
-        return cls.__name__.lower()
+    _params = {}
+
+    def dump(self, format):
+        return {self.__class__.__name__.lower(): self._params}
 
 
+class ArgAbsent(ArgError): pass
 class ArgSizeError(ArgError): pass
 class ArgTypeError(ArgError): pass
 class ArgRangeError(ArgError): pass
@@ -27,18 +29,15 @@ class Form(object):
 
     __metaclass__ = FormMeta
 
-    def __init__(self, fs):
+    def __init__(self, fs, strict=False):
         self.src = dict([(k, fs.getfirst(k).decode('utf-8')) for k in fs.keys()])
         self.err = {}
         self.data = {}
-        self._process()
+        for name, arg in self.args.iteritems():
+            self.data[name] = arg.process(self.src, self.err, strict)
 
     def dump(self, format):
         return {'source': self.src, 'errors': self.err}
-
-    def _process(self):
-        for name, arg in self.args.iteritems():
-            self.data[name] = arg.process(self.src, self.err)
 
 
 class Arg(object):
@@ -48,13 +47,15 @@ class Arg(object):
         self._default = default
         self._clear = clear
 
-    def process(self, src, err):
+    def process(self, src, err, strict):
         try:
             return self._process(src[self._name])
         except KeyError:
+            if strict:
+                err[self._name] = ArgAbsent()
             return self._default
         except ArgError as e:
-            err[self._name] = {e.name(): {}}
+            err[self._name] = e
         finally:
             if self._clear:
                 src[self._name] = ''

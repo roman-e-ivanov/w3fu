@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from w3fu.web import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.res import bind, Resource
