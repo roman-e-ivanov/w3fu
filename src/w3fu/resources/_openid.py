@@ -2,9 +2,9 @@ import sys
 from openid.consumer.consumer import Consumer, DiscoveryFailure, SUCCESS
 from pprint import pprint
 
-from w3fu.res import bind, Resource
-from w3fu.res.middleware.context import storage
-from w3fu.web import Response
+from w3fu.web.resources import bind, Resource
+from w3fu.resources.middleware.context import storage
+from w3fu.web.base import Response
 
 
 @bind('/openid')

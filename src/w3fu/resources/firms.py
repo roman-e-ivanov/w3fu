@@ -1,6 +1,6 @@
-from w3fu.web import Response
+from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
-from w3fu.res import bind, Resource
+from w3fu.web.resources import bind, Resource
 from w3fu.res.middleware.context import storage, session
 from w3fu.res.middleware.transform import xml
 from w3fu.domain.firms import Firm

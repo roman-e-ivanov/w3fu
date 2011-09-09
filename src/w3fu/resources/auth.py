@@ -2,12 +2,12 @@
 from datetime import datetime
 
 from w3fu import config
-from w3fu.res import bind, Resource
-from w3fu.res.middleware.context import user
-from w3fu.res.middleware.transform import xml
-from w3fu.res.home import Home
-from w3fu.res.index import Index
-from w3fu.web import Response
+from w3fu.web.resources import bind, Resource
+from w3fu.resources.middleware.context import user
+from w3fu.resources.middleware.transform import xml
+from w3fu.resources.home import Home
+from w3fu.resources.index import Index
+from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.storage.documents.auth import User, Session
 

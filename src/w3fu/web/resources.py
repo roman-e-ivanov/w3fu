@@ -3,7 +3,7 @@ from urlparse import urlunsplit
 from urllib import urlencode
 
 from w3fu import config
-from w3fu.web import Response
+from w3fu.web.base import Response
 
 
 def bind(pattern, *args, **kwargs):
@@ -64,3 +64,11 @@ class Resource(object):
         if handler is None:
             return Response(405)
         return handler(app, req)
+
+
+class Middleware(object):
+
+    def __call__(self, handler):
+        def f(res, app, req):
+            return self._handler(res, app, req, handler)
+        return f

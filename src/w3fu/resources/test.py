@@ -1,7 +1,7 @@
-from w3fu.res import bind, Resource
-from w3fu.res.middleware.transform import json, xml
-from w3fu.web import Response
+from w3fu.web.resources import bind, Resource
+from w3fu.web.base import Response
 from w3fu.web.forms import Form, IntArg
+from w3fu.resources.middleware.transform import json, xml
 
 
 PLAN_DATA = {

@@ -1,4 +1,4 @@
-from w3fu.res.middleware import Middleware
+from w3fu.web.resources import Middleware
 from w3fu.data.xml import to_xml
 from w3fu.data._json import to_json
 
