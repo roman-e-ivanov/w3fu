@@ -6,15 +6,7 @@ from w3fu import config
 from w3fu.web.base import Response
 
 
-def bind(pattern, *args, **kwargs):
-    def f(cls):
-        cls.pattern = pattern
-        rargs = tuple('({0})'.format(v) for v in args)
-        rkwargs = dict((k, '(?P<{0}>{1})'.format(k, v))
-                         for k, v in kwargs.iteritems())
-        cls.cpattern = compile('^{0}$'.format(pattern.format(*rargs, **rkwargs)))
-        return cls
-    return f
+OVERLOADABLE = frozenset(['put', 'delete'])
 
 
 class Controller(object):
@@ -24,31 +16,39 @@ class Controller(object):
 
     def dispatch(self, app, req):
         for res_cls in self._resources:
-            match = res_cls.cpattern.match(req.path)
-            if match:
-                req.args = match.groupdict()
+            args = res_cls.route.match(req.path)
+            if args:
+                req.args = args
                 return res_cls(app, req).run(app, req)
         return Response(404)
 
 
-OVERLOADABLE = frozenset(['put', 'delete'])
+class Route(object):
+
+    def __init__(self, pattern, secure=False, *args, **kwargs):
+        self._secure = secure
+        self._pattern = pattern
+        rargs = tuple('({0})'.format(v) for v in args)
+        rkwargs = dict((k, '(?P<{0}>{1})'.format(k, v))
+                         for k, v in kwargs.iteritems())
+        self._cpattern = compile('^{0}$'.format(pattern.format(*rargs, **rkwargs)))
+
+    def match(self, path):
+        return self._cpattern.match(path)
+
+    def url(self, query={}, **kwargs):
+        scheme = 'https' if self._secure else 'http'
+        path = self._pattern.format(**kwargs)
+        return urlunsplit((scheme, config.domain, path,
+                           urlencode([(k, v.encode('utf-8'))
+                                      for k, v in query.iteritems()]), ''))
 
 
 class Resource(object):
 
-    _secure = False
-
     @classmethod
     def name(cls):
         return cls.__name__.lower()
-
-    @classmethod
-    def url(cls, query={}, **kwargs):
-        scheme = 'https' if cls._secure else 'http'
-        path = cls.pattern.format(**kwargs)
-        return urlunsplit((scheme, config.domain, path,
-                           urlencode([(k, v.encode('utf-8'))
-                                      for k, v in query.iteritems()]), ''))
 
     def __init__(self, app, req):
         self.app = app

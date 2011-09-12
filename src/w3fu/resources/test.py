@@ -1,4 +1,4 @@
-from w3fu.web.resources import bind, Resource
+from w3fu.web.resources import Route, Resource
 from w3fu.web.base import Response
 from w3fu.web.forms import Form, IntArg
 from w3fu.resources.middleware.transform import json, xml
@@ -49,20 +49,21 @@ class Plan(Resource):
                               })
 
 
-@bind('/api/plans/{id}', id='\d+')
 class PlanJson(Plan):
 
+    route = Route('/api/plans/{id}', id='\d+')
     get = json()(Plan.get)
 
 
-@bind('/plans/{id}', id='\d+')
 class PlanXml(Plan):
 
+    route = Route('/plans/{id}', id='\d+')
     get = xml('test-html')(Plan.get)
 
 
-@bind('/test')
 class TestHtml(Resource):
+
+    route = Route('/test')
 
     @xml('test-html')
     def get(self, req):

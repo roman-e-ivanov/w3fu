@@ -1,6 +1,6 @@
 from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
-from w3fu.web.resources import bind, Resource
+from w3fu.web.resources import Route, Resource
 from w3fu.resources.middleware.transform import json
 
 
@@ -9,8 +9,9 @@ class PlaceSuggestForm(Form):
     pattern = StrArg('pattern', min_size=1, max_size=100, default='')
 
 
-@bind('/place-suggest')
 class PlaceSuggest(Resource):
+
+    route = Route('/place-suggest')
 
     @json()
     def get(self, app, req):

@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from w3fu import config
-from w3fu.web.resources import bind, Resource
+from w3fu.web.resources import Route, Resource
 from w3fu.resources.middleware.context import user
 from w3fu.resources.middleware.transform import xml
 from w3fu.resources.home import Home
@@ -10,6 +10,7 @@ from w3fu.resources.index import Index
 from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.storage.documents.auth import User, Session
+
 
 class AuthForm(Form):
 
@@ -23,8 +24,9 @@ LoginForm = AuthForm
 RegisterForm = AuthForm
 
 
-@bind('/login')
 class Login(Resource):
+
+    route = Route('/login')
 
     @xml('login-html')
     @user()
@@ -38,17 +40,17 @@ class Login(Resource):
         form = LoginForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.url(form.src))
+            return resp.location(self.route.url(form.src))
         user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
-            return resp.location(self.url(dict(error='auth', **form.src)))
+            return resp.location(self.route.url(dict(error='auth', **form.src)))
         session = Session.new(app.storage.users)
         user.push_session(session)
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.url())
+        return resp.location(Home.route.url())
 
     def delete(self, app, req):
-        resp = Response(302).location(req.referer or Index.url())
+        resp = Response(302).location(req.referer or Index.route.url())
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
             app.storage.users.pull_session(session_id.value)
@@ -56,8 +58,9 @@ class Login(Resource):
         return resp
 
 
-@bind('/register')
 class Register(Resource):
+
+    route = Route('/register')
 
     @xml('register-html')
     def get(self, app, req):
@@ -70,11 +73,11 @@ class Register(Resource):
         form = RegisterForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.url(form.src))
+            return resp.location(self.route.url(form.src))
         user = User.new(app.storage.users, form.data['login'], form.data['password'])
         session = Session.new(app.storage.users)
         user.sessions = [session]
         if not user.insert():
-            return resp.location(self.url(dict(error='exists', **form.src)))
+            return resp.location(self.route.url(dict(error='exists', **form.src)))
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.url())
+        return resp.location(Home.route.url())
