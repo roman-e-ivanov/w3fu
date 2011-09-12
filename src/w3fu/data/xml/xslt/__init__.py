@@ -10,10 +10,9 @@ class XSLT(object):
         for name, extension in extensions.iteritems():
             ns = etree.FunctionNamespace(config.xslt_ext_prefix + name)
             ns.prefix = name
-            for func in dir(extension):
-                if func[0] == '_':
-                    continue
-                ns[func] = getattr(extension, func)
+            for f in dir(extension):
+                if f[0] != '_':
+                    ns[f] = getattr(extension, f)
         self._templates = {}
         for name in os.listdir(config.xsl_path):
             path = os.path.join(config.xsl_path, name)
