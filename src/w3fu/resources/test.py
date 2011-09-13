@@ -58,13 +58,13 @@ class PlanJson(Plan):
 class PlanXml(Plan):
 
     route = Route('/plans/{id}', id='\d+')
-    get = xml('test-html')(Plan.get)
+    get = xml('test-html.xsl')(Plan.get)
 
 
 class TestHtml(Resource):
 
     route = Route('/test')
 
-    @xml('test-html')
+    @xml('test-html.xsl')
     def get(self, req):
         return Response(200, {})

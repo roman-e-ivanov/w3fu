@@ -1,27 +1,26 @@
 from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
-from w3fu.web.resources import bind, Resource
-from w3fu.res.middleware.context import storage, session
-from w3fu.res.middleware.transform import xml
-from w3fu.domain.firms import Firm
+from w3fu.web.resources import Route, Resource
+from w3fu.resources.middleware.context import user
+from w3fu.resources.middleware.transform import xml
 
 
-@bind('/firms')
 class FirmsPublic(Resource):
 
+    route = Route('/firms')
+
     @xml()
-    @storage()
-    @session()
+    @user()
     def get(self, req):
         return Response(200, {})
 
 
-@bind('/firms/{id}', id='\d+')
 class FirmPublic(Resource):
 
+    route = Route('/firms/{id}', id='\d+')
+
     @xml()
-    @storage()
-    @session()
+    @user()
     def get(self, req):
         firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:
@@ -34,17 +33,16 @@ class FirmCreateForm(Form):
     name = StrArg('name', min_size=1, max_size=100)
 
 
-@bind('/admin/firms')
 class FirmsAdmin(Resource):
 
-    @xml('firms-html')
-    @storage()
-    @session(required=True)
+    route = Route('/admin/firms')
+
+    @xml('firms-html.xsl')
+    @user(required=True)
     def get(self, req):
         return Response(200, {'form': FirmCreateForm(req.fs).dump()})
 
-    @storage()
-    @session(required=True)
+    @user(required=True)
     def post(self, req):
         resp = Response(302)
         form = FirmCreateForm(req.fs)
@@ -56,12 +54,12 @@ class FirmsAdmin(Resource):
         return resp.location(FirmAdmin.url(id=firm['id']))
 
 
-@bind('/admin/firms/{id}', id='\d+')
 class FirmAdmin(Resource):
 
+    route = Route('/admin/firms/{id}', id='\d+')
+
     @xml()
-    @storage()
-    @session(required=True)
+    @user(required=True)
     def get(self, req):
         firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:

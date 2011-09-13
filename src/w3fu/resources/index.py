@@ -8,7 +8,7 @@ class Index(Resource):
 
     route = Route('/')
 
-    @xml('index-html')
+    @xml('index-html.xsl')
     @user()
     def get(self, app, req):
         return Response(200, {})

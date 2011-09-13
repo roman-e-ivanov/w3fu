@@ -6,10 +6,9 @@ from cgi import FieldStorage
 
 class Application(object):
 
-    def __init__(self, controller, storage, xslt):
+    def __init__(self, controller, storage):
         self.controller = controller
         self.storage = storage
-        self.xslt = xslt
 
     def __call__(self, environ, start_response):
         req = Request(self, environ)

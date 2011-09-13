@@ -3,9 +3,6 @@ from w3fu import config
 from w3fu.web.base import Application
 from w3fu.web.resources import Controller
 
-from w3fu.data.xml.xslt import XSLT
-from w3fu.data.xml.xslt.extensions import _time
-
 from w3fu.storage import Storage
 from w3fu.storage.collections.auth import Users
 from w3fu.storage.collections.geo import Places
@@ -24,6 +21,5 @@ controller = Controller([Index, Home,
 #                         FirmsPublic, FirmPublic, FirmsAdmin, FirmAdmin,
                          PlanJson, PlanXml, TestHtml])
 
-xslt = XSLT({'time': _time})
 storage = Storage([Users, Places])
-app = Application(controller, storage, xslt)
+app = Application(controller, storage)

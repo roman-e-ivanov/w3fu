@@ -28,7 +28,7 @@ class Login(Resource):
 
     route = Route('/login')
 
-    @xml('login-html')
+    @xml('login-html.xsl')
     @user()
     def get(self, app, req):
         resp = Response(200, {'form': LoginForm(req.fs)})
@@ -62,7 +62,7 @@ class Register(Resource):
 
     route = Route('/register')
 
-    @xml('register-html')
+    @xml('register-html.xsl')
     def get(self, app, req):
         resp = Response(200, {'form': RegisterForm(req.fs)})
         if req.fs.getfirst('error') == 'exists':
