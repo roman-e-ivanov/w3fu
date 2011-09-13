@@ -1,7 +1,8 @@
 from w3fu.web.base import Response
 from w3fu.web.forms import Form, StrArg
 from w3fu.web.resources import Route, Resource
-from w3fu.resources.middleware.transform import json
+
+from app.resources.middleware.transform import json
 
 
 class PlaceSuggestForm(Form):

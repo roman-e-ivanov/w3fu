@@ -1,5 +1,6 @@
-from w3fu.storage.documents.geo import Place
 from w3fu.storage.collections import Collection, errorsafe, wrapped
+
+from app.documents.geo import Place
 
 
 class Places(Collection):

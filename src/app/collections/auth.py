@@ -1,5 +1,6 @@
-from w3fu.storage.documents.auth import User
 from w3fu.storage.collections import Collection, errorsafe, wrapped
+
+from app.documents.auth import User
 
 
 class Users(Collection):
