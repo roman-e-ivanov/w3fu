@@ -1,5 +1,3 @@
-from urlparse import parse_qsl, urlunsplit
-from urllib import urlencode
 from Cookie import SimpleCookie, Morsel
 from cgi import FieldStorage
 

@@ -48,11 +48,11 @@ class FirmsAdmin(Resource):
         resp = Response(302)
         form = FirmCreateForm(req.fs)
         if form.err:
-            return resp.location(self.url(form.src))
+            return resp.location(self.url(req, form.src))
         firm = Firm.new(name=form.data['name'], owner_id=req.session['user_id'])
         firm.insert(req.db)
         req.db.commit()
-        return resp.location(FirmAdmin.url(id=firm['id']))
+        return resp.location(FirmAdmin.url(req, id=firm['id']))
 
 
 class FirmAdmin(Resource):

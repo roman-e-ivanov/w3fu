@@ -2,7 +2,6 @@ from re import compile
 from urlparse import urlunsplit
 from urllib import urlencode
 
-from w3fu import config
 from w3fu.web.base import Response
 
 
@@ -25,9 +24,9 @@ class Controller(object):
 
 class Route(object):
 
-    def __init__(self, pattern, secure=False, *args, **kwargs):
-        self._secure = secure
+    def __init__(self, pattern, scheme='http', *args, **kwargs):
         self._pattern = pattern
+        self._scheme = scheme
         rargs = tuple('({0})'.format(v) for v in args)
         rkwargs = dict((k, '(?P<{0}>{1})'.format(k, v))
                          for k, v in kwargs.iteritems())
@@ -36,10 +35,9 @@ class Route(object):
     def match(self, path):
         return self._cpattern.match(path)
 
-    def url(self, query={}, **kwargs):
-        scheme = 'https' if self._secure else 'http'
+    def url(self, req, query={}, **kwargs):
         path = self._pattern.format(**kwargs)
-        return urlunsplit((scheme, config.domain, path,
+        return urlunsplit((self._scheme, req.host, path,
                            urlencode([(k, v.encode('utf-8'))
                                       for k, v in query.iteritems()]), ''))
 

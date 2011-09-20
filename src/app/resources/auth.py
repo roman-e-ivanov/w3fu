@@ -41,17 +41,17 @@ class Login(Resource):
         form = LoginForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.route.url(form.src))
+            return resp.location(self.route.url(req, form.src))
         user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
-            return resp.location(self.route.url(dict(error='auth', **form.src)))
+            return resp.location(self.route.url(req, dict(error='auth', **form.src)))
         session = Session.new(app.storage.users)
         user.push_session(session)
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.route.url())
+        return resp.location(Home.route.url(req))
 
     def delete(self, app, req):
-        resp = Response(302).location(req.referer or Index.route.url())
+        resp = Response(302).location(req.referer or Index.route.url(req))
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
             app.storage.users.pull_session(session_id.value)
@@ -74,11 +74,11 @@ class Register(Resource):
         form = RegisterForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.route.url(form.src))
+            return resp.location(self.route.url(req, form.src))
         user = User.new(app.storage.users, form.data['login'], form.data['password'])
         session = Session.new(app.storage.users)
         user.sessions = [session]
         if not user.insert():
-            return resp.location(self.route.url(dict(error='exists', **form.src)))
+            return resp.location(self.route.url(req, dict(error='exists', **form.src)))
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.route.url())
+        return resp.location(Home.route.url(req))
