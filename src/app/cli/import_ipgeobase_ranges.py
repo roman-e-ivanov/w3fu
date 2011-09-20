@@ -1,12 +1,9 @@
 import sys
 
-from w3fu.storage.base import Storage
-
-from app.collections.geo import Places
-from app.documents.geo import IpRange
+from app.storage import storage
+from app.storage.documents.geo import IpRange
 
 
-storage = Storage([Places])
 places = {}
 for line in sys.stdin:
     (begin, end, _, country, ext_id) = line.split('\t')[:5]

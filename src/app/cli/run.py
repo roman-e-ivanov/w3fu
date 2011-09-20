@@ -1,7 +1,6 @@
 from wsgiref.util import setup_testing_defaults
 
-from w3fu import config
-
+from app import config
 from app.wsgi import app
 
 

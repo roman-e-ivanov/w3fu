@@ -1,5 +1,9 @@
+import os
+
 from w3fu.web.resources import Middleware
 from w3fu.data.dumpers import JsonDumper, XmlDumper
+
+from app import config
 
 
 class json(Middleware):
@@ -18,6 +22,8 @@ class json(Middleware):
 class xml(Middleware):
 
     def __init__(self, xslt=None, format='xml'):
+        if xslt is not None:
+            xslt = os.path.join(config.xsl_path, xslt)
         self._dumper = XmlDumper(format, xslt)
 
     def _handler(self, res, app, req, handler):

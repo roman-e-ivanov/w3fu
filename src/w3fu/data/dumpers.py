@@ -1,9 +1,7 @@
-import os
 from lxml import etree
 from json import dumps
 from time import mktime
 
-from w3fu import config
 from w3fu.data.util import b64e
 
 
@@ -43,8 +41,7 @@ class XmlDumper(Dumper):
         super(XmlDumper, self).__init__(format)
         self._xslt = None
         if xslt is not None:
-            path = os.path.join(config.xsl_path, xslt)
-            self._xslt = etree.XSLT(etree.parse(path))
+            self._xslt = etree.XSLT(etree.parse(xslt))
         self._format = format
 
     def dump(self, data, name, no_xslt=False):

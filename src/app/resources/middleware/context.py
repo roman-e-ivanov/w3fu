@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from w3fu import config
 from w3fu.web.base import Response
 from w3fu.web.resources import Middleware
+
+from app import config
 
 
 class user(Middleware):

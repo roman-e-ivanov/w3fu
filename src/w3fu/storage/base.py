@@ -1,13 +1,11 @@
 from pymongo import Connection
 
-from w3fu import config
-
 
 class Storage(object):
 
-    def __init__(self, collections):
-        self._connection = Connection(config.db_host, config.db_port)
-        self._db = self._connection[config.db_name]
+    def __init__(self, host, port, dbname, collections):
+        self._connection = Connection(host, port)
+        self._db = self._connection[dbname]
         self._collections = {}
         for cls in collections:
             collection = cls(self, self._db[cls.name()])
