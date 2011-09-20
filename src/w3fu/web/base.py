@@ -2,6 +2,17 @@ from Cookie import SimpleCookie, Morsel
 from cgi import FieldStorage
 
 
+STATUS_STRINGS = {200: '200 OK',
+                  301: '301 Moved Permanently',
+                  302: '302 Found',
+                  304: '304 Not Modified',
+                  403: '403 Forbidden',
+                  404: '404 Not Found',
+                  405: '405 Method Not Allowed',
+                  500: '500 Internal Server Error',
+                  503: '503 Service Unavailable'}
+
+
 class Application(object):
 
     def __init__(self, controller, storage):
@@ -12,6 +23,15 @@ class Application(object):
         req = Request(self, environ)
         resp = self.controller.dispatch(self, req)
         return resp.output(start_response)
+
+    def debug(self, environ):
+        def start_response(status, headers):
+            print(status)
+            for name, value in headers:
+                print('{0}: {1}'.format(name, value))
+        for data in self(environ, start_response):
+            print
+            print(data)
 
 
 class Request(object):
@@ -27,17 +47,6 @@ class Request(object):
         self.cookie = SimpleCookie(env.get('HTTP_COOKIE', ''))
         self.fs = FieldStorage(fp=env['wsgi.input'], environ=env,
                                keep_blank_values=True)
-
-
-STATUS_STRINGS = {200: '200 OK',
-                  301: '301 Moved Permanently',
-                  302: '302 Found',
-                  304: '304 Not Modified',
-                  403: '403 Forbidden',
-                  404: '404 Not Found',
-                  405: '405 Method Not Allowed',
-                  500: '500 Internal Server Error',
-                  503: '503 Service Unavailable'}
 
 
 class Response(object):
