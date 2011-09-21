@@ -4,4 +4,4 @@ from app import config
 from app.storage.collections import collections
 
 
-storage = Storage(config.db_host, config.db_port, config.db_name, collections)
+storage = Storage(config.db_uri, config.db_name, collections)

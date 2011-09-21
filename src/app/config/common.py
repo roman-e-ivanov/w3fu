@@ -9,8 +9,7 @@ cli_path_info = '/register'
 cli_query_string = ''
 cli_http_cookie = ''
 
-db_host = 'localhost'
-db_port = 27017
+db_uri = 'mongodb://localhost'
 db_name = 'w3fu'
 
 session_cookie = 'u'

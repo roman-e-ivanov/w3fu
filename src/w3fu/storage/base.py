@@ -3,8 +3,8 @@ from pymongo import Connection
 
 class Storage(object):
 
-    def __init__(self, host, port, dbname, collections):
-        self._connection = Connection(host, port)
+    def __init__(self, uri, dbname, collections):
+        self._connection = Connection(uri)
         self._db = self._connection[dbname]
         self._collections = {}
         for cls in collections:
