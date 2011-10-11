@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 
 from app.storage import storage
