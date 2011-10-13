@@ -11,6 +11,7 @@
 	}
 	a:hover {
 		color:green;
+		text-decoration: underline;
 	}
 	
 	
@@ -285,6 +286,7 @@
 }
 
 .region-line a:hover {
-	background:#ccccff;
+	/*background:#ccccff;*/
 	color:#000;
+	
 }
