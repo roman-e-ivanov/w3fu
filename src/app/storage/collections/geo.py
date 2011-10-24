@@ -29,3 +29,8 @@ class Places(Collection):
     def find_pattern(self, pattern):
         return self._collection.find({'pattern': {'$regex': '^' + pattern.lower()}}
                                      ).sort('pattern').limit(10)
+
+    @wrapped
+    @errorsafe
+    def find_name(self, name):
+        return self._collection.find_one({'pattern': name.lower()})
