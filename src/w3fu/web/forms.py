@@ -98,3 +98,12 @@ class IntArg(Arg):
             (self._max is not None and x > self._max)):
             raise ArgRangeError
         return x
+
+
+class BoolArg(Arg):
+
+    def __init__(self, name):
+        super(IntArg, self).__init__(name, default=False)
+
+    def _process(self, value):
+        return value and True or False
