@@ -103,7 +103,7 @@ class IntArg(Arg):
 class BoolArg(Arg):
 
     def __init__(self, name):
-        super(IntArg, self).__init__(name, default=False)
+        super(BoolArg, self).__init__(name, default=False)
 
     def _process(self, value):
         return value and True or False
