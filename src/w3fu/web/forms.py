@@ -1,4 +1,15 @@
 import re
+from urllib import urlencode
+
+
+class UnpackError(Exception):
+
+    def __init__(self, errors):
+        self._errors = errors
+        super(UnpackError, self).__init__()
+
+    def dump(self, format):
+        return [error.dump(format) for error in self._errors]
 
 
 class ArgError(Exception):
@@ -15,64 +26,80 @@ class ArgTypeError(ArgError): pass
 class ArgRangeError(ArgError): pass
 
 
-class FormMeta(type):
+class Packer(object):
 
-    def __init__(cls, name, bases, attrs):
-        cls.args = {}
-        for name, attr in attrs.iteritems():
-            if hasattr(attr, 'process'):
-                cls.args[name] = attr
-        super(FormMeta, cls).__init__(name, bases, attrs)
+    def __init__(self, **args):
+        self._args = args
+        self._fields = set()
+        for arg in args.itervalues():
+            self._fields.update(arg.fields())
+
+    def unpack(self, packed, strict):
+        unpacked = {}
+        errors = []
+        for name, arg in self._args.iteritems():
+            try:
+                unpacked[name] = arg.unpack(packed, strict)
+            except ArgError as e:
+                errors.append(e)
+        if errors:
+            raise UnpackError(errors)
+        return unpacked
+
+    def pack(self, unpacked):
+        packed = {}
+        for name, value in unpacked.iteritems():
+            self._args[name].pack(value, packed)
+        return packed
 
 
-class Form(object):
+class Form(Packer):
 
-    __metaclass__ = FormMeta
+    def unpack(self, fs, strict=False):
+        packed = dict([(k, fs.getfirst(k).decode('utf-8'))
+                       for k in fs.keys()])
+        return super(Form, self).unpack(packed, strict)
 
-    def __init__(self, fs, strict=False):
-        self.src = dict([(k, fs.getfirst(k).decode('utf-8')) for k in fs.keys()])
-        self.err = {}
-        self.data = {}
-        for name, arg in self.args.iteritems():
-            self.data[name] = arg.process(self.src, self.err, strict)
+    def pack(self, **unpacked):
+        packed = super(Form, self).pack(unpacked)
+        return urlencode([(k, v.encode('utf-8'))
+                          for k, v in packed.iteritems()])
 
-    def dump(self, format):
-        return {'source': self.src, 'errors': self.err}
+    def query(self, fs):
+        return urlencode([src for arg in self._args
+                          for src in arg.src(fs)])
 
 
-class Arg(object):
+class SingleArg(object):
 
-    def __init__(self, name, default=None, clear=False):
-        self._name = name
+    def __init__(self, field, default=None, clear=False):
+        self._field = field
         self._default = default
         self._clear = clear
 
-    def process(self, src, err, strict):
+    def unpack(self, packed, strict):
         try:
-            return self._process(src[self._name])
+            return self._unpack(packed[self._name])
         except KeyError:
             if strict:
-                err[self._name] = ArgAbsent()
+                raise ArgAbsent
             return self._default
-        except ArgError as e:
-            err[self._name] = e
-        finally:
-            if self._clear:
-                src[self._name] = ''
-        return self._default
+
+    def src(self, fs):
+        return [(self._field, '' if self._clear else fs.getfirst(self._field))]
 
 
-class StrArg(Arg):
+class StrArg(SingleArg):
 
-    def __init__(self, name, trim=True, pattern=None,
+    def __init__(self, field, trim=True, pattern=None,
                  min_size=0, max_size=65535, **kwargs):
-        super(StrArg, self).__init__(name, **kwargs)
+        super(StrArg, self).__init__(field, **kwargs)
         self._trim = trim
         self._min_size = min_size
         self._max_size = max_size
         self._pattern = None if pattern is None else re.compile(pattern)
 
-    def _process(self, value):
+    def _unpack(self, value):
         if self._trim:
             s = value.strip()
         if not self._min_size <= len(s) <= self._max_size:
@@ -82,14 +109,14 @@ class StrArg(Arg):
         return s
 
 
-class IntArg(Arg):
+class IntArg(SingleArg):
 
-    def __init__(self, name, min=0, max=None, **kwargs):
-        super(IntArg, self).__init__(name, **kwargs)
+    def __init__(self, field, min=0, max=None, **kwargs):
+        super(IntArg, self).__init__(field, **kwargs)
         self._min = min
         self._max = max
 
-    def _process(self, value):
+    def _unpack(self, value):
         try:
             x = int(value)
         except ValueError:
@@ -100,10 +127,10 @@ class IntArg(Arg):
         return x
 
 
-class BoolArg(Arg):
+class BoolArg(SingleArg):
 
-    def __init__(self, name):
-        super(BoolArg, self).__init__(name, default=False)
+    def __init__(self, field):
+        super(BoolArg, self).__init__(field, default=False)
 
-    def _process(self, value):
+    def _unpack(self, value):
         return value and True or False
