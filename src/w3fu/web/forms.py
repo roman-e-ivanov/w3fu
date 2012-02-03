@@ -2,16 +2,6 @@ import re
 from urllib import urlencode
 
 
-class UnpackError(Exception):
-
-    def __init__(self, errors):
-        self._errors = errors
-        super(UnpackError, self).__init__()
-
-    def dump(self, format):
-        return [error.dump(format) for error in self._errors]
-
-
 class ArgError(Exception):
 
     _params = {}
@@ -20,73 +10,85 @@ class ArgError(Exception):
         return {self.__class__.__name__.lower(): self._params}
 
 
-class ArgAbsent(ArgError): pass
+class ArgAbsentError(ArgError): pass
 class ArgSizeError(ArgError): pass
 class ArgTypeError(ArgError): pass
 class ArgRangeError(ArgError): pass
 
 
-class Packer(object):
+class FormMeta(type):
 
-    def __init__(self, **args):
-        self._args = args
-        self._fields = set()
-        for arg in args.itervalues():
-            self._fields.update(arg.fields())
+    def __init__(cls, name, bases, attrs):
+        cls.args = {}
+        for name, attr in attrs.iteritems():
+            if hasattr(attr, 'unpack'):
+                cls.args[name] = attr
+        super(FormMeta, cls).__init__(name, bases, attrs)
 
-    def unpack(self, packed, strict):
-        unpacked = {}
-        errors = []
-        for name, arg in self._args.iteritems():
-            try:
-                unpacked[name] = arg.unpack(packed, strict)
-            except ArgError as e:
-                errors.append(e)
-        if errors:
-            raise UnpackError(errors)
-        return unpacked
 
-    def pack(self, unpacked):
+class Form(object):
+
+    __metaclass__ = FormMeta
+
+    def __init__(self, fs, strict=False):
+        self.data = {}
+        self.errors = {}
+        self._unpack(self._decode(fs), strict)
+
+    def dump(self, format=None):
+        return {'data': self.data, 'errors': self.errors}
+
+    def query(self):
+        return self._encode(self._pack())
+
+    def _pack(self, unpacked):
         packed = {}
-        for name, value in unpacked.iteritems():
-            self._args[name].pack(value, packed)
+        for name, value in self.data.iteritems():
+            self.args[name].pack(value, packed)
         return packed
 
+    def _unpack(self, packed, strict):
+        for name, arg in self.args.iteritems():
+            try:
+                self.data[name] = arg.unpack(packed)
+            except ArgAbsentError as e:
+                if strict:
+                    self.errors[name] = e
+                else:
+                    self.data[name] = None
+            except ArgError as e:
+                self.errors[name] = e
 
-class Form(Packer):
-
-    def unpack(self, fs, strict=False):
-        packed = dict([(k, fs.getfirst(k).decode('utf-8'))
-                       for k in fs.keys()])
-        return super(Form, self).unpack(packed, strict)
-
-    def pack(self, **unpacked):
-        packed = super(Form, self).pack(unpacked)
+    def _encode(self, packed):
         return urlencode([(k, v.encode('utf-8'))
                           for k, v in packed.iteritems()])
 
-    def query(self, fs):
-        return urlencode([src for arg in self._args
-                          for src in arg.src(fs)])
+    def _decode(self, fs):
+        return dict([(k, fs.getfirst(k).decode('utf-8'))
+                     for k in fs.keys()])
 
 
 class SingleArg(object):
 
     def __init__(self, field, default=None, clear=False):
         self._field = field
-        self._default = default
         self._clear = clear
+        self._default = default
 
-    def unpack(self, packed, strict):
+    def unpack(self, packed):
         try:
-            return self._unpack(packed[self._name])
+            return self._unpack(packed[self._field])
         except KeyError:
-            if strict:
-                raise ArgAbsent
-            return self._default
+            if self._default is None:
+                raise ArgAbsentError
+            else:
+                return self._default
 
-    def src(self, fs):
-        return [(self._field, '' if self._clear else fs.getfirst(self._field))]
+    def pack(self, value, packed):
+        packed[self._field] = '' if self._clear else self._pack(value)
+
+    def _pack(self, value):
+        return str(value)
 
 
 class StrArg(SingleArg):

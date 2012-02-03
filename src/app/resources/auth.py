@@ -19,6 +19,7 @@ class AuthForm(Form):
                    min_size=4, max_size=32)
     password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$', clear=True,
                       min_size=4, max_size=32)
+    error = StrArg('error', default='')
 
 
 LoginForm = AuthForm
@@ -32,19 +33,17 @@ class Login(Resource):
     @xml('login-html.xsl')
     @user()
     def get(self, app, req):
-        resp = Response(200, {'form': LoginForm(req.fs)})
-        if req.fs.getfirst('error') == 'auth':
-            resp.content['error'] = {'auth': {}}
-        return resp
+        return Response(200, {'form': LoginForm(req.fs)})
 
     def post(self, app, req):
         form = LoginForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.route.url(req, form.src))
+            return resp.location(self.route.url(req, form.query()))
         user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
-            return resp.location(self.route.url(req, dict(error='auth', **form.src)))
+            form.data['error'] = 'auth'
+            return resp.location(self.route.url(req, form.query()))
         session = Session.new(app.storage.users)
         user.push_session(session)
         resp.set_cookie(config.session_cookie, session.id, session.expires)
@@ -65,20 +64,18 @@ class Register(Resource):
 
     @xml('register-html.xsl')
     def get(self, app, req):
-        resp = Response(200, {'form': RegisterForm(req.fs)})
-        if req.fs.getfirst('error') == 'exists':
-            resp.content['error'] = {'exists': {}}
-        return resp
+        return Response(200, {'form': RegisterForm(req.fs)})
 
     def post(self, app, req):
         form = RegisterForm(req.fs, True)
         resp = Response(302)
         if form.err:
-            return resp.location(self.route.url(req, form.src))
+            return resp.location(self.route.url(req, form.query()))
         user = User.new(app.storage.users, form.data['login'], form.data['password'])
         session = Session.new(app.storage.users)
         user.sessions = [session]
         if not user.insert():
-            return resp.location(self.route.url(req, dict(error='exists', **form.src)))
+            form.data['error'] = 'exists'
+            return resp.location(self.route.url(req, form.query()))
         resp.set_cookie(config.session_cookie, session.id, session.expires)
         return resp.location(Home.route.url(req))
