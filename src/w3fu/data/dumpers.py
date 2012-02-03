@@ -53,6 +53,11 @@ class XmlDumper(Dumper):
     def _element(self, name, data):
         def worker(root, name, data, extend=True):
             name = name.replace('_', '-')
+            if data is None:
+                return
+            if hasattr(data, 'dump'):
+                worker(root, name, data.dump(self._format), extend)
+                return
             if isinstance(data, basestring):
                 if extend:
                     etree.SubElement(root, name).text = data
@@ -69,11 +74,6 @@ class XmlDumper(Dumper):
                 for v in data:
                     worker(e, 'i', v)
                 return
-            try:
-                worker(root, name, data.dump(self._format), extend)
-                return
-            except AttributeError:
-                pass
             s = self._default(data)
             if extend:
                 etree.SubElement(root, name).text = s
