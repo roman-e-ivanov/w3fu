@@ -38,7 +38,7 @@ class Login(Resource):
     def post(self, app, req):
         form = LoginForm(req.fs, True)
         resp = Response(302)
-        if form.err:
+        if form.errors:
             return resp.location(self.route.url(req, form.query()))
         user = app.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
@@ -69,7 +69,7 @@ class Register(Resource):
     def post(self, app, req):
         form = RegisterForm(req.fs, True)
         resp = Response(302)
-        if form.err:
+        if form.errors:
             return resp.location(self.route.url(req, form.query()))
         user = User.new(app.storage.users, form.data['login'], form.data['password'])
         session = Session.new(app.storage.users)

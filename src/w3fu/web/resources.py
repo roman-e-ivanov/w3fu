@@ -35,11 +35,9 @@ class Route(object):
     def match(self, path):
         return self._cpattern.match(path)
 
-    def url(self, req, query={}, **kwargs):
+    def url(self, req, query='', **kwargs):
         path = self._pattern.format(**kwargs)
-        return urlunsplit((self._scheme, req.host, path,
-                           urlencode([(k, v.encode('utf-8'))
-                                      for k, v in query.iteritems()]), ''))
+        return urlunsplit((self._scheme, req.host, path, query, ''))
 
 
 class Resource(object):

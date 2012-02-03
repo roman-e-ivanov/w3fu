@@ -41,7 +41,7 @@ class Form(object):
     def query(self):
         return self._encode(self._pack())
 
-    def _pack(self, unpacked):
+    def _pack(self):
         packed = {}
         for name, value in self.data.iteritems():
             self.args[name].pack(value, packed)
