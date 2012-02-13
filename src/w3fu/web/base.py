@@ -36,17 +36,43 @@ class Application(object):
 
 class Request(object):
 
-    def __init__(self, app, env):
+    def __init__(self, app, environ):
         self.app = app
-        self._env = env
-        self.method = env.get('REQUEST_METHOD', '').lower()
-        self.scheme = env.get('wsgi.url_scheme')
-        self.host = env.get('HTTP_HOST')
-        self.referer = env.get('HTTP_REFERER')
-        self.path = env.get('PATH_INFO', '')
-        self.cookie = SimpleCookie(env.get('HTTP_COOKIE', ''))
-        self.fs = FieldStorage(fp=env['wsgi.input'], environ=env,
-                               keep_blank_values=True)
+        self.environ = environ
+
+    @property
+    def method(self):
+        return self.environ.get('REQUEST_METHOD', '')
+
+    @property
+    def scheme(self):
+        return self.environ.get('wsgi.url_scheme', 'http')
+
+    @property
+    def host(self):
+        return self.environ.get('HTTP_HOST', '')
+
+    @property
+    def path(self):
+        return self.environ.get('PATH_INFO', '')
+
+    @property
+    def cookie(self):
+        try:
+            return self._cookie
+        except AttributeError:
+            self._cookie = SimpleCookie(self.environ.get('HTTP_COOKIE', ''))
+            return self._cookie
+
+    @property
+    def fs(self):
+        try:
+            return self._fs
+        except AttributeError:
+            self._fs = FieldStorage(fp=self.environ['wsgi.input'],
+                                    environ=self.environ,
+                                    keep_blank_values=True)
+            return self._fs
 
 
 class Response(object):

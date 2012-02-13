@@ -51,7 +51,7 @@ class Resource(object):
         self.req = req
 
     def run(self, app, req):
-        method = req.method
+        method = req.method.lower()
         if method == 'post':
             overloaded = req.fs.getfirst('method')
             if overloaded in OVERLOADABLE:
