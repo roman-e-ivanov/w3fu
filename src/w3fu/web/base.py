@@ -13,15 +13,24 @@ STATUS_STRINGS = {200: '200 OK',
                   503: '503 Service Unavailable'}
 
 
+class Context(dict):
+
+    def __getattr__(self, name):
+        return self[name]
+
+    def __setattr__(self, name, value):
+        self[name] = value
+
+
 class Application(object):
 
-    def __init__(self, controller, storage):
-        self.controller = controller
-        self.storage = storage
+    def __init__(self, context, controller):
+        self.ctx = context
+        self._controller = controller
 
     def __call__(self, environ, start_response):
-        req = Request(self, environ)
-        resp = self.controller.dispatch(self, req)
+        req = Request(environ)
+        resp = self._controller.dispatch(req)
         return resp.output(start_response)
 
     def debug(self, environ):
@@ -36,8 +45,7 @@ class Application(object):
 
 class Request(object):
 
-    def __init__(self, app, environ):
-        self.app = app
+    def __init__(self, environ):
         self.environ = environ
 
     @property

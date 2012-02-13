@@ -11,8 +11,8 @@ class json(Middleware):
     def __init__(self, format='json'):
         self._dumper = JsonDumper(format)
 
-    def _handler(self, res, app, req, handler):
-        resp = handler(res, app, req)
+    def _handler(self, res, req, handler):
+        resp = handler(res, req)
         if resp.status == 200:
             resp.ctype = 'application/json'
             resp.content = self._dumper.dump(resp.content).encode('utf-8')
@@ -26,8 +26,8 @@ class xml(Middleware):
             xslt = os.path.join(config.xsl_path, xslt)
         self._dumper = XmlDumper(format, xslt)
 
-    def _handler(self, res, app, req, handler):
-        resp = handler(res, app, req)
+    def _handler(self, res, req, handler):
+        resp = handler(res, req)
         if resp.status == 200:
             resp.ctype = 'application/xhtml+xml'
             resp.content = self._dumper.dump(resp.content, res.name(),

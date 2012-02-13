@@ -32,28 +32,28 @@ class Login(Resource):
 
     @xml('login-html.xsl')
     @user()
-    def get(self, app, req):
+    def get(self, req):
         return Response(200, {'form': LoginForm(req.fs)})
 
-    def post(self, app, req):
+    def post(self, req):
         form = LoginForm(req.fs, True)
         resp = Response(302)
         if form.errors:
             return resp.location(self.route.url(req, form.query()))
-        user = app.storage.users.find_login(form.data['login'])
+        user = self.ctx.storage.users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             form.data['error'] = 'auth'
             return resp.location(self.route.url(req, form.query()))
-        session = Session.new(app.storage.users)
+        session = Session.new(self.ctx.storage.users)
         user.push_session(session)
         resp.set_cookie(config.session_cookie, session.id, session.expires)
         return resp.location(Home.route.url(req))
 
-    def delete(self, app, req):
+    def delete(self, req):
         resp = Response(302).location(req.referer or Index.route.url(req))
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
-            app.storage.users.pull_session(session_id.value)
+            self.ctx.storage.users.pull_session(session_id.value)
         resp.set_cookie(config.session_cookie, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -63,16 +63,16 @@ class Register(Resource):
     route = Route('/register')
 
     @xml('register-html.xsl')
-    def get(self, app, req):
+    def get(self, req):
         return Response(200, {'form': RegisterForm(req.fs)})
 
-    def post(self, app, req):
+    def post(self, req):
         form = RegisterForm(req.fs, True)
         resp = Response(302)
         if form.errors:
             return resp.location(self.route.url(req, form.query()))
-        user = User.new(app.storage.users, form.data['login'], form.data['password'])
-        session = Session.new(app.storage.users)
+        user = User.new(self.ctx.storage.users, form.data['login'], form.data['password'])
+        session = Session.new(self.ctx.storage.users)
         user.sessions = [session]
         if not user.insert():
             form.data['error'] = 'exists'

@@ -22,9 +22,9 @@ class PlaceSuggest(Resource):
     route = Route('/place/suggest')
 
     @json()
-    def get(self, app, req):
+    def get(self, req):
         form = PlaceSuggestForm(req.fs)
-        places = app.storage.places.find_pattern(form.data['pattern'])
+        places = self.ctx.storage.places.find_pattern(form.data['pattern'])
         return Response(200, {'found': places})
 
 
@@ -34,13 +34,13 @@ class Place(Resource):
 
     @xml()
     @user()
-    def get(self, app, req):
+    def get(self, req):
         resp = Response(200, {'form': PlaceForm(req.fs)})
         if req.fs.getfirst('error') == 'notfound':
             resp.content['error'] = {'notfound': {}}
         return resp
 
-    def post(self, app, req):
+    def post(self, req):
         form = PlaceForm(req.fs, True)
         resp = Response(302)
         if form.err:
@@ -49,6 +49,6 @@ class Place(Resource):
             place = None
             # place = autodetect
         else:
-            place = app.storage.places.find_name(form.data['name'])
+            place = self.ctx.storage.places.find_name(form.data['name'])
         if place is None:
             return resp.location(self.route.url(req, dict(error='notfound', **form.src)))

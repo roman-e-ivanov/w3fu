@@ -10,15 +10,16 @@ OVERLOADABLE = frozenset(['put', 'delete'])
 
 class Controller(object):
 
-    def __init__(self, resources):
+    def __init__(self, context, resources):
+        self.ctx = context
         self._resources = resources
 
-    def dispatch(self, app, req):
-        for res_cls in self._resources:
-            args = res_cls.route.match(req.path)
+    def dispatch(self, req):
+        for res in self._resources:
+            args = res.route.match(req.path)
             if args:
                 req.args = args
-                return res_cls(app, req).run(app, req)
+                return res(req)
         return Response(404)
 
 
@@ -46,11 +47,10 @@ class Resource(object):
     def name(cls):
         return cls.__name__.lower()
 
-    def __init__(self, app, req):
-        self.app = app
-        self.req = req
+    def __init__(self, context):
+        self.ctx = context
 
-    def run(self, app, req):
+    def __call__(self, req):
         method = req.method.lower()
         if method == 'post':
             overloaded = req.fs.getfirst('method')
@@ -59,12 +59,12 @@ class Resource(object):
         handler = getattr(self, method, None)
         if handler is None:
             return Response(405)
-        return handler(app, req)
+        return handler(req)
 
 
 class Middleware(object):
 
     def __call__(self, handler):
-        def f(res, app, req):
-            return self._handler(res, app, req, handler)
+        def f(res, req):
+            return self._handler(res, req, handler)
         return f
