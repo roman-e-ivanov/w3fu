@@ -12,14 +12,14 @@ class user(Middleware):
         self._required = required
 
     def _handler(self, res, req, handler):
-        req.user = None
+        req.ctx.user = None
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
-            req.user = res.ctx.storage.users.find_valid_session(session_id.value,
-                                                                datetime.utcnow())
+            req.ctx.user = res.ctx.storage.users.find_valid_session(session_id.value,
+                                                                    datetime.utcnow())
         if self._required and req.session is None:
             return Response(403)
         resp = handler(res, req)
-        if req.user is not None and resp.status == 200:
-            resp.content['user'] = req.user
+        if req.ctx.user is not None and resp.status == 200:
+            resp.content['user'] = req.ctx.user
         return resp

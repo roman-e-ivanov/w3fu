@@ -47,6 +47,7 @@ class Request(object):
 
     def __init__(self, environ):
         self.environ = environ
+        self.ctx = Context()
 
     @property
     def method(self):

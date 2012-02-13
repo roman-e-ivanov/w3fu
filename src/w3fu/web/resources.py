@@ -18,7 +18,7 @@ class Controller(object):
         for res in self._resources:
             args = res.route.match(req.path)
             if args:
-                req.args = args
+                req.ctx.args = args
                 return res(req)
         return Response(404)
 
