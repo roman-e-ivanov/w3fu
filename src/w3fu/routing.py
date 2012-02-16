@@ -10,12 +10,13 @@ class Router(object):
     def __init__(self, resources):
         self._resources = resources
 
-    def dispatch(self, req):
+    def __call__(self, req):
         for res in self._resources:
             args = res.route.match(req.path)
-            if args:
-                req.ctx['args'] = args
-                return res(req)
+            if args is None:
+                continue
+            req.ctx['args'] = args
+            return res(req)
         return Response(404)
 
 
@@ -32,16 +33,16 @@ class Route(object):
         return urlunsplit((self._scheme, req.host, path, query, ''))
 
     def match(self, path):
-        return self._re.match(path)
+        match = self._re.match(path)
+        return self._unpack(match.groupdict()) if match else None
 
-    def unpack(self, match):
-        packed = match.groupdict()
+    def _unpack(self, packed):
         unpacked = {}
         for name, arg in self._args.iteritems():
             try:
                 unpacked[name] = arg.unpack(packed)
             except ArgError:
-                unpacked[name] = None
+                return None
         return unpacked
 
     def _compile(self):

@@ -24,13 +24,13 @@ class Context(dict):
 
 class Application(object):
 
-    def __init__(self, context, controller):
+    def __init__(self, context, handler):
         self.ctx = context
-        self._controller = controller
+        self._handler = handler
 
     def __call__(self, environ, start_response):
         req = Request(environ)
-        resp = self._controller.dispatch(req)
+        resp = self._handler(req)
         return resp.output(start_response)
 
     def debug(self, environ):
