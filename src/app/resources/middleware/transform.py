@@ -14,7 +14,7 @@ class json(Middleware):
     def _handler(self, res, req, handler):
         resp = handler(res, req)
         if resp.status == 200:
-            resp.ctype = 'application/json'
+            resp.content_type = 'application/json'
             resp.content = self._dumper.dump(resp.content).encode('utf-8')
         return resp
 
@@ -29,7 +29,7 @@ class xml(Middleware):
     def _handler(self, res, req, handler):
         resp = handler(res, req)
         if resp.status == 200:
-            resp.ctype = 'application/xhtml+xml'
+            resp.content_type = 'application/xhtml+xml'
             resp.content = self._dumper.dump(resp.content, res.name(),
                                         'no-xslt' in req.fs)
         return resp

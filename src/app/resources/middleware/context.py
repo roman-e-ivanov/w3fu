@@ -4,6 +4,7 @@ from w3fu.base import Response
 from w3fu.resources import Middleware
 
 from app import config
+from app.storage.collections.auth import Users
 
 
 class user(Middleware):
@@ -15,10 +16,11 @@ class user(Middleware):
         req.ctx.user = None
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
-            req.ctx.user = res.ctx.storage.users.find_valid_session(session_id.value,
-                                                                    datetime.utcnow())
+            users = Users(res.ctx.db)
+            req.ctx.user = users.find_valid_session(session_id.value,
+                                                    datetime.utcnow())
         if self._required and req.session is None:
-            return Response(403)
+            return Response.forbidden()
         resp = handler(res, req)
         if req.ctx.user is not None and resp.status == 200:
             resp.content['user'] = req.ctx.user

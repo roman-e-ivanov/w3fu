@@ -30,7 +30,7 @@ class PlaceSuggest(Resource):
         form = PlaceSuggestForm(req.fs)
         places = Places(self.ctx.db)
         found = places.find_pattern(form.data['pattern'])
-        return Response(200, {'found': found})
+        return Response.ok({'found': found})
 
 
 class Place(Resource):
@@ -40,13 +40,12 @@ class Place(Resource):
     @xml()
     @user()
     def get(self, req):
-        return Response(200, {'form': PlaceForm(req.fs)})
+        return Response.ok({'form': PlaceForm(req.fs)})
 
     def post(self, req):
         form = PlaceForm(req.fs, True)
-        resp = Response(302)
         if form.err:
-            return resp.location(self.route.url(req, form.src))
+            return Response.redirect(self.route.url(req, form.src))
         if form.data['auto']:
             place = None
             # place = autodetect
@@ -55,4 +54,4 @@ class Place(Resource):
             place = places.find_name(form.data['name'])
         if place is None:
             form.data['error'] = 'notfound'
-            return resp.location(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(req, form.query()))

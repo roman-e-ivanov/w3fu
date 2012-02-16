@@ -24,7 +24,7 @@ class Resource(object):
                 method = overloaded
         handler = getattr(self, method, None)
         if handler is None:
-            return Response(405)
+            return Response.method_not_allowed()
         return handler(req)
 
 

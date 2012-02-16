@@ -2,17 +2,6 @@ from Cookie import SimpleCookie, Morsel
 from cgi import FieldStorage
 
 
-STATUS_STRINGS = {200: '200 OK',
-                  301: '301 Moved Permanently',
-                  302: '302 Found',
-                  304: '304 Not Modified',
-                  403: '403 Forbidden',
-                  404: '404 Not Found',
-                  405: '405 Method Not Allowed',
-                  500: '500 Internal Server Error',
-                  503: '503 Service Unavailable'}
-
-
 class Context(dict):
 
     def __getattr__(self, name):
@@ -31,7 +20,7 @@ class Application(object):
     def __call__(self, environ, start_response):
         req = Request(environ)
         resp = self._handler(req)
-        return resp.output(start_response)
+        return resp(start_response)
 
     def debug(self, environ):
         def start_response(status, headers):
@@ -86,24 +75,50 @@ class Request(object):
 
 class Response(object):
 
-    def __init__(self, status=200, content=None, ctype='text/plain'):
+    @classmethod
+    def ok(cls, content=None, content_type='application/xhtml+xml'):
+        return cls(200, 'OK', content, content_type)
+
+    @classmethod
+    def redirect(cls, url):
+        return cls(302, 'Found').header('Location', url)
+
+    @classmethod
+    def forbidden(cls):
+        return cls(403, 'Forbidden')
+
+    @classmethod
+    def not_found(cls):
+        return cls(404, 'Not Found')
+
+    @classmethod
+    def method_not_allowed(cls):
+        return cls(405, 'Method Not Allowed')
+
+    @classmethod
+    def error(cls, content=None):
+        return cls(500, 'Internal Server Error', content)
+
+    @classmethod
+    def unavailable(cls):
+        return cls(503, 'Service Unavailable')
+
+    def __init__(self, status=200, reason='OK',
+                 content=None, content_type='text/plain'):
         self.status = status
-        self.ctype = ctype
+        self.reason = reason
         self.content = content
+        self.content_type = content_type
         self.headers = []
 
-    def output(self, start_response):
+    def __call__(self, start_response):
         if self.content is not None:
-            self.header('Content-Type', self.ctype + '; charset=UTF-8')
-        start_response(STATUS_STRINGS[self.status], self.headers)
+            self.header('Content-Type', self.content_type + '; charset=UTF-8')
+        start_response(str(self.status) + ' ' + self.reason, self.headers)
         return [] if self.content is None else [self.content]
 
     def header(self, name, value):
         self.headers.append((name, value))
-        return self
-
-    def location(self, url):
-        self.header('Location', url)
         return self
 
     def set_cookie(self, name, value, expires=None, path='/'):

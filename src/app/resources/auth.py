@@ -36,29 +36,29 @@ class Login(Resource):
     @xml('login-html.xsl')
     @user()
     def get(self, req):
-        return Response(200, {'form': LoginForm(req.fs)})
+        return Response.ok({'form': LoginForm(req.fs)})
 
     def post(self, req):
         form = LoginForm(req.fs, True)
-        resp = Response(302)
         if form.errors:
-            return resp.location(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(req, form.query()))
         users = Users(self.ctx.db)
         user = users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             form.data['error'] = 'auth'
-            return resp.location(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(req, form.query()))
         session = Session.new(users)
         user.push_session(session)
+        resp = Response.redirect(Home.route.url(req))
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.route.url(req))
+        return resp
 
     def delete(self, req):
-        resp = Response(302).location(req.referer or Index.route.url(req))
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
             users = Users(self.ctx.db)
             users.pull_session(session_id.value)
+        resp = Response.redirect(req.referer or Index.route.url(req))
         resp.set_cookie(config.session_cookie, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -69,19 +69,19 @@ class Register(Resource):
 
     @xml('register-html.xsl')
     def get(self, req):
-        return Response(200, {'form': RegisterForm(req.fs)})
+        return Response.ok({'form': RegisterForm(req.fs)})
 
     def post(self, req):
         form = RegisterForm(req.fs, True)
-        resp = Response(302)
         if form.errors:
-            return resp.location(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(req, form.query()))
         users = Users(self.ctx.db)
         user = User.new(users, form.data['login'], form.data['password'])
         session = Session.new(users)
         user.sessions = [session]
         if not users.insert(user):
             form.data['error'] = 'exists'
-            return resp.location(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(req, form.query()))
+        resp = Response.redirect(Home.route.url(req))
         resp.set_cookie(config.session_cookie, session.id, session.expires)
-        return resp.location(Home.route.url(req))
+        return resp

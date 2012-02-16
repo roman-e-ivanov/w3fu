@@ -14,7 +14,7 @@ class FirmsPublic(Resource):
     @xml()
     @user()
     def get(self, req):
-        return Response(200, {})
+        return Response.ok({})
 
 
 class FirmPublic(Resource):
@@ -26,8 +26,8 @@ class FirmPublic(Resource):
     def get(self, req):
         firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:
-            return Response(404)
-        return Response(200, {'firm': firm})
+            return Response.not_found()
+        return Response.ok({'firm': firm})
 
 
 class FirmCreateForm(Form):
@@ -42,18 +42,17 @@ class FirmsAdmin(Resource):
     @xml('firms-html.xsl')
     @user(required=True)
     def get(self, req):
-        return Response(200, {'form': FirmCreateForm(req.fs).dump()})
+        return Response.ok({'form': FirmCreateForm(req.fs).dump()})
 
     @user(required=True)
     def post(self, req):
-        resp = Response(302)
         form = FirmCreateForm(req.fs)
         if form.err:
-            return resp.location(self.url(req, form.src))
+            return Response.redirect(self.url(req, form.src))
         firm = Firm.new(name=form.data['name'], owner_id=req.session['user_id'])
         firm.insert(req.db)
         req.db.commit()
-        return resp.location(FirmAdmin.url(req, id=firm['id']))
+        return Response.redirect(FirmAdmin.url(req, id=firm['id']))
 
 
 class FirmAdmin(Resource):
@@ -65,5 +64,5 @@ class FirmAdmin(Resource):
     def get(self, req):
         firm = Firm.find(req.db, id=req.args['id'])
         if firm is None:
-            return Response(404)
-        return Response(200, {'firm': firm})
+            return Response.not_found()
+        return Response.ok({'firm': firm})

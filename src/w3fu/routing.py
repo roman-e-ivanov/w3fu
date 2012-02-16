@@ -17,7 +17,7 @@ class Router(object):
                 continue
             req.ctx['args'] = args
             return res(req)
-        return Response(404)
+        return Response.not_found()
 
 
 class Route(object):
