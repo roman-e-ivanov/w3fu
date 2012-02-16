@@ -1,6 +1,6 @@
 import os
 
-from w3fu.web.resources import Middleware
+from w3fu.resources import Middleware
 from w3fu.data.dumpers import JsonDumper, XmlDumper
 
 from app import config

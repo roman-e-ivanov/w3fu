@@ -1,6 +1,7 @@
 from w3fu.web.resources import Route, Resource
 from w3fu.web.base import Response
-from w3fu.web.forms import Form, IntArg
+from w3fu.web.forms import Form
+from w3fu.web.args import IntArg
 
 from app.resources.middleware.transform import json, xml
 

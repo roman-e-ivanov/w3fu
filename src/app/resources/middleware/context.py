@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from w3fu.web.base import Response
-from w3fu.web.resources import Middleware
+from w3fu.base import Response
+from w3fu.resources import Middleware
 
 from app import config
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
-from w3fu.web.resources import Route, Resource
-from w3fu.web.base import Response
-from w3fu.web.forms import Form, StrArg
+from w3fu.base import Response
+from w3fu.routing import Route
+from w3fu.resources import Resource, Form
+from w3fu.data.args import StrArg
 
 from app import config
 from app.resources.middleware.context import user

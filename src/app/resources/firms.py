@@ -1,5 +1,6 @@
 from w3fu.web.base import Response
-from w3fu.web.forms import Form, StrArg
+from w3fu.web.forms import Form
+from w3fu.web.args import StrArg
 from w3fu.web.resources import Route, Resource
 
 from app.resources.middleware.context import user
