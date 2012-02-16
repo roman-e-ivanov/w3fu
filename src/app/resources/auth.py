@@ -11,6 +11,8 @@ from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 from app.resources.home import Home
 from app.resources.index import Index
+
+from app.storage.collections.auth import Users
 from app.storage.documents.auth import User, Session
 
 
@@ -41,11 +43,12 @@ class Login(Resource):
         resp = Response(302)
         if form.errors:
             return resp.location(self.route.url(req, form.query()))
-        user = self.ctx.storage.users.find_login(form.data['login'])
+        users = Users(self.ctx.db)
+        user = users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
             form.data['error'] = 'auth'
             return resp.location(self.route.url(req, form.query()))
-        session = Session.new(self.ctx.storage.users)
+        session = Session.new(users)
         user.push_session(session)
         resp.set_cookie(config.session_cookie, session.id, session.expires)
         return resp.location(Home.route.url(req))
@@ -54,7 +57,8 @@ class Login(Resource):
         resp = Response(302).location(req.referer or Index.route.url(req))
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
-            self.ctx.storage.users.pull_session(session_id.value)
+            users = Users(self.ctx.db)
+            users.pull_session(session_id.value)
         resp.set_cookie(config.session_cookie, 0, datetime.utcfromtimestamp(0))
         return resp
 
@@ -72,10 +76,11 @@ class Register(Resource):
         resp = Response(302)
         if form.errors:
             return resp.location(self.route.url(req, form.query()))
-        user = User.new(self.ctx.storage.users, form.data['login'], form.data['password'])
-        session = Session.new(self.ctx.storage.users)
+        users = Users(self.ctx.db)
+        user = User.new(users, form.data['login'], form.data['password'])
+        session = Session.new(users)
         user.sessions = [session]
-        if not user.insert():
+        if not users.insert(user):
             form.data['error'] = 'exists'
             return resp.location(self.route.url(req, form.query()))
         resp.set_cookie(config.session_cookie, session.id, session.expires)

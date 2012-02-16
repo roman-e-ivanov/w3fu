@@ -40,11 +40,12 @@ class Collection(object):
     def name(cls):
         return cls.__name__.lower()
 
-    def __init__(self, storage, collection):
-        self.storage = storage
-        self._collection = collection
+    def __init__(self, database):
+        self._database = database
+        self._collection = database.collection(self.name())
+        self._ensure_indexes()
 
-    def ensure_indexes(self):
+    def _ensure_indexes(self):
         for index, kwargs in self._indexes:
             self._collection.ensure_index(index, **kwargs)
 

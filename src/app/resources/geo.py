@@ -6,6 +6,8 @@ from w3fu.data.args import StrArg, BoolArg
 from app.resources.middleware.transform import json, xml
 from app.resources.middleware.context import user
 
+from app.storage.collections.geo import Places
+
 
 class PlaceSuggestForm(Form):
 
@@ -16,6 +18,7 @@ class PlaceForm(Form):
 
     name = StrArg('name', min_size=0, max_size=100, default='')
     auto = BoolArg('auto')
+    error = StrArg('error', default='')
 
 
 class PlaceSuggest(Resource):
@@ -25,8 +28,9 @@ class PlaceSuggest(Resource):
     @json()
     def get(self, req):
         form = PlaceSuggestForm(req.fs)
-        places = self.ctx.storage.places.find_pattern(form.data['pattern'])
-        return Response(200, {'found': places})
+        places = Places(self.ctx.db)
+        found = places.find_pattern(form.data['pattern'])
+        return Response(200, {'found': found})
 
 
 class Place(Resource):
@@ -36,10 +40,7 @@ class Place(Resource):
     @xml()
     @user()
     def get(self, req):
-        resp = Response(200, {'form': PlaceForm(req.fs)})
-        if req.fs.getfirst('error') == 'notfound':
-            resp.content['error'] = {'notfound': {}}
-        return resp
+        return Response(200, {'form': PlaceForm(req.fs)})
 
     def post(self, req):
         form = PlaceForm(req.fs, True)
@@ -50,6 +51,8 @@ class Place(Resource):
             place = None
             # place = autodetect
         else:
-            place = self.ctx.storage.places.find_name(form.data['name'])
+            places = Places(self.ctx.db)
+            place = places.find_name(form.data['name'])
         if place is None:
-            return resp.location(self.route.url(req, dict(error='notfound', **form.src)))
+            form.data['error'] = 'notfound'
+            return resp.location(self.route.url(req, form.query()))

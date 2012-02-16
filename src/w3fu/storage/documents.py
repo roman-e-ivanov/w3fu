@@ -43,9 +43,6 @@ class Document(object):
                 doc[name] = value
         return doc
 
-    def insert(self):
-        return self.collection.insert(self)
-
 
 class Property(object):
 
