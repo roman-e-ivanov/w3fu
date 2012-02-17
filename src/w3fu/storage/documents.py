@@ -19,14 +19,14 @@ class Document(object):
     __metaclass__ = DocumentMeta
 
     @classmethod
-    def new(cls, collection, *args, **kwargs):
-        doc = cls(collection, {})
+    def new(cls, *args, **kwargs):
+        doc = cls({})
         doc._new(*args, **kwargs)
         return doc
 
-    def __init__(self, collection, raw):
-        self.collection = collection
+    def __init__(self, raw, collection=None):
         self.raw = raw
+        self.collection = collection
         self.containers = {}
 
     def _new(self, *args, **kwargs):

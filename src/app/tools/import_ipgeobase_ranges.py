@@ -22,7 +22,7 @@ for line in sys.stdin:
         end = int(end)
     except ValueError:
         continue
-    range_by_id.setdefault(ext_id, []).append(IpRange.new(places, begin, end))
+    range_by_id.setdefault(ext_id, []).append(IpRange.new(begin, end))
 for ext_id, ranges in range_by_id.iteritems():
     if not places.replace_ranges(ext_id, ranges):
         print(ext_id)
