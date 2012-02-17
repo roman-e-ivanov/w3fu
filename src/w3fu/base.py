@@ -1,4 +1,4 @@
-from Cookie import SimpleCookie, Morsel
+from Cookie import SimpleCookie, CookieError, Morsel
 from cgi import FieldStorage
 
 
@@ -59,7 +59,10 @@ class Request(object):
         try:
             return self._cookie
         except AttributeError:
-            self._cookie = SimpleCookie(self.environ.get('HTTP_COOKIE', ''))
+            try:
+                self._cookie = SimpleCookie(self.environ.get('HTTP_COOKIE'))
+            except CookieError:
+                self._cookie = {}
             return self._cookie
 
     @property
