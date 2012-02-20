@@ -36,10 +36,10 @@ class Login(Resource):
     @xml('login-html.xsl')
     @user()
     def get(self, req):
-        return Response.ok({'form': LoginForm(req.fs)})
+        return Response.ok({'form': LoginForm(req)})
 
     def post(self, req):
-        form = LoginForm(req.fs, True)
+        form = LoginForm(req, True)
         if form.errors:
             return Response.redirect(self.route.url(req, form.query()))
         users = Users(self.ctx.db)
@@ -69,10 +69,10 @@ class Register(Resource):
 
     @xml('register-html.xsl')
     def get(self, req):
-        return Response.ok({'form': RegisterForm(req.fs)})
+        return Response.ok({'form': RegisterForm(req)})
 
     def post(self, req):
-        form = RegisterForm(req.fs, True)
+        form = RegisterForm(req, True)
         if form.errors:
             return Response.redirect(self.route.url(req, form.query()))
         users = Users(self.ctx.db)

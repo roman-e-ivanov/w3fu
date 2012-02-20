@@ -12,5 +12,5 @@ class Home(Resource):
 
     @xml('home-html.xsl')
     @user()
-    def get(self, app, req):
+    def get(self, req):
         return Response.ok({})

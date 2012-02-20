@@ -42,11 +42,11 @@ class FirmsAdmin(Resource):
     @xml('firms-html.xsl')
     @user(required=True)
     def get(self, req):
-        return Response.ok({'form': FirmCreateForm(req.fs).dump()})
+        return Response.ok({'form': FirmCreateForm(req).dump()})
 
     @user(required=True)
     def post(self, req):
-        form = FirmCreateForm(req.fs)
+        form = FirmCreateForm(req)
         if form.err:
             return Response.redirect(self.url(req, form.src))
         firm = Firm.new(name=form.data['name'], owner_id=req.session['user_id'])

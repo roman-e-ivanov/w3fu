@@ -50,10 +50,10 @@ class Form(object):
 
     __metaclass__ = FormMeta
 
-    def __init__(self, fs, strict=False):
+    def __init__(self, req, strict=False):
         self.data = {}
         self.errors = {}
-        self._unpack(self._decode(fs), strict)
+        self._unpack(self._decode(req.fs), strict)
 
     def dump(self, format=None):
         return {'data': self.data, 'errors': self.errors}

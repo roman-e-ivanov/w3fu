@@ -27,7 +27,7 @@ class PlaceSuggest(Resource):
 
     @json()
     def get(self, req):
-        form = PlaceSuggestForm(req.fs)
+        form = PlaceSuggestForm(req)
         places = Places(self.ctx.db)
         found = places.find_pattern(form.data['pattern'])
         return Response.ok({'found': found})
@@ -40,10 +40,10 @@ class Place(Resource):
     @xml()
     @user()
     def get(self, req):
-        return Response.ok({'form': PlaceForm(req.fs)})
+        return Response.ok({'form': PlaceForm(req)})
 
     def post(self, req):
-        form = PlaceForm(req.fs, True)
+        form = PlaceForm(req, True)
         if form.err:
             return Response.redirect(self.route.url(req, form.src))
         if form.data['auto']:
