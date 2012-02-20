@@ -17,10 +17,11 @@ class ArgRangeError(ArgError): pass
 
 class SingleArg(object):
 
-    def __init__(self, field, default=None, clear=False):
+    def __init__(self, field, default=None, clear=False, **custom):
         self._field = field
         self._clear = clear
         self._default = default
+        self.custom = custom
 
     def unpack(self, packed):
         try:
@@ -78,8 +79,8 @@ class IntArg(SingleArg):
 
 class BoolArg(SingleArg):
 
-    def __init__(self, field):
-        super(BoolArg, self).__init__(field, default=False)
+    def __init__(self, field, **kwargs):
+        super(BoolArg, self).__init__(field, default=False, **kwargs)
 
     def _unpack(self, value):
         return value and True or False
