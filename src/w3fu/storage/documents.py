@@ -1,22 +1,18 @@
 from pymongo.dbref import DBRef
-from time import mktime
 
-from w3fu.data.codecs import b64e
-
-
-class DocumentMeta(type):
-
-    def __init__(cls, name, bases, attrs):
-        cls.props = {}
-        for name, attr in attrs.iteritems():
-            if hasattr(attr, 'dump'):
-                cls.props[name] = attr
-        super(DocumentMeta, cls).__init__(name, bases, attrs)
+from w3fu.data.util import AttributesMeta
 
 
 class Document(object):
 
-    __metaclass__ = DocumentMeta
+    __metaclass__ = AttributesMeta
+
+    props = {}
+
+    @classmethod
+    def attribute(cls, name, attr):
+        if hasattr(attr, 'dump'):
+            cls.props[name] = attr
 
     @classmethod
     def new(cls, *args, **kwargs):

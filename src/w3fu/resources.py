@@ -2,6 +2,7 @@ from urllib import urlencode
 
 from w3fu.base import Response
 from w3fu.data.args import ArgAbsentError, ArgError
+from w3fu.data.util import AttributesMeta
 
 
 OVERLOADABLE = frozenset(['put', 'delete'])
@@ -36,19 +37,16 @@ class Middleware(object):
         return f
 
 
-class FormMeta(type):
-
-    def __init__(cls, name, bases, attrs):
-        cls.args = {}
-        for name, attr in attrs.iteritems():
-            if hasattr(attr, 'unpack'):
-                cls.args[name] = attr
-        super(FormMeta, cls).__init__(name, bases, attrs)
-
-
 class Form(object):
 
-    __metaclass__ = FormMeta
+    __metaclass__ = AttributesMeta
+
+    args = {}
+
+    @classmethod
+    def attribute(cls, name, attr):
+        if hasattr(attr, 'unpack'):
+            cls.args[name] = attr
 
     def __init__(self, req, strict=False):
         self.data = {}
