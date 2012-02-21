@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from w3fu.storage.documents import Document, Property, ListContainer
-from w3fu.data.util import b64e, salted_hash
+from w3fu.data.codecs import b64e, salted_hash
 
 from app import config
 

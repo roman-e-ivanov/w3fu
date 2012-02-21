@@ -10,8 +10,10 @@ SALT_SIZE = 4
 def b64e(b):
     return urlsafe_b64encode(b).rstrip('=')
 
+
 def b64d(s):
     return urlsafe_b64decode(s + '=' * [0, 2, 1][len(s) % 3])
+
 
 def salted_hash(value, salted=None):
     if salted is None:

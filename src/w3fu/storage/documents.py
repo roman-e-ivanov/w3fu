@@ -1,7 +1,7 @@
 from pymongo.dbref import DBRef
 from time import mktime
 
-from w3fu.data.util import b64e
+from w3fu.data.codecs import b64e
 
 
 class DocumentMeta(type):
