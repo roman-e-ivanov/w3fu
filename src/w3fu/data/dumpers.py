@@ -2,7 +2,7 @@ from lxml import etree
 from json import dumps
 from time import mktime
 
-from w3fu.data.util import b64e
+from w3fu.data.codecs import b64e
 
 
 class Dumper(object):
