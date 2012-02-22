@@ -1,18 +1,19 @@
 from pymongo.dbref import DBRef
 
-from w3fu.data.util import AttributesMeta
+
+class DocumentMeta(type):
+
+    def __init__(cls, name, bases, attrs):
+        cls.props = {}
+        for name, attr in attrs.iteritems():
+            if hasattr(attr, 'dump'):
+                cls.props[name] = attr
+        super(DocumentMeta, cls).__init__(name, bases, attrs)
 
 
 class Document(object):
 
-    __metaclass__ = AttributesMeta
-
-    props = {}
-
-    @classmethod
-    def attribute(cls, name, attr):
-        if hasattr(attr, 'dump'):
-            cls.props[name] = attr
+    __metaclass__ = DocumentMeta
 
     @classmethod
     def new(cls, *args, **kwargs):
@@ -41,6 +42,8 @@ class Document(object):
 
 
 class Property(object):
+
+    listable = True
 
     def __init__(self, name, formats=None):
         self._name = name

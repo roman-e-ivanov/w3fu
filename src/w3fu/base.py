@@ -60,9 +60,10 @@ class Request(object):
             return self._cookie
         except AttributeError:
             try:
-                self._cookie = SimpleCookie(self.environ.get('HTTP_COOKIE'))
+                cookie = SimpleCookie(self.environ.get('HTTP_COOKIE'))
             except CookieError:
-                self._cookie = {}
+                cookie = {}
+            self._cookie = dict((k, v.value) for k, v in cookie.iteritems())
             return self._cookie
 
     @property

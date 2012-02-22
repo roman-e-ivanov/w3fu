@@ -50,7 +50,7 @@ class Collection(object):
             self._collection.ensure_index(index, **kwargs)
 
     def load(self, raw):
-        return self._doc_cls(self, raw)
+        return self._doc_cls(raw, self)
 
     @errorsafe
     def insert(self, doc, safe=True):

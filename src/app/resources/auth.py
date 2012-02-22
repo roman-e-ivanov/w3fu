@@ -7,6 +7,8 @@ from w3fu.resources import Resource, Form
 from w3fu.data.args import StrArg
 
 from app import config
+from app.cookies import AuthCookie
+
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 from app.resources.home import Home
@@ -50,7 +52,7 @@ class Login(Resource):
         session = Session.new()
         user.push_session(session)
         resp = Response.redirect(Home.route.url(req))
-        resp.set_cookie(config.session_cookie, session.id, session.expires)
+        AuthCookie(req).set(resp, 'session_id', session.id)
         return resp
 
     def delete(self, req):
@@ -59,7 +61,7 @@ class Login(Resource):
             users = Users(self.ctx.db)
             users.pull_session(session_id.value)
         resp = Response.redirect(req.referer or Index.route.url(req))
-        resp.set_cookie(config.session_cookie, 0, datetime.utcfromtimestamp(0))
+        AuthCookie(req).remove(resp, 'session_id')
         return resp
 
 
@@ -83,5 +85,5 @@ class Register(Resource):
             form.data['error'] = 'exists'
             return Response.redirect(self.route.url(req, form.query()))
         resp = Response.redirect(Home.route.url(req))
-        resp.set_cookie(config.session_cookie, session.id, session.expires)
+        AuthCookie(req).set(resp, 'session_id', session.id)
         return resp

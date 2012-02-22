@@ -5,6 +5,7 @@ from w3fu.resources import Middleware
 
 from app import config
 from app.storage.collections.auth import Users
+from app.cookies import AuthCookie
 
 
 class user(Middleware):
@@ -14,10 +15,11 @@ class user(Middleware):
 
     def _handler(self, res, req, handler):
         req.ctx.user = None
-        session_id = req.cookie.get(config.session_cookie)
+        cookie = AuthCookie(req)
+        session_id = cookie.get('session_id')
         if session_id is not None:
             users = Users(res.ctx.db)
-            req.ctx.user = users.find_valid_session(session_id.value,
+            req.ctx.user = users.find_valid_session(session_id,
                                                     datetime.utcnow())
         if self._required and req.session is None:
             return Response.forbidden()

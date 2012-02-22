@@ -35,6 +35,9 @@ class SingleArg(object):
     def pack(self, value, packed):
         packed[self._field] = '' if self._clear else self._pack(value)
 
+    def fields(self):
+        return [self._field]
+
     def _pack(self, value):
         return str(value)
 
