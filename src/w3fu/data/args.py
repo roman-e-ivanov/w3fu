@@ -1,4 +1,7 @@
 import re
+from bson.objectid import ObjectId
+
+from w3fu.data.codecs import b64d, b64e
 
 
 class ArgError(Exception):
@@ -45,27 +48,32 @@ class SingleArg(object):
 class StrArg(SingleArg):
 
     def __init__(self, field, trim=True, pattern=None,
-                 min_size=0, max_size=65535, **kwargs):
-        super(StrArg, self).__init__(field, **kwargs)
+                 min_size=0, max_size=65535, **custom):
+        super(StrArg, self).__init__(field, **custom)
         self._trim = trim
         self._min_size = min_size
         self._max_size = max_size
-        self._pattern = None if pattern is None else re.compile(pattern)
+        self._pattern = pattern
+        self._cpattern = pattern and re.compile(pattern)
 
     def _unpack(self, value):
         if self._trim:
             s = value.strip()
         if not self._min_size <= len(s) <= self._max_size:
             raise ArgSizeError
-        if self._pattern is not None and not self._pattern.match(s):
+        if self._pattern is not None and not self._cpattern.match(s):
             raise ArgTypeError
         return s
+
+    def pattern(self):
+        return self._pattern or \
+            '.{{0},{1}}'.format(self._min_size, self._max_size)
 
 
 class IntArg(SingleArg):
 
-    def __init__(self, field, min=0, max=None, **kwargs):
-        super(IntArg, self).__init__(field, **kwargs)
+    def __init__(self, field, min=0, max=None, **custom):
+        super(IntArg, self).__init__(field, **custom)
         self._min = min
         self._max = max
 
@@ -79,11 +87,30 @@ class IntArg(SingleArg):
             raise ArgRangeError
         return x
 
+    def pattern(self):
+        return '-?\d+'
+
 
 class BoolArg(SingleArg):
 
-    def __init__(self, field, **kwargs):
-        super(BoolArg, self).__init__(field, default=False, **kwargs)
+    def __init__(self, field, **custom):
+        super(BoolArg, self).__init__(field, default=False, **custom)
 
     def _unpack(self, value):
         return value and True or False
+
+    def pattern(self):
+        return '[01]'
+
+
+class IdArg(StrArg):
+
+    def __init__(self, field, **custom):
+        super(IdArg, self).__init__(field, pattern='[\da-zA-Z_-]{16}', **custom)
+
+    def _unpack(self, value):
+        value = super(IdArg, self)._unpack(value)
+        return ObjectId(b64d(value))
+
+    def _pack(self, value):
+        return b64e(value.binary)

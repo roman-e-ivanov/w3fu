@@ -37,9 +37,9 @@ class Route(object):
         return self._unpack(match.groupdict()) if match else None
 
     def _compile(self):
-        args_re = dict((k, '(?P<{0}>{1})'.format(k, v.re()))
+        args_pattern = dict((k, '(?P<{0}>{1})'.format(k, v.pattern()))
                        for k, v in self._args.iteritems())
-        self._re = compile('^' + self.pattern.format(**args_re) + '$')
+        self._re = compile('^' + self.pattern.format(**args_pattern) + '$')
 
     def _unpack(self, packed):
         unpacked = {}
