@@ -4,6 +4,7 @@
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="common/nav.html.xsl" />
+
 <!-- 	<w3fu:include href="common/errors.html.xsl" /> -->
 	<w3fu:include href="common/user.html.xsl" />
 	<w3fu:include href="common/forms.html.xsl" />
