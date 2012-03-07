@@ -36,38 +36,7 @@ $(document).ready(function(){
 /*	$("div.popup2").dropDown();
 	$("div.popup2").datePicker();
 */
-	
-
-/*
-	var p = {
-			type:'DELETE',
-			url:'test.json'
-	};
-	
-	$("#f4").bind('click', (function(){
-		$.getJSON('/place-sugg7st?pattern=са', function(data){     
-				
-				var s = "";
-			$.each(data.found, function(i, found){
-				
-				s = s + found.name + '_';
-			
-			});
-			
-			
-			alert(s);
-			
-        })
-        
-        .error(function() { alert("error"); })
-        
-		
-		alert(9);
-	//$.ajax(p);
-	}));
-*/	
-	
-	  	
+		  	
 });
 //----------------------------------------------------------------------------
 function onLoad() {
