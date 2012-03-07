@@ -58,8 +58,9 @@ class Login(Resource):
     def delete(self, req):
         session_id = req.cookie.get(config.session_cookie)
         if session_id is not None:
+            print(session_id)
             users = Users(self.ctx.db)
-            users.pull_session(session_id.value)
+            users.pull_session(session_id)
         resp = Response.redirect(req.referer or Index.route.url(req))
         AuthCookie(req).remove(resp, 'session_id')
         return resp

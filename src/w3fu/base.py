@@ -55,6 +55,10 @@ class Request(object):
         return self.environ.get('PATH_INFO', '')
 
     @property
+    def referer(self):
+        return self.environ.get('HTTP_REFERER')
+
+    @property
     def cookie(self):
         try:
             return self._cookie
