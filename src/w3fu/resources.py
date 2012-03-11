@@ -58,17 +58,20 @@ class Form(object):
     def __init__(self, req, strict=False):
         self.data = {}
         self.errors = {}
-        self._unpack(self._decode(req.fs), strict)
+        self.src = self._decode(req.fs)
+        self._unpack(self.src, strict)
 
     def dump(self, format=None):
-        return {'data': self.data, 'errors': self.errors}
+        return {'data': self.data, 'errors': self.errors, 'source': self.src}
 
-    def query(self):
-        return self._encode(self._pack())
+    def query(self, **unpacked):
+        packed = dict(self.src)
+        packed.update(self._pack(unpacked))
+        return self._encode(packed)
 
-    def _pack(self):
+    def _pack(self, unpacked):
         packed = {}
-        for name, value in self.data.iteritems():
+        for name, value in unpacked.iteritems():
             self.args[name].pack(value, packed)
         return packed
 

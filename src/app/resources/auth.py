@@ -47,8 +47,8 @@ class Login(Resource):
         users = Users(self.ctx.db)
         user = users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
-            form.data['error'] = 'auth'
-            return Response.redirect(self.route.url(req, form.query()))
+            query = form.query(error='auth')
+            return Response.redirect(self.route.url(req, query))
         session = Session.new()
         user.push_session(session)
         resp = Response.redirect(Home.route.url(req))
@@ -83,8 +83,8 @@ class Register(Resource):
         session = Session.new()
         user.sessions = [session]
         if not users.insert(user):
-            form.data['error'] = 'exists'
-            return Response.redirect(self.route.url(req, form.query()))
+            query = form.query(error='exists')
+            return Response.redirect(self.route.url(req, query))
         resp = Response.redirect(Home.route.url(req))
         AuthCookie(req).set(resp, 'session_id', session.id)
         return resp
