@@ -1,5 +1,12 @@
 $(document).ready(function(){
-	$('<script type="text/javascript" src="/s/js/jquery.valform.js" /><script type="text/javascript" src="/s/js/jquery.dropdown.js" /><script type="text/javascript" src="/s/js/jquery.datepicker.js" /><script type="text/javascript" src="/s/js/jquery.display.js" /><script type="text/javascript" src="/s/js/jquery.timetable.js" /><script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.valform.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.dropdown.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.popup.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.datepicker.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.display.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.timetable.js" />').appendTo($('head'));
+	$('<script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
+	
 	
 	/*login & reg forms*/
 	$("form.login").valForm('default');	
@@ -14,15 +21,18 @@ $(document).ready(function(){
 	
 	/*firm create form*/
 	$("form.firm-create").valForm('default');
-	$('.f2').popUp('class');
-	$('.f3').popUp('class');
-	$("div.fast-firm").find("span.dropdown-button").toggleClass('nodisplay');
+	$('.f2').popUp('.container_16','class', 20, 20);
+	$('.f3').popUp('.container_16','class', 20, 20);
+	
+/*	
+ *  ХЗ ,что такое
+ 	$("div.fast-firm").find("span.dropdown-button").toggleClass('nodisplay');
 	$("div.fast-firm").find("span.dropdown-button").toggleClass('display');
 	$("div.fast-firm").find("a").toggleClass('nodisplay');
 	$("div.fast-firm").find("a").toggleClass('display');
-	
+/*	
 	/*region select form*/
-	$('#f4').popUp('id',0,20);
+	$('#f4').popUp('.container_16','class', 20, 20);
 	$('#f4').json();
 	
 	

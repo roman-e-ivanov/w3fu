@@ -1,10 +1,26 @@
+/* popUp JQery Plugin - w3fu
+ * 
+ * Плагин всплывающего слоя. Подразумевает наличие элемента управления всплытием (button),
+ * и всплывающего слоя (container).
+ * 
+ * Пример использования: $('.f2').popUp('.container_16','class', 20, 20);
+ * 
+ */
 (function($) {
 	$.extend(
 			$.fn, {
-				popUp : function (filter, x, y) {
+				/*
+				 * Главная функция плагина
+				 * parent - предок контейнера, оносительно которого отсчитываются координаты, указывается в jquery-формате
+				 * filter (class/id) - способ поиска контейнера, по классу / ид
+				 * x,y - смещение всплывающего слоя относительно элемента управления
+				 */
+				popUp : function (parent, filter, x, y) {
 					if (!$(this).length) {return;}			
 					$(this).each (function() {
-						var popup = new $.popup(this, filter, x, y);
+						 // button + все входные параметры передаются в конструктор
+						var popup = new $.popup(this, parent, filter, x, y);
+						//эземпляр "всплывателя" сохраняем в button, для извлечения и использования в других плагинах
 						$(this).data('popup', popup);
 						popup.init(filter);
 					});																		 
@@ -12,25 +28,26 @@
 			}
 	);
 
-	$.popup = function (button, filter, x, y) {	
+	$.popup = function (button, parent, filter, x, y) {	
 		
+		//вычисляем координаты предка
+		this.parentPosition = $(parent).offset();
+		//элемент управления
 		this.button = $(button);
+		//x,y, если не заданы, то равны 0
 		this.x = x || 0; this.y = y || 0;
-		
+		//если фильтр == id, то ищем контейнер по id
 		if (filter == 'id') { this.container = $('#'+ $(this.button).attr('id') + 'popup'); }
+		//иначе контейнер ищется по классу
 		else { this.container = $('.'+ $(this.button).attr('class') + 'popup'); }
-		
+		//начальное состояние - всплывающий слой скрыт
 		this.display = false;
+		//функции, отрабатываемы до/после отображения/скрытия слоя - пустые
 		this.beforeShow = this.afterShow = this.beforeHide = this.afterHide = function(){};
 		
 	}
 
 	$.extend($.popup, {			
-	/*	elements: {
-			button: ".dropdown-button",
-			container: "div.dropdown-container"				
-		},			
-		*/
 		prototype: {
 			
 			init: function (filter) {
@@ -66,8 +83,8 @@
 			show: function() {
 				this.beforeShow();
 				
-				var body = $('.container_16').offset(); var x = this.button.offset();
-				this.container.css('left',x.left - body.left + this.x).css('top',x.top - body.top + this.button.height() + this.y).css('display','inline');
+				var x = this.button.offset();
+				this.container.css('left',x.left - this.parentPosition.left + this.x).css('top',x.top - this.parentPosition.top + this.button.height() + this.y).css('display','inline');
 									
 				this.display = true;
 				this.afterShow();
@@ -75,9 +92,10 @@
 			},
 			hide: function() {
 				this.beforeHide();
-				this.container.css('display','none');
-					
+				
+				this.container.css('display','none');	
 				this.display = false;
+				
 				this.afterHide();
 			}		
 		}
