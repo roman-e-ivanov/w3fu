@@ -4,8 +4,7 @@
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="common/nav.html.xsl" />
-<!-- 	<w3fu:include href="common/errors.html.xsl" /> -->
-	<w3fu:include href="common/user.html.xsl" />
+	<w3fu:include href="common/top.html.xsl" />
 	<w3fu:include href="common/forms.html.xsl" />
 	<w3fu:include href="common/datepicker.html.xsl" />
 	
@@ -22,14 +21,7 @@
 				<w3fu:call-template name="w3fu:statnav" />
 			
 				<div class="container_16">
-				<div class="grid_12 l-header">
-					<p>Заголовок</p>
-				</div>
-				<div class="grid_4 l-header">
-				 	<w3fu:call-template name="w3fu:user-login" />
-				</div>
-				
-				<div class="clear"></div>
+					<w3fu:call-template name="w3fu:top" />
 				
 					<div class="grid_8">
 					<a class="f2">Создать компанию</a>
@@ -84,11 +76,7 @@
 					
 					<div class="clear"></div>
 
-				<div class="grid_16 l-footer">
 					<w3fu:call-template name="w3fu:footer" />
-				</div>
-				<div class="clear"></div>
-				<w3fu:call-template name="w3fu:user-not-login" />
 								
 				</div>
 			</body>
