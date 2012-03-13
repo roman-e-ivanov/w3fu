@@ -6,7 +6,7 @@ $(document).ready(function(){
 	$('<script type="text/javascript" src="/s/js/jquery.display.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.timetable.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
-	
+	$('<script type="text/javascript" src="/s/js/jquery.cookie.js" />').appendTo($('head'));
 	
 	/*login & reg forms*/
 	$("form.login").valForm('default');	
@@ -51,7 +51,7 @@ $(document).ready(function(){
 //----------------------------------------------------------------------------
 function onLoad() {
 	
-	window.document.write(navigator.appName +" "+navigator.appVersion);
+
 	
 }
 //----------------------------------------------------------------------------

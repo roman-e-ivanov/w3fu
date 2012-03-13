@@ -16,3 +16,21 @@
 .l-footer {
 	background:#6688cc; 
 }
+
+.b-debug-noxslt {
+	font-size: 8pt;
+	opacity:1;
+}
+
+.b-debug-noxslt__head {
+	color:#eeeeee;
+	background:#666666;
+	padding:5px;
+}
+
+.b-debug-noxslt__body {
+	color:#666666;
+	background:#eeeeee;
+	padding:15px 5px;
+}
+

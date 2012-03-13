@@ -6,4 +6,5 @@
 <item>/register</item>
 <item>/home</item>
 <item>/admin/firms</item>
+<item>/debug</item>
 </menu>

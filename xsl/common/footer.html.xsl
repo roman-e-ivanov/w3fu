@@ -5,7 +5,6 @@
 		<w3fu:template name="w3fu:footer">
 			<div class="grid_16 l-footer">	
 				w3fu Corp. <br />
-				<script type="text/javascript">onLoad();</script>
 				<p>
     				<a href="http://validator.w3.org/check?uri=referer"><img
         			src="http://www.w3.org/Icons/valid-xhtml10"
