@@ -32,7 +32,7 @@ $(document).ready(function(){
 	$("div.fast-firm").find("a").toggleClass('display');
 /*	
 	/*region select form*/
-	$('#f4').popUp('.container_16','class', 20, 20);
+	$('#f4').popUp('.container_16','id', 20, 20);
 	$('#f4').json();
 	
 	
