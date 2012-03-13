@@ -9,7 +9,7 @@ $(document).ready(function(){
 	$('<script type="text/javascript" src="/s/js/jquery.cookie.js" />').appendTo($('head'));
 	
 	/*login & reg forms*/
-	$("form.login").valForm('default');	
+//	$("form.login").valForm('default');	
 	$("form.login").display();
 	$("form.login").find(".toggle-display").css('display','inline');
 

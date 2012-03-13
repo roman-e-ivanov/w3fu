@@ -22,8 +22,10 @@
 					<div class="grid_4 l-main b-debug-noxslt">
 						<div class="b-debug-noxslt__head">Отображение без шаблона</div>
 						<div class="b-debug-noxslt__body">
-							<a class="b-debug-noxslt__enable">Включить</a>
-							<a class="b-debug-noxslt__disable">Выключить</a>
+							<ul class="b-debug-noxslt__list">
+								<li class="b-debug-noxslt__item"><a class="b-debug-noxslt__enable">Включить</a></li>
+								<li iclass="b-debug-noxslt__item"><a class="b-debug-noxslt__disable">Выключить</a></li>
+							</ul>
 						</div>
 					</div>
 					<div class="grid_4 l-main">Блок 2<br /><br /><br /><br /><br /></div>
