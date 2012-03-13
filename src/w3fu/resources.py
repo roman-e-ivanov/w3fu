@@ -55,11 +55,11 @@ class Form(object):
         if hasattr(attr, 'unpack'):
             cls.args[name] = attr
 
-    def __init__(self, req, strict=False):
+    def __init__(self, req):
         self.data = {}
         self.errors = {}
         self.src = self._decode(req.fs)
-        self._unpack(self.src, strict)
+        self._unpack(self.src)
 
     def dump(self, format=None):
         return {'data': self.data, 'errors': self.errors, 'source': self.src}
@@ -75,15 +75,10 @@ class Form(object):
             self.args[name].pack(value, packed)
         return packed
 
-    def _unpack(self, packed, strict):
+    def _unpack(self, packed):
         for name, arg in self.args.iteritems():
             try:
                 self.data[name] = arg.unpack(packed)
-            except ArgAbsentError as e:
-                if strict:
-                    self.errors[name] = e
-                else:
-                    self.data[name] = None
             except ArgError as e:
                 self.errors[name] = e
 

@@ -22,9 +22,8 @@ class AuthForm(Form):
 
     login = StrArg('login', pattern=u'^[\wа-яА-Я\._-]+$',
                    min_size=4, max_size=32)
-    password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$', clear=True,
+    password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$',
                       min_size=4, max_size=32)
-    error = StrArg('error', default='')
 
 
 LoginForm = AuthForm
@@ -38,17 +37,17 @@ class Login(Resource):
     @xml('login-html.xsl')
     @user()
     def get(self, req):
-        return Response.ok({'form': LoginForm(req)})
+        return Response.ok({})
 
+    @xml('login-html.xsl')
     def post(self, req):
-        form = LoginForm(req, True)
+        form = LoginForm(req)
         if form.errors:
-            return Response.redirect(self.route.url(req, form.query()))
+            return Response.ok({'form': form})
         users = Users(self.ctx.db)
         user = users.find_login(form.data['login'])
         if user is None or not user.check_password(form.data['password']):
-            query = form.query(error='auth')
-            return Response.redirect(self.route.url(req, query))
+            return Response.ok({'form': form, 'error': 'auth'})
         session = Session.new()
         user.push_session(session)
         resp = Response.redirect(Home.route.url(req))
@@ -72,19 +71,19 @@ class Register(Resource):
 
     @xml('register-html.xsl')
     def get(self, req):
-        return Response.ok({'form': RegisterForm(req)})
+        return Response.ok({})
 
+    @xml('register-html.xsl')
     def post(self, req):
-        form = RegisterForm(req, True)
+        form = RegisterForm(req)
         if form.errors:
-            return Response.redirect(self.route.url(req, form.query()))
+            return Response.ok({'form': form})
         users = Users(self.ctx.db)
         user = User.new(form.data['login'], form.data['password'])
         session = Session.new()
         user.sessions = [session]
         if not users.insert(user):
-            query = form.query(error='exists')
-            return Response.redirect(self.route.url(req, query))
+            return Response.ok({'form': form, 'error': 'exists'})
         resp = Response.redirect(Home.route.url(req))
         AuthCookie(req).set(resp, 'session_id', session.id)
         return resp

@@ -20,9 +20,8 @@ class ArgRangeError(ArgError): pass
 
 class SingleArg(object):
 
-    def __init__(self, field, default=None, clear=False, **custom):
+    def __init__(self, field, default=None, **custom):
         self._field = field
-        self._clear = clear
         self._default = default
         self.custom = custom
 
@@ -36,7 +35,7 @@ class SingleArg(object):
                 return self._default
 
     def pack(self, value, packed):
-        packed[self._field] = '' if self._clear else self._pack(value)
+        packed[self._field] = self._pack(value)
 
     def fields(self):
         return [self._field]
