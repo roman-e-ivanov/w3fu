@@ -31,5 +31,5 @@ class xml(Middleware):
         if resp.status == 200:
             resp.content_type = 'application/xhtml+xml'
             resp.content = self._dumper.dump(resp.content, res.name(),
-                                        'no-xslt' in req.fs)
+                                             'no-xslt' in req.cookie)
         return resp
