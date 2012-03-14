@@ -1,11 +1,8 @@
-/*----------<<< CSS for navigation >>>---------*/
-
 .b-development-menu {
 	position:absolute;
 }
 
 .b-development-menu__list {
-	
 	padding:1px;
 	left:0; top:0;
 	display:block;
@@ -13,7 +10,7 @@
 
 .b-development-menu__line {
 	margin:5px;
-	font-size: 8pt;
+	font-size:8pt;
 }
 
 .b-development-menu__link {

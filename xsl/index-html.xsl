@@ -3,7 +3,7 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
-	<w3fu:include href="common/nav.html.xsl" />
+	<w3fu:include href="../blocks/b-development-menu/b-development-menu.html.xsl" />
  	<w3fu:include href="common/top.html.xsl" />
  	<w3fu:include href="common/forms.html.xsl" />
 
@@ -17,7 +17,7 @@
 			</head>
 			
 			<body>
-			<w3fu:call-template name="w3fu:statnav" />
+			<w3fu:call-template name="w3fu:b-development-menu" />
 				<div class="container_16">
 					<w3fu:call-template name="w3fu:top" />
 			
