@@ -4,7 +4,8 @@
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/top.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
-	<w3fu:include href="../blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="blocks/b-form-login/b-form-login.html.xsl" />
 	<w3fu:include href="common/forms.html.xsl" />
 	
 	<w3fu:template match="/">
@@ -14,6 +15,7 @@
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
+			<link rel="stylesheet" href="/s/pages/login.html.css" type="text/css" />
 			</head>
 			
 			<body>
@@ -36,6 +38,8 @@
 							<a href="/register">Зарегистрироваться</a>
 							<w3fu:call-template name="w3fu:error-auth" />
 						</form>
+						
+						<w3fu:call-template name="w3fu:b-form-login" />
 					</div>
 					<div class="grid_3 l-main"><br/></div>
 					<div class="clear"></div>

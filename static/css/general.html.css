@@ -1,7 +1,7 @@
-@import url("reset960-html.css");
-@import url("/b/b-development-menu/b-development-menu.html.css");
-@import url("debugging.css");
-@import url("960-html.css");
+@import url("reset.html.css");
+@import url("/s/blocks/b-development-menu/b-development-menu.html.css");
+@import url("debugging.html.css");
+@import url("960.html.css");
 	
 	a {
 		cursor:pointer;

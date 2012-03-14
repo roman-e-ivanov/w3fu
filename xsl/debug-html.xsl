@@ -3,7 +3,7 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
-	<w3fu:include href="../blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
  	<w3fu:include href="common/top.html.xsl" />
 
 	<w3fu:template match="/">
