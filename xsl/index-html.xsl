@@ -3,7 +3,7 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
-	<w3fu:include href="common/nav.html.xsl" />
+	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
  	<w3fu:include href="common/top.html.xsl" />
  	<w3fu:include href="common/forms.html.xsl" />
 
@@ -14,10 +14,12 @@
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
+			<link rel="stylesheet" href="/s/pages/index.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/index.html.js" />
 			</head>
 			
 			<body>
-			<w3fu:call-template name="w3fu:statnav" />
+			<w3fu:call-template name="w3fu:b-development-menu" />
 				<div class="container_16">
 					<w3fu:call-template name="w3fu:top" />
 			

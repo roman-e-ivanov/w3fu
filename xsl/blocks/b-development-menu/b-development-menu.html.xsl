@@ -1,11 +1,11 @@
 <w3fu:stylesheet version="1.0"
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 	
-	<w3fu:template name="w3fu:statnav">
+	<w3fu:template name="w3fu:b-development-menu">
 
 		<div class="b-development-menu">
 			<ul class="b-development-menu__list">
-				<w3fu:for-each	select="document('../conf/development-menu.xml')/menu/item"> 
+				<w3fu:for-each	select="document('b-development-menu.xml')/menu/item"> 
 					<li class="b-development-menu__line">
 						<a class="b-development-menu__link">
 							<w3fu:attribute name="href">
@@ -18,7 +18,7 @@
 			</ul>
 			
 			<ul class="b-development-menu__list">	
-				<w3fu:for-each	select="document('../conf/development-menu.xml')/menu/item"> 
+				<w3fu:for-each	select="document('b-development-menu.xml')/menu/item"> 
 					<li class="b-development-menu__line">
 						<a class="b-development-menu__link">
 							<w3fu:attribute name="href">

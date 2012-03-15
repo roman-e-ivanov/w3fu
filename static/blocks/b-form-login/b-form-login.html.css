@@ -1,0 +1,11 @@
+@import url("/s/blocks/b-edit-login/b-edit-login.html.css");
+@import url("/s/blocks/b-edit-password/b-edit-password.html.css");
+@import url("/s/blocks/i-button/i-button.html.css");
+@import url("/s/blocks/i-link/i-link.html.css");
+
+
+.b-form-login {
+	width:580px;
+	margin:50px 0;
+}
+	

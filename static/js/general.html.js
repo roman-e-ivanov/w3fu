@@ -3,15 +3,11 @@ $(document).ready(function(){
 	$('<script type="text/javascript" src="/s/js/jquery.dropdown.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.popup.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.datepicker.js" />').appendTo($('head'));
-	$('<script type="text/javascript" src="/s/js/jquery.display.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.timetable.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.cookie.js" />').appendTo($('head'));
 	
-	/*login & reg forms*/
-//	$("form.login").valForm('default');	
-	$("form.login").display();
-	$("form.login").find(".toggle-display").css('display','inline');
+	
 
 	/*fast login form*/
 	$("form.fast-login").valForm('default');	

@@ -1,20 +1,7 @@
-@import url("reset960-html.css");
-@import url("nav-html.css");
-@import url("debugging.css");
-@import url("960-html.css");
-	
-	a {
-		cursor:pointer;
-	}
-	a:visited {
-		color:black;
-	}
-	a:hover {
-		color:green;
-		text-decoration: underline;
-	}
-	
-	
+@import url("reset.html.css");
+@import url("/s/blocks/b-development-menu/b-development-menu.html.css");
+@import url("debugging.html.css");
+@import url("960.html.css");
 	 
     .container_16 {
      	position: relative;

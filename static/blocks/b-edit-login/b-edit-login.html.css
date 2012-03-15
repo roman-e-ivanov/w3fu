@@ -1,0 +1,15 @@
+@import url("/s/blocks/i-edit/i-edit.html.css");
+
+.b-edit-login {
+
+}
+
+.b-edit-login__name {
+	
+}
+
+.b-edit-login__label {
+	margin:2px 0 0 0;
+	font-size: 8pt;
+	color:#777;
+}
