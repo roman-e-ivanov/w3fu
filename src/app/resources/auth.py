@@ -18,16 +18,25 @@ from app.storage.collections.auth import Users
 from app.storage.documents.auth import User, Session
 
 
-class AuthForm(Form):
+class RegisterForm(Form):
 
-    login = StrArg('login', pattern=u'^[\wа-яА-Я\._-]+$',
-                   min_size=4, max_size=32)
+    email = StrArg('email', pattern=u'^[^@]+@[^@]+$',
+                   min_size=4, max_size=254)
+
+
+class SetPasswordForm(Form):
+
     password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$',
                       min_size=4, max_size=32)
 
 
-LoginForm = AuthForm
-RegisterForm = AuthForm
+class LoginForm(Form):
+
+    email = StrArg('email', pattern=u'^[^@]+@[^@]+$',
+                   min_size=4, max_size=254)
+
+    password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$',
+                      min_size=4, max_size=32)
 
 
 class Login(Resource):
@@ -45,11 +54,11 @@ class Login(Resource):
         if form.errors:
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
-        user = users.find_login(form.data['login'])
+        user = users.find_login(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
             return Response.ok({'form': form, 'error': 'auth'})
         session = Session.new()
-        user.push_session(session)
+        users.push_session(user, session)
         resp = Response.redirect(Home.route.url(req))
         AuthCookie(req).set(resp, 'session_id', session.id)
         return resp
@@ -62,6 +71,37 @@ class Login(Resource):
             users.pull_session(session_id)
         resp = Response.redirect(req.referer or Index.route.url(req))
         AuthCookie(req).remove(resp, 'session_id')
+        return resp
+
+
+class ShortcutLogin(Resource):
+
+    route = Route('/login/{shortcut}',
+                  shortcut=StrArg('shortcut', pattern='[\da-zA-Z_-]{22}'))
+
+    @xml('shortcut-login-html.xsl')
+    def get(self, req):
+        users = Users(self.ctx.db)
+        user = users.find_shortcut(req.ctx.args['shortcut'])
+        if user is None:
+            return Response.not_found()
+        return Response.ok({})
+
+    @xml('shortcut-login-html.xsl')
+    def post(self, req):
+        users = Users(self.ctx.db)
+        user = users.find_shortcut(req.ctx.args['shortcut'])
+        if user is None:
+            return Response.not_found()
+        form = SetPasswordForm(req)
+        if form.errors:
+            return Response.ok({'form': form})
+        user.set_password(form.data['password'])
+        users.update_password(user)
+        session = Session.new()
+        users.push_session(user, session)
+        resp = Response.redirect(Home.route.url(req))
+        AuthCookie(req).set(resp, 'session_id', session.id)
         return resp
 
 
@@ -79,11 +119,8 @@ class Register(Resource):
         if form.errors:
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
-        user = User.new(form.data['login'], form.data['password'])
-        session = Session.new()
-        user.sessions = [session]
+        user = User.new(form.data['email'])
         if not users.insert(user):
             return Response.ok({'form': form, 'error': 'exists'})
-        resp = Response.redirect(Home.route.url(req))
-        AuthCookie(req).set(resp, 'session_id', session.id)
-        return resp
+        url = ShortcutLogin.route.url(req, shortcut=user.shortcut)
+        return Response.redirect(url)

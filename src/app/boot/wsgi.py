@@ -6,12 +6,15 @@ from app import config
 
 from app.resources.debug import Debug
 from app.resources.index import Index
-from app.resources.auth import Login, Register
+from app.resources.auth import Login, Register, ShortcutLogin
 from app.resources.home import Home
 from app.resources.geo import PlaceSuggest
 
 
-resources = [Debug, Index, Home, Login, Register, PlaceSuggest]
+resources = [Debug,
+             Index, Home,
+             ShortcutLogin, Login, Register,
+             PlaceSuggest]
 
 database = Database(config.db_uri, config.db_name)
 

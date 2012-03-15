@@ -58,6 +58,9 @@ class Property(object):
     def __set__(self, doc, value):
         doc.raw[self._name] = value
 
+    def __delete__(self, doc):
+        del doc.raw[self._name]
+
     def dump(self, doc, name, format):
         if self._formats is not None and format not in self._formats:
             return None

@@ -20,17 +20,18 @@ class Session(Document):
 class User(Document):
 
     id = Property('_id')
-    login = Property('login')
+    email = Property('email')
     password = Property('password', [])
+    shortcut = Property('shortcut')
     sessions = ListContainer('sessions', Session, [])
 
-    def _new(self, login, password):
-        self.login = login
+    def _new(self, email):
+        self.email = email
+        self.shortcut = b64e(uuid4().bytes)
+
+    def set_password(self, password):
         self.password = salted_hash(password)
+        del self.shortcut
 
     def check_password(self, password):
         return self.password == salted_hash(password, self.password)
-
-    def push_session(self, session):
-        self.collection.push_session(self.id, session)
-        return session

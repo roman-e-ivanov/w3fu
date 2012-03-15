@@ -105,7 +105,8 @@ class BoolArg(SingleArg):
 class IdArg(StrArg):
 
     def __init__(self, field, **custom):
-        super(IdArg, self).__init__(field, pattern='[\da-zA-Z_-]{16}', **custom)
+        super(IdArg, self).__init__(field, pattern='[\da-zA-Z_-]{16}',
+                                    **custom)
 
     def _unpack(self, value):
         value = super(IdArg, self)._unpack(value)
