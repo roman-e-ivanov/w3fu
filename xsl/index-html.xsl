@@ -15,6 +15,7 @@
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
 			<link rel="stylesheet" href="/s/pages/index.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/index.html.js" />
 			</head>
 			
 			<body>

@@ -6,10 +6,10 @@ $.extend(
 				$(this).each (function() {
 					
 					var validator = $(this).data('validator');
-					var element = $(this).find('.display-element');
-					var monitor = $(this).find('.display-monitor');
-					var toggleDisplay =  $(this).find('.toggle-display');
-					var toggleHide =  $(this).find('.toggle-hide');
+					var element = $(this).find('.b-edit-password__display-element');
+					var monitor = $(this).find('.b-edit-password__display-monitor');
+					var toggleDisplay =  $(this).find('.b-edit-password__toggle-display');
+					var toggleHide =  $(this).find('.b-edit-password__toggle-hide');
 					
 					element.bind('keyup', function(){ monitor.val(element.val());});
 					monitor.bind('keyup', function(){ element.val(monitor.val());});
@@ -22,12 +22,13 @@ $.extend(
 						monitor.val(element.val()).attr('name','password');
 						element.css('display','none').removeAttr('name');
 						monitor.css('display','inline');
-						validator.validatePassword(monitor);
+					
+					//	validator.validatePassword(monitor);
 					});
 					
 					toggleHide.bind('click',function(){
 						
-						validator.validatePassword(element);
+					//	validator.validatePassword(element);
 						
 						toggleHide.css('display','none');
 						toggleDisplay.css('display','inline');

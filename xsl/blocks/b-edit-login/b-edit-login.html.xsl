@@ -11,11 +11,11 @@
 									
 			<w3fu:attribute name="class">									
 				<w3fu:if test="not(*/form/errors/login)">
-					<w3fu:text>b-edit-login__edit</w3fu:text>
+					<w3fu:text>i-edit b-edit-login</w3fu:text>
 				</w3fu:if>
 										
 				<w3fu:if test="*/form/errors/login">
-					<w3fu:text>b-edit-login__edit</w3fu:text>
+					<w3fu:text>i-edit b-edit-login</w3fu:text>
 				</w3fu:if>										
 			</w3fu:attribute>
 		</input>

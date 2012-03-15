@@ -2,19 +2,6 @@
 @import url("/s/blocks/b-development-menu/b-development-menu.html.css");
 @import url("debugging.html.css");
 @import url("960.html.css");
-	
-	a {
-		cursor:pointer;
-	}
-	a:visited {
-		color:black;
-	}
-	a:hover {
-		color:green;
-		text-decoration: underline;
-	}
-	
-	
 	 
     .container_16 {
      	position: relative;

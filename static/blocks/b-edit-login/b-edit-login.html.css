@@ -1,30 +1,15 @@
+@import url("/s/blocks/i-edit/i-edit.html.css");
+
+.b-edit-login {
+
+}
 
 .b-edit-login__name {
-	margin:25px 0 4px 0;
-	/*width:360px;
-	font-size: 12pt;*/
+	
 }
 
 .b-edit-login__label {
 	margin:2px 0 0 0;
 	font-size: 8pt;
-	/*text-align:right;*/
-	/*font-style:italic;*/
 	color:#777;
-	/*border: 1px solid green;*/
 }
-
-.b-edit-login__edit {
-	font-size: 10pt;
-	padding:8px 40px 8px 8px;
-	font-weight:bold;
-	border:1px solid #909090;
-	background:#fff;
-}
-
-form div.title {
-		font-size: 12pt;
-		/*font-weight: bold;*/
-		display:inline;
-		/*border: 1px solid black;*/
-	}

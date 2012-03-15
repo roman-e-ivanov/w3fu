@@ -11,7 +11,7 @@
 		<link rel="shortcut" href="img/favicon.ico" />
 		<link rel="stylesheet" href="/s/css/general.html.css" type="text/css" />
 		<script type="text/javascript" src="/s/js/jquery.js" />
-		<script type="text/javascript" src="/s/js/script.js" />
+		<script type="text/javascript" src="/s/js/general.html.js" />
 
 	</w3fu:template>
 

@@ -1,0 +1,12 @@
+
+.i-button {
+	font-size: 12pt;
+	padding: 5px 10px;
+}
+
+.b-form-login .i-button {
+	display:block;
+	margin-left:280px;
+	margin-top:20px;
+	width:80px;
+}

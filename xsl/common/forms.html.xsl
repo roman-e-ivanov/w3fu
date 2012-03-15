@@ -43,7 +43,7 @@
 			<div class="toggle-hide">скрыть</div>
 		</div>
 		<input type="text" value="" class="val-required val-password def display-monitor" style="display: none;" maxlength="32" />
-		<input type="password" name="password" maxlength="32">
+		<input type="password" name="password" maxlength="32" >
 			
 			<w3fu:attribute name="class">
 				<w3fu:if test="not(*/form/errors/password)">
