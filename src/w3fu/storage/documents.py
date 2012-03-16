@@ -43,8 +43,6 @@ class Document(object):
 
 class Property(object):
 
-    listable = True
-
     def __init__(self, name, formats=None):
         self._name = name
         self._formats = None if formats is None else set(formats)
@@ -53,7 +51,7 @@ class Property(object):
         try:
             return doc.raw[self._name]
         except KeyError:
-            raise AttributeError
+            return None
 
     def __set__(self, doc, value):
         doc.raw[self._name] = value

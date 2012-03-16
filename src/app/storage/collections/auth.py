@@ -7,7 +7,7 @@ class Users(Collection):
 
     _doc_cls = User
     _indexes = [('email', {'unique': True}),
-                ('shortcut', {'unique': True}),
+                ('shortcut', {}),
                 ('sessions.id', {})]
 
     @errorsafe
