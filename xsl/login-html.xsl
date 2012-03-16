@@ -6,7 +6,6 @@
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
 	<w3fu:include href="blocks/b-form-login/b-form-login.html.xsl" />
-	<w3fu:include href="common/forms.html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -15,8 +14,8 @@
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
-			<link rel="stylesheet" href="/s/pages/login.html.css" type="text/css" />
-			<script type="text/javascript" src="/s/pages/login.html.js" />
+			<link rel="stylesheet" href="/s/pages/login/login.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/login/login.html.js" />
 			</head>
 			
 			<body>

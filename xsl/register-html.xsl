@@ -2,10 +2,10 @@
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
 	<w3fu:include href="common/head.html.xsl" />
+	<w3fu:include href="common/top.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
-	<w3fu:include href="common/top.html.xsl" />
-	<w3fu:include href="common/forms.html.xsl" />
+	<w3fu:include href="blocks/b-form-register/b-form-register.html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -14,6 +14,8 @@
 			<meta name="keywords" content="войти, вход, зарегистрироваться" />
     		<meta name="description" content="Регистрация на сайте" />
 			<w3fu:call-template name="w3fu:links" />
+			<link rel="stylesheet" href="/s/pages/register/register.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/register/register.html.js" />
 			</head>
 			
 			<body>
@@ -25,13 +27,7 @@
 					<div class="grid_3 l-main"><br/></div>	
 					<div class="grid_10">						
 						
-						<form method="post" action="/register" class="login">												
-							<w3fu:call-template name="w3fu:edit-login" />
-							<w3fu:call-template name="w3fu:edit-password" />
-							<input type="submit" class="button-enter-reg" value="Зарегистрироваться" />
-							<a href="/login">Войти</a>
-							<w3fu:call-template name="w3fu:error-auth" />
-						</form>
+						<w3fu:call-template name="w3fu:b-form-register" />
 					</div>
 					<div class="grid_3 l-main"><br/></div>
 					<div class="clear"></div>

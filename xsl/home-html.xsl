@@ -15,6 +15,8 @@
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
+			<link rel="stylesheet" href="/s/pages/home/home.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/home/home.html.js" />
 			</head>
 			
 			<body>
