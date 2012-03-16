@@ -2,11 +2,10 @@
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
 	<w3fu:include href="common/head.html.xsl" />
+	<w3fu:include href="common/top.html.xsl" />
 	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
- 	<w3fu:include href="common/top.html.xsl" />
- 	<w3fu:include href="common/forms.html.xsl" />
-
+ 	
 	<w3fu:template match="/">
 		<html>
 			<head>
@@ -14,8 +13,8 @@
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
-			<link rel="stylesheet" href="/s/pages/index.html.css" type="text/css" />
-			<script type="text/javascript" src="/s/pages/index.html.js" />
+			<link rel="stylesheet" href="/s/pages/index/index.html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/index/index.html.js" />
 			</head>
 			
 			<body>
