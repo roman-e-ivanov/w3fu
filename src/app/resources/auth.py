@@ -54,7 +54,7 @@ class Login(Resource):
         if form.errors:
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
-        user = users.find_login(form.data['email'])
+        user = users.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
             return Response.ok({'form': form, 'error': 'auth'})
         session = Session.new()
