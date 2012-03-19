@@ -1,0 +1,15 @@
+@import url("/s/blocks/i-edit/i-edit.html.css");
+
+.b-edit-email {
+
+}
+
+.b-edit-email__name {
+	
+}
+
+.b-edit-email__label {
+	margin:2px 0 0 0;
+	font-size: 8pt;
+	color:#777;
+}
