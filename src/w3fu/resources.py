@@ -62,7 +62,7 @@ class Form(object):
         self._unpack(self.src)
 
     def dump(self, format=None):
-        return {'data': self.data, 'errors': self.errors, 'source': self.src}
+        return {'source': self.src, 'errors': self.errors}
 
     def query(self, **unpacked):
         packed = dict(self.src)

@@ -8,8 +8,17 @@ class ArgError(Exception):
 
     _params = {}
 
+    def name(self):
+        try:
+            return self._name
+        except AttributeError:
+            name = self.__class__.__name__
+            name = re.sub(r'([^A-Z])([A-Z])', r'\1-\2', name)
+            self._name = name.lower()
+            return self._name
+
     def dump(self, format):
-        return {self.__class__.__name__.lower(): self._params}
+        return {self.name(): self._params}
 
 
 class ArgAbsentError(ArgError): pass

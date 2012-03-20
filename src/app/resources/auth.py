@@ -56,7 +56,7 @@ class Login(Resource):
         users = Users(self.ctx.db)
         user = users.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
-            return Response.ok({'form': form, 'error': 'auth'})
+            return Response.ok({'form': form, 'user-auth-error': {}})
         session = Session.new()
         users.push_session(user, session)
         resp = Response.redirect(Home.route.url(req))
@@ -121,6 +121,6 @@ class Register(Resource):
         users = Users(self.ctx.db)
         user = User.new(form.data['email'])
         if not users.insert(user):
-            return Response.ok({'form': form, 'error': 'exists'})
+            return Response.ok({'form': form, 'user-exists-error': {}})
         url = ShortcutLogin.route.url(req, shortcut=user.shortcut)
         return Response.redirect(url)
