@@ -44,7 +44,8 @@
 }
 .b-debug-noxslt__enable, .b-debug-noxslt__disable {
 	display:block;
-	padding:2px
+	padding:2px;
+	cursor:pointer;
 	
 }
 .b-debug-noxslt__enable, .b-debug-noxslt__enable:hover  {
