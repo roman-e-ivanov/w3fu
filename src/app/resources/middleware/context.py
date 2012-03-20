@@ -21,7 +21,7 @@ class user(Middleware):
             users = Users(res.ctx.db)
             req.ctx.user = users.find_valid_session(session_id,
                                                     datetime.utcnow())
-        if self._required and req.session is None:
+        elif self._required:
             return Response.forbidden()
         resp = handler(res, req)
         if req.ctx.user is not None and resp.status == 200:
