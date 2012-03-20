@@ -21,7 +21,7 @@
 			</div>
 		</w3fu:if>
 		
-		<w3fu:if test="*/user-exists-erro">
+		<w3fu:if test="*/user-exists-error">
 			<div class="b-form-error-msg">
 				Ошибка регистрации. <br /> Пользователь с таким логином уже существует.
 			</div>
