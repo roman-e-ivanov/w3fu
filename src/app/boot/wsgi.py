@@ -1,6 +1,7 @@
 from w3fu.base import Application, Context
 from w3fu.routing import Router
 from w3fu.storage.base import Database
+from w3fu.state import StateHandler
 
 from app import config
 
@@ -9,6 +10,8 @@ from app.resources.index import Index
 from app.resources.auth import Login, Register, ShortcutLogin
 from app.resources.home import Home
 from app.resources.geo import PlaceSuggest
+
+from app.state import SessionState, UserState
 
 
 resources = [Debug,
@@ -20,6 +23,10 @@ database = Database(config.db_uri, config.db_name)
 
 ctx = Context(db=database)
 
-handler = Router([cls(ctx) for cls in resources])
+router = Router([cls(ctx) for cls in resources])
 
-app = Application(ctx, handler)
+state = StateHandler(router,
+                     session_id=SessionState(),
+                     user=UserState(ctx))
+
+app = Application(ctx, state)

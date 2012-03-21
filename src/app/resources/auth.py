@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
-
 from w3fu.base import Response
 from w3fu.routing import Route
 from w3fu.resources import Resource, Form
 from w3fu.data.args import StrArg
-
-from app import config
-from app.cookies import AuthCookie
 
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
@@ -59,19 +54,16 @@ class Login(Resource):
             return Response.ok({'form': form, 'user-auth-error': {}})
         session = Session.new()
         users.push_session(user, session)
-        resp = Response.redirect(Home.route.url(req))
-        AuthCookie(req).set(resp, 'session_id', session.id)
-        return resp
+        req.ctx.state['session_id'] = session.id
+        return Response.redirect(Home.route.url(req))
 
     def delete(self, req):
-        session_id = req.cookie.get(config.session_cookie)
+        session_id = req.ctx.state['session_id']
         if session_id is not None:
-            print(session_id)
             users = Users(self.ctx.db)
             users.pull_session(session_id)
-        resp = Response.redirect(req.referer or Index.route.url(req))
-        AuthCookie(req).remove(resp, 'session_id')
-        return resp
+        del req.ctx.state['session_id']
+        return Response.redirect(req.referer or Index.route.url(req))
 
 
 class ShortcutLogin(Resource):
@@ -100,9 +92,8 @@ class ShortcutLogin(Resource):
         users.update_password(user)
         session = Session.new()
         users.push_session(user, session)
-        resp = Response.redirect(Home.route.url(req))
-        AuthCookie(req).set(resp, 'session_id', session.id)
-        return resp
+        req.ctx.state['session_id'] = session.id
+        return Response.redirect(Home.route.url(req))
 
 
 class Register(Resource):
