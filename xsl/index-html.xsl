@@ -3,8 +3,8 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/top.html.xsl" />
-	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
  	
 	<w3fu:template match="/">
 		<html>
@@ -28,7 +28,7 @@
 					<div class="grid_4 l-main">Блок 4<br /><br /><br /><br /><br /></div>
 					<div class="clear"></div>
 				 	
-				 	<w3fu:call-template name="w3fu:footer" />									
+				 	<w3fu:call-template name="w3fu:b-page-footer" />									
 				</div>
 			</body>
 		</html>

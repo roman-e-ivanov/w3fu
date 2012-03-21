@@ -2,8 +2,8 @@
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
 	<w3fu:include href="common/head.html.xsl" />
-	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
 	<w3fu:include href="common/top.html.xsl" />
 	
 	<w3fu:template match="/">
@@ -31,7 +31,7 @@
 					</div>
 					
 					<div class="clear"></div>
-					<w3fu:call-template name="w3fu:footer" />				
+					<w3fu:call-template name="w3fu:b-page-footer" />				
 				</div>
 			</body>
 		</html>	

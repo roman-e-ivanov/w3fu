@@ -2,10 +2,9 @@
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
 	<w3fu:include href="common/head.html.xsl" />
-	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
 	<w3fu:include href="common/top.html.xsl" />
-	<w3fu:include href="common/forms.html.xsl" />
+	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -22,21 +21,10 @@
 				<div class="container_16">
 					<w3fu:call-template name="w3fu:top" />
 				
-					<div class="grid_3 l-main"><br/></div>	
-					<div class="grid_10">
-					<div>Создать компанию</div>						
-						
-						<form method="post" action="/admin/firms" class="firm-create">												
-							<w3fu:call-template name="w3fu:edit-firm" />
-							<input type="submit" class="button-enter" value="Создать" />
-							
-						</form>
-					</div>
-					<div class="grid_3 l-main"><br/></div>
-					<div class="clear"></div>
+					
 
 				
-					<w3fu:call-template name="w3fu:footer" />
+					<w3fu:call-template name="w3fu:b-page-footer" />
 				</div>
 			</body>
 		</html>

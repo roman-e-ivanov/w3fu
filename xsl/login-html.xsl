@@ -3,9 +3,9 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="common/top.html.xsl" />
-	<w3fu:include href="common/footer.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
 	<w3fu:include href="blocks/b-form-login/b-form-login.html.xsl" />
+	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -26,25 +26,13 @@
 				
 					<div class="grid_3 l-main"><br/></div>	
 					<div class="grid_10">						
-					<!-- 	
-						<form method="post" action="/login" class="login">												
-							<w3fu:call-template name="w3fu:edit-login" />
-							<w3fu:call-template name="w3fu:val-login-msg" />
-							<w3fu:call-template name="w3fu:login-label" />
-							<w3fu:call-template name="w3fu:edit-password" />
-							<w3fu:call-template name="w3fu:val-password-msg" />
-							<w3fu:call-template name="w3fu:password-label" />
-							<input type="submit" class="button-enter-login" value="Войти" />
-							<a href="/register">Зарегистрироваться</a>
-							<w3fu:call-template name="w3fu:error-auth" />
-						</form>
-					-->
+					
 						<w3fu:call-template name="w3fu:b-form-login" />
 					</div>
 					<div class="grid_3 l-main"><br/></div>
 					<div class="clear"></div>
 
-					<w3fu:call-template name="w3fu:footer" />
+					<w3fu:call-template name="w3fu:b-page-footer" />
 				
 				</div>
 			</body>
