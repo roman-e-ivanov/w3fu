@@ -12,7 +12,8 @@
 			<head>
 			<title>Страница разработчика</title>
 			<w3fu:call-template name="w3fu:links" />
-			<script type="text/javascript" src="/s/js/debug.js" />
+			<script type="text/javascript" src="/s/pages/debug/debug.html.js" />
+			<link rel="stylesheet" href="/s/pages/debug/debug.html.css" type="text/css" />
 			</head>
 			
 			<body>

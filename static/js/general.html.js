@@ -1,12 +1,10 @@
-$(document).ready(function(){
+ $(document).ready(function(){
 	$('<script type="text/javascript" src="/s/js/jquery.valform.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.dropdown.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.popup.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.datepicker.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.timetable.js" />').appendTo($('head'));
 	$('<script type="text/javascript" src="/s/js/jquery.json.js" />').appendTo($('head'));
-	$('<script type="text/javascript" src="/s/js/jquery.cookie.js" />').appendTo($('head'));
-	
 	
 
 	/*fast login form*/
