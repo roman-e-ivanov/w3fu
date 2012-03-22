@@ -3,7 +3,7 @@
 
 	<w3fu:include href="common/head.html.xsl" />
 	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
-	<w3fu:include href="common/top.html.xsl" />
+	<w3fu:include href="blocks/b-page-top/b-page-top.html.xsl" />
 	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
 	
 	<w3fu:template match="/">
@@ -19,7 +19,7 @@
 				<w3fu:call-template name="w3fu:b-development-menu" />
 			
 				<div class="container_16">
-					<w3fu:call-template name="w3fu:top" />
+					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					
 

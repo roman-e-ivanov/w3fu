@@ -1,6 +1,6 @@
 <w3fu:stylesheet version="1.0" xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 	
-	<w3fu:template name="w3fu:top">	
+	<w3fu:template name="w3fu:b-page-top">	
 		<div class="grid_10 l-header">
 			<p>Заголовок</p>
 		</div>
@@ -37,11 +37,4 @@
 		<div class="clear"></div>
 	
 	</w3fu:template>
-	
-	<w3fu:template match="providers/provider">
-		<div >
-			<w3fu:value-of select="." />
-		</div>
-	</w3fu:template>
-
 </w3fu:stylesheet>

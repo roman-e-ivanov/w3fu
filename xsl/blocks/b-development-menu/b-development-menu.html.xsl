@@ -16,7 +16,7 @@
 					</li>
 				</w3fu:for-each>
 			</ul>
-			
+<!--			
 			<ul class="b-development-menu__list">	
 				<w3fu:for-each	select="document('b-development-menu.xml')/menu/item"> 
 					<li class="b-development-menu__line">
@@ -28,7 +28,7 @@
 						</a>
 					</li>
 				</w3fu:for-each>  
-			</ul>
+			</ul>  -->
 		</div>
 	</w3fu:template>
 </w3fu:stylesheet>

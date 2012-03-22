@@ -1,8 +1,9 @@
-@import url("reset.html.css");
-@import url("debugging.html.css");
+@import url("/s/css/reset.html.css");
+@import url("/s/css/debugging.html.css");
 @import url("/s/css/960.html.css");
 @import url("/s/blocks/b-development-menu/b-development-menu.html.css");
 @import url("/s/blocks/b-page-footer/b-page-footer.html.css");
+@import url("/s/blocks/b-page-top/b-page-top.html.css");
     
     .container_16 {
      	position: relative;
@@ -191,23 +192,6 @@
 		/*border:1px solid black;*/
 	}
 	
-	
-/* password show/hide toggle */
-
-	.toggle-display, .toggle-hide {
-		text-decoration:none; 
-		border-bottom:1px dashed #666;
-		cursor:pointer;
-		display:none;
-		float:right;
-	}
-	.nodisplay {
-		display: none;
-	}
-	.display {
-		display: inline;
-	}
-
 /* timetable table */
 	
 	table.timetable {
