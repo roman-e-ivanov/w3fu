@@ -56,3 +56,8 @@ class Collection(object):
     def insert(self, doc, safe=True):
         self._collection.insert(doc.raw, safe=safe)
         return True
+
+    @wrapped
+    @errorsafe
+    def find_id(self, id):
+        return self._collection.find_one({'_id': id})

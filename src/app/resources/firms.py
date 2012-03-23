@@ -1,10 +1,13 @@
 from w3fu.base import Response
 from w3fu.routing import Route
-from w3fu.data.args import StrArg
+from w3fu.data.args import StrArg, IdArg
 from w3fu.resources import Form, Resource
 
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
+
+from app.storage.collections.firms import Firms
+from app.storage.documents.firms import Firm
 
 
 class FirmsPublic(Resource):
@@ -12,19 +15,20 @@ class FirmsPublic(Resource):
     route = Route('/firms')
 
     @xml()
-    @user()
+    @user('firms-public-html.xsl')
     def get(self, req):
         return Response.ok({})
 
 
 class FirmPublic(Resource):
 
-    route = Route('/firms/{id}', id='\d+')
+    route = Route('/firms/{id}', id=IdArg('id'))
 
-    @xml()
+    @xml('firm-public-html.xsl')
     @user()
     def get(self, req):
-        firm = Firm.find(req.db, id=req.args['id'])
+        firms = Firms(self.ctx.db)
+        firm = firms.find_id(req.ctx.args['id'])
         if firm is None:
             return Response.not_found()
         return Response.ok({'firm': firm})
@@ -39,30 +43,33 @@ class FirmsAdmin(Resource):
 
     route = Route('/admin/firms')
 
-    @xml('firms-html.xsl')
+    @xml('firms-admin-html.xsl')
     @user(required=True)
     def get(self, req):
-        return Response.ok({'form': FirmCreateForm(req).dump()})
+        return Response.ok({})
 
+    @xml('firms-admin-html.xsl')
     @user(required=True)
     def post(self, req):
         form = FirmCreateForm(req)
-        if form.err:
-            return Response.redirect(self.url(req, form.src))
-        firm = Firm.new(name=form.data['name'], owner_id=req.session['user_id'])
-        firm.insert(req.db)
-        req.db.commit()
-        return Response.redirect(FirmAdmin.url(req, id=firm['id']))
+        if form.errors:
+            return Response.ok({'form': form})
+        firm = Firm.new(name=form.data['name'],
+                        owner=req.ctx.state['user'])
+        firms = Firms(self.ctx.db)
+        firms.insert(firm)
+        return Response.redirect(FirmAdmin.route.url(req, id=firm.id))
 
 
 class FirmAdmin(Resource):
 
-    route = Route('/admin/firms/{id}', id='\d+')
+    route = Route('/admin/firms/{id}', id=IdArg('id'))
 
-    @xml()
+    @xml('firm-admin-html.xsl')
     @user(required=True)
     def get(self, req):
-        firm = Firm.find(req.db, id=req.args['id'])
+        firms = Firms(self.ctx.db)
+        firm = firms.find_id(req.ctx.args['id'])
         if firm is None:
             return Response.not_found()
         return Response.ok({'firm': firm})
