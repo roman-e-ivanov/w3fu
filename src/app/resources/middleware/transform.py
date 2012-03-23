@@ -1,7 +1,7 @@
 import os
 
 from w3fu.resources import Middleware
-from w3fu.data.dumpers import JsonDumper, XmlDumper
+from w3fu.data.dumpers import JsonDumper, XmlDumper, prettify
 
 from app import config
 
@@ -29,7 +29,8 @@ class xml(Middleware):
     def _handler(self, res, req, handler):
         resp = handler(res, req)
         if resp.status == 200:
+            name = prettify(res.__class__.__name__)
             resp.content_type = 'application/xhtml+xml'
-            resp.content = self._dumper.dump(resp.content, res.name(),
+            resp.content = self._dumper.dump(resp.content, name,
                                              'no-xslt' in req.cookie)
         return resp

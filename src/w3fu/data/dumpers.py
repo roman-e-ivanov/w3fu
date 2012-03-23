@@ -1,8 +1,13 @@
+import re
 from lxml import etree
 from json import dumps
 from time import mktime
 
 from w3fu.data.codecs import b64e
+
+
+def prettify(s):
+    return re.sub(r'([^A-Z])([A-Z])', r'\1-\2', s).replace('_', '-').lower()
 
 
 class Dumper(object):

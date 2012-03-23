@@ -9,10 +9,6 @@ OVERLOADABLE = frozenset(['put', 'delete'])
 
 class Resource(object):
 
-    @classmethod
-    def name(cls):
-        return cls.__name__.lower()
-
     def __init__(self, context):
         self.ctx = context
 

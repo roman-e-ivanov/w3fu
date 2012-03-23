@@ -4,7 +4,7 @@ from w3fu.data.args import StrArg, IdArg
 from w3fu.resources import Form, Resource
 
 from app.resources.middleware.context import user
-from app.resources.middleware.transform import xml
+from app.resources.middleware.transform import xml, json
 
 from app.storage.collections.firms import Firms
 from app.storage.documents.firms import Firm
@@ -15,7 +15,7 @@ class FirmsPublic(Resource):
     route = Route('/firms')
 
     @xml()
-    @user('firms-public-html.xsl')
+    @user()
     def get(self, req):
         return Response.ok({})
 
@@ -24,7 +24,7 @@ class FirmPublic(Resource):
 
     route = Route('/firms/{id}', id=IdArg('id'))
 
-    @xml('firm-public-html.xsl')
+    @json()
     @user()
     def get(self, req):
         firms = Firms(self.ctx.db)
@@ -43,12 +43,12 @@ class FirmsAdmin(Resource):
 
     route = Route('/admin/firms')
 
-    @xml('firms-admin-html.xsl')
+    @xml()
     @user(required=True)
     def get(self, req):
         return Response.ok({})
 
-    @xml('firms-admin-html.xsl')
+    @xml()
     @user(required=True)
     def post(self, req):
         form = FirmCreateForm(req)
@@ -65,7 +65,7 @@ class FirmAdmin(Resource):
 
     route = Route('/admin/firms/{id}', id=IdArg('id'))
 
-    @xml('firm-admin-html.xsl')
+    @xml()
     @user(required=True)
     def get(self, req):
         firms = Firms(self.ctx.db)
