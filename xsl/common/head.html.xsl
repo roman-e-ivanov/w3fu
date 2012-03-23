@@ -9,9 +9,9 @@
 	<w3fu:template name="w3fu:links">
 
 		<link rel="shortcut" href="img/favicon.ico" />
-		<link rel="stylesheet" href="/s/css/general.html.css" type="text/css" />
+		 <!-- <link rel="stylesheet" href="/s/css/general.html.css" type="text/css" /> -->
 		<script type="text/javascript" src="/s/js/jquery.js" />
-		<script type="text/javascript" src="/s/js/general.html.js" />
+		<!--   <script type="text/javascript" src="/s/js/general.html.js" /> -->
 
 	</w3fu:template>
 

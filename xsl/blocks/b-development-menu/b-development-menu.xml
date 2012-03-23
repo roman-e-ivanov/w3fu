@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <menu>
 <item>/</item>
-<item>/test</item>
 <item>/login</item>
 <item>/register</item>
 <item>/home</item>
