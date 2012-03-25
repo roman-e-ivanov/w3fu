@@ -4,6 +4,7 @@
 <item>/login</item>
 <item>/register</item>
 <item>/home</item>
+<item>/firms</item>
 <item>/admin/firms</item>
 <item>/debug</item>
 </menu>

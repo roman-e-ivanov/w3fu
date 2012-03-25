@@ -9,12 +9,12 @@
 	<w3fu:template match="/">
 		<html>
 			<head>
-				<title>Создать компанию</title>
+				<title>Информация о компании</title>
 				<meta name="keywords" content="" />
     			<meta name="description" content="" />
 				<w3fu:call-template name="w3fu:links" />
-				<link rel="stylesheet" href="/s/pages/firms-admin/firms-admin.html.css" type="text/css" />
-				<script type="text/javascript" src="/s/pages/firms-admin/firms-admin.html.js" />
+				<link rel="stylesheet" href="/s/pages/firm-public/firm-public.html.css" type="text/css" />
+				<script type="text/javascript" src="/s/pages/firm-public/firm-public.html.js" />
 			</head>
 			
 			<body>
