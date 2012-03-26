@@ -41,7 +41,7 @@ class FirmCreateForm(Form):
 
 class FirmsAdmin(Resource):
 
-    route = Route('/admin/firms')
+    route = Route('/home/firms')
 
     @xml('firms-admin-html.xsl')
     @user(required=True)
@@ -63,7 +63,7 @@ class FirmsAdmin(Resource):
 
 class FirmAdmin(Resource):
 
-    route = Route('/admin/firms/{id}', id=IdArg('id'))
+    route = Route('/home/firms/{id}', id=IdArg('id'))
 
     @xml('firm-admin-html.xsl')
     @user(required=True)
