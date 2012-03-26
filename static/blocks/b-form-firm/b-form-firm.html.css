@@ -1,0 +1,10 @@
+@import url("/s/blocks/b-edit-firm-name/b-edit-firm-name.html.css");
+@import url("/s/blocks/b-form-error-msg/b-form-error-msg.html.css");
+@import url("/s/blocks/i-button/i-button.html.css");
+@import url("/s/blocks/i-link/i-link.html.css");
+
+
+.b-form-firm {
+	width:580px;
+	margin:50px 0;
+}
