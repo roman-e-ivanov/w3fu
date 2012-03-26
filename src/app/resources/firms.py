@@ -14,8 +14,8 @@ class FirmsPublic(Resource):
 
     route = Route('/firms')
 
-    @xml()
-    @user('firms-public-html.xsl')
+    @xml('firms-public-html.xsl')
+    @user()
     def get(self, req):
         return Response.ok({})
 
