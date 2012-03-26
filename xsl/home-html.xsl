@@ -24,7 +24,7 @@
 				
 					<div class="grid_10 l-main">
 						123
-						<a class="link" href="/admin/firms">Создать компанию</a>
+						<a class="link" href="/home/firms">Создать компанию</a>
 					</div>
 						
 					<div class="grid_6 l-main">

@@ -11,6 +11,11 @@
 					<w3fu:if test="*/form/errors/password">
 						<li>Пароль</li>
 					</w3fu:if>
+					
+					<w3fu:if test="firms-admin/form/errors/name">
+						<li>Название компании</li>
+					</w3fu:if>
+					
 				</ul>
 			</div>	
 		</w3fu:if>
