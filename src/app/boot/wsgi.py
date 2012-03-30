@@ -13,6 +13,7 @@ from app.resources.firms import FirmPublic, FirmsPublic, FirmAdmin, FirmsAdmin
 from app.resources.geo import PlaceSuggest
 
 from app.state import SessionState, UserState
+from app.caching import CacheHandler
 
 
 resources = [Debug,
@@ -31,4 +32,6 @@ state = StateHandler(router,
                      session_id=SessionState(),
                      user=UserState(ctx))
 
-app = Application(ctx, state)
+cache = CacheHandler(state)
+
+app = Application(ctx, cache)
