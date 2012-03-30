@@ -7,7 +7,9 @@
 	<w3fu:template name="w3fu:b-form-login">
 		<form method="post" action="/login" class="b-form-login">												
 			<w3fu:call-template name="w3fu:b-form-error-msg" />
-			<w3fu:call-template name="w3fu:b-edit-email" />
+			<w3fu:call-template name="w3fu:b-edit-email">
+				<w3fu:with-param name="name" select="'email'" />
+			</w3fu:call-template>
 			<w3fu:call-template name="w3fu:b-edit-password" />
 			<input type="submit" class="i-button" value="Войти" />
 			<a class="i-link" href="/register">Зарегистрироваться</a>
