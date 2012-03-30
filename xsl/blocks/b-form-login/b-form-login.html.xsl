@@ -10,7 +10,9 @@
 			<w3fu:call-template name="w3fu:b-edit-email">
 				<w3fu:with-param name="name" select="'email'" />
 			</w3fu:call-template>
-			<w3fu:call-template name="w3fu:b-edit-password" />
+			<w3fu:call-template name="w3fu:b-edit-password" >
+				<w3fu:with-param name="name" select="'password'" />
+			</w3fu:call-template>
 			<input type="submit" class="i-button" value="Войти" />
 			<a class="i-link" href="/register">Зарегистрироваться</a>
 		</form>

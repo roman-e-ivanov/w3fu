@@ -6,7 +6,9 @@
 	<w3fu:template name="w3fu:b-form-register">
 		<form method="post" action="/register" class="b-form-register">												
 			<w3fu:call-template name="w3fu:b-form-error-msg" />
-			<w3fu:call-template name="w3fu:b-edit-email" />
+			<w3fu:call-template name="w3fu:b-edit-email" >
+				<w3fu:with-param name="name" select="'email'" />
+			</w3fu:call-template>
 			<input type="submit" class="i-button" value="OK" />
 			<a class="i-link" href="/login">Войти</a>
 		</form>

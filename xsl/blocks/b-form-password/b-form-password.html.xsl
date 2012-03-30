@@ -4,7 +4,9 @@
 	
 	<w3fu:template name="w3fu:b-form-password">
 		<form method="post" action="" class="b-form-password">												
-			<w3fu:call-template name="w3fu:b-edit-password" />
+			<w3fu:call-template name="w3fu:b-edit-password" >
+				<w3fu:with-param name="name" select="'password'" />
+			</w3fu:call-template>
 			<input type="submit" class="i-button" value="OK" />
 		</form>
 	</w3fu:template>
