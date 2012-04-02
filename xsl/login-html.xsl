@@ -18,7 +18,7 @@
 			<script type="text/javascript" src="/s/pages/login/login.html.js" />
 			</head>
 			
-			<body>
+			<body class="p-login">
 				<w3fu:call-template name="w3fu:b-development-menu" />
 			
 				<div class="container_16">

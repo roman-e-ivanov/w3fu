@@ -13,3 +13,7 @@
 	font-size: 8pt;
 	color:#777;
 }
+
+.p-login .b-edit-email__label {
+	display:none;
+}

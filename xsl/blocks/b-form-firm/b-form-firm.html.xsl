@@ -6,7 +6,9 @@
 	<w3fu:template name="w3fu:b-form-firm">
 		<form method="post" action="" class="b-form-firm">												
 			<w3fu:call-template name="w3fu:b-form-error-msg" />
-			<w3fu:call-template name="w3fu:b-edit-firm-name" />
+			<w3fu:call-template name="w3fu:b-edit-firm-name">
+				<w3fu:with-param name="name" select="'name'" />
+			</w3fu:call-template>
 			<input type="submit" class="i-button" value="OK" />
 		</form>
 	</w3fu:template>

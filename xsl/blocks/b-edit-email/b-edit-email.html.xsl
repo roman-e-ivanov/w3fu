@@ -4,21 +4,20 @@
 		<w3fu:param name="name" />
 		<div class="b-edit-email__name">Почта</div>
 		
-		<input type="text" name="email" maxlength="64">
+		<input type="text" maxlength="254">
+			
+			<w3fu:attribute name="name">
+				<w3fu:value-of select="$name" />
+			</w3fu:attribute>
 			
 			<w3fu:attribute name="value">
-			 	<w3fu:value-of select="/*/form/source/@*[name(.)=$name]"/>
+			 	<w3fu:value-of select="/*/form/source/@*[local-name(.)=$name]"/>
 			</w3fu:attribute>
 									
 			<w3fu:attribute name="class">									
-				<w3fu:if test="not(*/form/errors/login)">
-					<w3fu:text>i-edit b-edit-email</w3fu:text>
-				</w3fu:if>
-										
-				<w3fu:if test="*/form/errors/login">
-					<w3fu:text>i-edit b-edit-email</w3fu:text>
-				</w3fu:if>										
+				<w3fu:text>i-edit b-edit-email</w3fu:text>									
 			</w3fu:attribute>
+		
 		</input>
 		<div class="b-edit-email__label">Пример: name@example.com</div>
 	</w3fu:template>
