@@ -53,9 +53,13 @@ class Collection(object):
         return self._doc_cls(raw, self)
 
     @errorsafe
-    def insert(self, doc, safe=True):
+    def insert(self, doc, safe=False):
         self._collection.insert(doc.raw, safe=safe)
         return True
+
+    @errorsafe
+    def remove_id(self, id, safe=False):
+        return self._collection.remove({'_id': id}, safe=safe)
 
     @wrapped
     @errorsafe

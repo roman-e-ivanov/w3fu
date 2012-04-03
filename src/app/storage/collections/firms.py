@@ -6,3 +6,9 @@ from app.storage.documents.firms import Firm
 class Firms(Collection):
 
     _doc_cls = Firm
+    _indexes = [('owner_id', {})]
+
+    @errorsafe
+    def update(self, firm):
+        return self._collection.update({'_id': firm.id},
+                                       {'$set': {'name': firm.name}})

@@ -10,3 +10,6 @@ class Firm(Document):
     def _new(self, owner, name):
         self.owner_id = owner.id
         self.name = name
+
+    def writable_by(self, user):
+        return self.owner_id == user.id

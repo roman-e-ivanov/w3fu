@@ -111,7 +111,7 @@ class Register(Resource):
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
         user = User.new(form.data['email'])
-        if not users.insert(user):
+        if not users.insert(user, True):
             return Response.ok({'form': form, 'user-exists-error': {}})
         url = ShortcutLogin.route.url(req, shortcut=user.shortcut)
         return Response.redirect(url)
