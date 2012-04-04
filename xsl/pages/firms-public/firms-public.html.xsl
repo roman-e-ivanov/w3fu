@@ -1,20 +1,20 @@
 <w3fu:stylesheet version="1.0"
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
-	<w3fu:include href="blocks/b-page-head/b-page-head.html.xsl" />
-	<w3fu:include href="blocks/b-development-menu/b-development-menu.html.xsl" />
-	<w3fu:include href="blocks/b-page-footer/b-page-footer.html.xsl" />
-	<w3fu:include href="blocks/b-page-top/b-page-top.html.xsl" />
+	<w3fu:include href="../../blocks/b-page-head/b-page-head.html.xsl" />
+	<w3fu:include href="../../blocks/b-development-menu/b-development-menu.html.xsl" />
+	<w3fu:include href="../../blocks/b-page-footer/b-page-footer.html.xsl" />
+	<w3fu:include href="../../blocks/b-page-top/b-page-top.html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
 			<head>
-				<title>Информация о компании</title>
+				<title>Поиск компании</title>
 				<meta name="keywords" content="" />
     			<meta name="description" content="" />
 				<w3fu:call-template name="w3fu:links" />
-				<link rel="stylesheet" href="/s/pages/firm-public/firm-public.html.css" type="text/css" />
-				<script type="text/javascript" src="/s/pages/firm-public/firm-public.html.js" />
+				<link rel="stylesheet" href="/s/pages/firms-public/firms-public.html.css" type="text/css" />
+				<script type="text/javascript" src="/s/pages/firms-public/firms-public.html.js" />
 			</head>
 			
 			<body>
