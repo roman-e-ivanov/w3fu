@@ -29,8 +29,11 @@ class Route(object):
         self._compile()
 
     def url(self, req, query='', **args):
-        path = self.pattern.format(**self._pack(args))
-        return urlunsplit((self._scheme, req.host, path, query, ''))
+        return urlunsplit((self._scheme, req.host, self.path(**args),
+                           query, ''))
+
+    def path(self, **args):
+        return self.pattern.format(**self._pack(args))
 
     def match(self, path):
         match = self._re.match(path)

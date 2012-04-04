@@ -38,12 +38,12 @@ class Login(Resource):
 
     route = Route('/login')
 
-    @xml('login-html.xsl')
+    @xml('pages/login/login.html.xsl')
     @user()
     def get(self, req):
         return Response.ok({})
 
-    @xml('login-html.xsl')
+    @xml('pages/login/login.html.xsl')
     def post(self, req):
         form = LoginForm(req)
         if form.errors:
@@ -71,7 +71,7 @@ class ShortcutLogin(Resource):
     route = Route('/login/{shortcut}',
                   shortcut=StrArg('shortcut', pattern='[\da-zA-Z_-]{22}'))
 
-    @xml('shortcut-login-html.xsl')
+    @xml('pages/shortcut-login/shortcut-login.html.xsl')
     def get(self, req):
         users = Users(self.ctx.db)
         user = users.find_shortcut(req.ctx.args['shortcut'])
@@ -79,7 +79,7 @@ class ShortcutLogin(Resource):
             return Response.not_found()
         return Response.ok({})
 
-    @xml('shortcut-login-html.xsl')
+    @xml('pages/shortcut-login/shortcut-login.html.xsl')
     def post(self, req):
         users = Users(self.ctx.db)
         user = users.find_shortcut(req.ctx.args['shortcut'])
@@ -100,11 +100,11 @@ class Register(Resource):
 
     route = Route('/register')
 
-    @xml('register-html.xsl')
+    @xml('pages/register/register.html.xsl')
     def get(self, req):
         return Response.ok({})
 
-    @xml('register-html.xsl')
+    @xml('pages/register/register.html.xsl')
     def post(self, req):
         form = RegisterForm(req)
         if form.errors:

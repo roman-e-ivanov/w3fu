@@ -10,7 +10,7 @@ class Home(Resource):
 
     route = Route('/home')
 
-    @xml('home-html.xsl')
+    @xml('pages/home/home.html.xsl')
     @user(required=True)
     def get(self, req):
         return Response.ok({})

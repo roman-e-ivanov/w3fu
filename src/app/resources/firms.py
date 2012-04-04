@@ -14,7 +14,7 @@ class FirmsPublic(Resource):
 
     route = Route('/firms')
 
-    @xml('firms-public-html.xsl')
+    @xml('pages/firms-public/firms-public.html.xsl')
     @user()
     def get(self, req):
         return Response.ok({})
@@ -24,7 +24,7 @@ class FirmPublic(Resource):
 
     route = Route('/firms/{id}', id=IdArg('id'))
 
-    @xml('firm-public-html.xsl')
+    @xml('pages/firm-public/firm-public.html.xsl')
     @user()
     def get(self, req):
         firm = Firms(self.ctx.db).find_id(req.ctx.args['id'])
@@ -42,12 +42,12 @@ class FirmsAdmin(Resource):
 
     route = Route('/home/firms')
 
-    @xml('firms-admin-html.xsl')
+    @xml('pages/firms-admin/firms-admin.html.xsl')
     @user(required=True)
     def get(self, req):
         return Response.ok({})
 
-    @xml('firms-admin-html.xsl')
+    @xml('pages/firms-admin/firms-admin.html.xsl')
     @user(required=True)
     def post(self, req):
         form = FirmForm(req)
@@ -63,7 +63,7 @@ class FirmAdmin(Resource):
 
     route = Route('/home/firms/{id}', id=IdArg('id'))
 
-    @xml('firm-admin-html.xsl')
+    @xml('pages/firm-admin/firm-admin.html.xsl')
     @user(required=True)
     def get(self, req):
         firm = Firms(self.ctx.db).find_id(req.ctx.args['id'])
@@ -71,7 +71,7 @@ class FirmAdmin(Resource):
             return Response.not_found()
         return Response.ok({'firm': firm})
 
-    @xml('firm-admin-html.xsl')
+    @xml('pages/firm-admin/firm-admin.html.xsl')
     @user(required=True)
     def put(self, req):
         form = FirmForm(req)
@@ -91,3 +91,19 @@ class FirmAdmin(Resource):
         if firm is not None and firm.writable_by(req.ctx.state['user']):
             firms.remove_id(firm.id)
         return Response.redirect(FirmsAdmin.route.url(req))
+
+
+def block_firms(req, firms):
+    return [{'firm': firm, 'path': FirmAdmin.route.path(id=firm.id)}
+            for firm in firms]
+
+
+class FirmsListAdmin(Resource):
+
+    route = Route('/home/firms/list')
+
+    @xml('pages/firms-list-admin/firms-list-admin.html.xsl')
+    @user(required=True)
+    def get(self, req):
+        found = Firms(self.ctx.db).find_user(req.ctx.state['user'])
+        return Response.ok({'firms': block_firms(req, found)})

@@ -10,7 +10,7 @@ class Index(Resource):
 
     route = Route('/')
 
-    @xml('index-html.xsl')
+    @xml('pages/index/index.html.xsl')
     @user()
     def get(self, req):
         return Response.ok({})
