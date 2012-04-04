@@ -71,6 +71,7 @@ class FirmAdmin(Resource):
             return Response.not_found()
         return Response.ok({'firm': firm})
 
+    @xml('firm-admin-html.xsl')
     @user(required=True)
     def put(self, req):
         form = FirmForm(req)
