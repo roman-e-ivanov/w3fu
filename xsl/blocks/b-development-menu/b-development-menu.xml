@@ -5,6 +5,7 @@
 <item>/register</item>
 <item>/home</item>
 <item>/home/firms</item>
+<item>/home/firms/list</item>
 <item>/firms</item>
 <item>/debug</item>
 </menu>

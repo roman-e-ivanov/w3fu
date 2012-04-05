@@ -2,6 +2,7 @@
 	
 	<w3fu:template name="w3fu:b-edit-firm-name">
 		<w3fu:param name="name" />
+		<w3fu:param name="value" />
 		<div class="b-edit-firm-name__name">Название компании</div>
 		
 		<input type="text" maxlength="100">
@@ -12,6 +13,7 @@
 			
 			<w3fu:attribute name="value">
 			 	<w3fu:value-of select="/*/form/source/@*[local-name(.)=$name]"/>
+			 	<w3fu:value-of select="$value" />
 			</w3fu:attribute>
 									
 			<w3fu:attribute name="class">									

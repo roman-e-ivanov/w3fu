@@ -24,7 +24,9 @@
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					<div class="grid_10">
-						<w3fu:call-template name="w3fu:b-form-firm" />
+						<w3fu:call-template name="w3fu:b-form-firm" >
+							<w3fu:with-param name="mode" select="0" />
+						</w3fu:call-template>
 					</div>
 						
 					<div class="grid_6 l-main">

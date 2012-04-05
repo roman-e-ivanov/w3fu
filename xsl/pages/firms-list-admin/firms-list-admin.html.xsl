@@ -5,16 +5,18 @@
 	<w3fu:include href="../../blocks/b-development-menu/b-development-menu.html.xsl" />
 	<w3fu:include href="../../blocks/b-page-footer/b-page-footer.html.xsl" />
 	<w3fu:include href="../../blocks/b-page-top/b-page-top.html.xsl" />
+	<w3fu:include href="../../blocks/b-firms-list/b-firms-list.html.xsl" />
+	
 	
 	<w3fu:template match="/">
 		<html>
 			<head>
-				<title>Поиск компании</title>
-				<meta name="keywords" content="" />
-    			<meta name="description" content="" />
+				<title>Список компаний</title>
+				<meta name="keywords" content="войти, вход, залогиниться" />
+    			<meta name="description" content="Вход на сайт" />
 				<w3fu:call-template name="w3fu:links" />
-				<link rel="stylesheet" href="/s/pages/firm-public/firm-public.html.css" type="text/css" />
-				<script type="text/javascript" src="/s/pages/firm-public/firm-public.html.js" />
+				<link rel="stylesheet" href="/s/pages/firms-list-admin/firms-list-admin.html.css" type="text/css" />
+				<script type="text/javascript" src="/s/pages/firms-list-admin/firms-list-admin.html.js" />
 			</head>
 			
 			<body>
@@ -22,12 +24,11 @@
 				<div class="container_16">
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
-					<div class="grid_10 l-main">
-						123
+					<div class="grid_10 l-main">	
+						<w3fu:call-template name="w3fu:b-firms-list" />
 					</div>
 						
 					<div class="grid_6 l-main">
-						123
 					</div>
 					
 					<div class="clear"></div>

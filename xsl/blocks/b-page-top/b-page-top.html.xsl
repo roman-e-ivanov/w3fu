@@ -27,7 +27,7 @@
 			</w3fu:if>
 	
 			<w3fu:if test="*/user">
-				<w3fu:value-of select="*/user/@login" />
+				<w3fu:value-of select="*/user/@email" />
 				<form method="post" action="/login" class="exit-form">				
 					<input type="hidden" name="method" value="delete" /> 
 					<input type="submit" class="exit-button" value="Выход" />

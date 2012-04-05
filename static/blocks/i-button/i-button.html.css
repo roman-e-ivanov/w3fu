@@ -1,12 +1,12 @@
 
 .i-button {
-	font-size: 12pt;
+	font-size: 10pt;
 	padding: 5px 10px;
 }
 
 .b-form-login .i-button, .b-form-register .i-button, .b-form-password .i-button, .b-form-firm .i-button {
 	display:block;
-	margin-left:280px;
+	margin-left:260px;
 	margin-top:20px;
-	width:80px;
+	width:100px;
 }
