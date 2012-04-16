@@ -1,7 +1,7 @@
 <w3fu:stylesheet version="1.0" xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 	
-	<w3fu:include href="../b-edit-provider-name/b-edit-provider-name.html.xsl" />
-	<w3fu:include href="../b-form-error-msg/b-form-error-msg.html.xsl" />	
+	<w3fu:include href="../b-edit-provider-name/html.xsl" />
+	<w3fu:include href="../b-form-error-msg/html.xsl" />	
 	
 	<w3fu:template name="w3fu:b-form-provider">
 		<w3fu:param name="mode" />

@@ -1,8 +1,8 @@
 <w3fu:stylesheet version="1.0" xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 	
-	<w3fu:include href="../b-edit-email/b-edit-email.html.xsl" />
-	<w3fu:include href="../b-edit-password/b-edit-password.html.xsl" />
-	<w3fu:include href="../b-form-error-msg/b-form-error-msg.html.xsl" />	
+	<w3fu:include href="../b-edit-email/html.xsl" />
+	<w3fu:include href="../b-edit-password/html.xsl" />
+	<w3fu:include href="../b-form-error-msg/html.xsl" />	
 	
 	<w3fu:template name="w3fu:b-form-login">
 		<form method="post" action="/login" class="b-form-login">												

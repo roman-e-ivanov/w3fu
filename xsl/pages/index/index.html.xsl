@@ -1,10 +1,10 @@
 <w3fu:stylesheet version="1.0"
 	xmlns:w3fu="http://www.w3.org/1999/XSL/Transform">
 
-	<w3fu:include href="../../blocks/b-page-head/b-page-head.html.xsl" />
-	<w3fu:include href="../../blocks/b-page-top/b-page-top.html.xsl" />
-	<w3fu:include href="../../blocks/b-development-menu/b-development-menu.html.xsl" />
-	<w3fu:include href="../../blocks/b-page-footer/b-page-footer.html.xsl" />
+	<w3fu:include href="../../blocks/b-page-head/html.xsl" />
+	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
+	<w3fu:include href="../../blocks/b-development-menu/html.xsl" />
+	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
  	
 	<w3fu:template match="/">
 		<html>

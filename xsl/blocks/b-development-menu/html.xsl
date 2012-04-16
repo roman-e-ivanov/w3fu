@@ -5,7 +5,7 @@
 
 		<div class="b-development-menu">
 			<ul class="b-development-menu__list">
-				<w3fu:for-each	select="document('b-development-menu.xml')/menu/item"> 
+				<w3fu:for-each	select="document('menu.xml')/menu/item"> 
 					<li class="b-development-menu__line">
 						<a class="b-development-menu__link">
 							<w3fu:attribute name="href">

@@ -1,0 +1,10 @@
+@import url("/s/blocks/b-edit-email/html.css");
+@import url("/s/blocks/b-form-error-msg/html.css");
+@import url("/s/blocks/i-button/html.css");
+@import url("/s/blocks/i-link/html.css");
+
+
+.b-form-register {
+	width:580px;
+	margin:50px 0;
+}
