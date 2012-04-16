@@ -74,5 +74,6 @@ class Users(Collection):
     @wrapped
     @errorsafe
     def find_valid_session(self, id, expires):
-        return self._collection.find_one({'sessions.id': id,
-                                          'sessions.expires': {'$gt': expires}})
+        query = {'sessions': {'$elemMatch': {'id': id,
+                                             'expires': {'$gt': expires}}}}
+        return self._collection.find_one(query)
