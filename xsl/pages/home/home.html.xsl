@@ -23,8 +23,8 @@
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					<div class="grid_10 l-main">
-						<a class="link" href="/home/firms">Создать компанию</a><br />
-						<a class="link" href="/home/firms/list">Список компаний</a>
+						<a class="link" href="/home/providers">Создать компанию</a><br />
+						<a class="link" href="/home/providers/list">Список компаний</a>
 						
 					</div>
 						

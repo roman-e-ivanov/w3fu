@@ -4,8 +4,8 @@
 <item>/login</item>
 <item>/register</item>
 <item>/home</item>
-<item>/home/firms</item>
-<item>/home/firms/list</item>
-<item>/firms</item>
+<item>/home/providers</item>
+<item>/home/providers/list</item>
+<item>/providers</item>
 <item>/debug</item>
 </menu>

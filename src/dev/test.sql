@@ -42,13 +42,13 @@ INSERT INTO `address` VALUES (1,2,'Address #1'),(2,2,'Address #2');
 UNLOCK TABLES;
 
 --
--- Table structure for table `firm`
+-- Table structure for table `provider`
 --
 
-DROP TABLE IF EXISTS `firm`;
+DROP TABLE IF EXISTS `provider`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `firm` (
+CREATE TABLE `provider` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
@@ -56,13 +56,13 @@ CREATE TABLE `firm` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `firm`
+-- Dumping data for table `provider`
 --
 
-LOCK TABLES `firm` WRITE;
-/*!40000 ALTER TABLE `firm` DISABLE KEYS */;
-INSERT INTO `firm` VALUES (1,'Empty company'),(2,'Another company');
-/*!40000 ALTER TABLE `firm` ENABLE KEYS */;
+LOCK TABLES `provider` WRITE;
+/*!40000 ALTER TABLE `provider` DISABLE KEYS */;
+INSERT INTO `provider` VALUES (1,'Empty company'),(2,'Another company');
+/*!40000 ALTER TABLE `provider` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -74,10 +74,10 @@ DROP TABLE IF EXISTS `service`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `service` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `firm_id` int(10) unsigned NOT NULL,
+  `provider_id` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `entity_id` (`firm_id`)
+  KEY `entity_id` (`provider_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -100,10 +100,10 @@ DROP TABLE IF EXISTS `tag`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tag` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `firm_id` int(10) unsigned NOT NULL,
+  `provider_id` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `entity_id` (`firm_id`)
+  KEY `entity_id` (`provider_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

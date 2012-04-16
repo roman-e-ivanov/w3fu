@@ -13,17 +13,17 @@
 	$("div.fast-login").find("a").css('display','none');
 	$("div.fast-login").find("span.dropdown-button").css('display','inline');
 	
-	/*firm create form*/
-	$("form.firm-create").valForm('default');
+	/*provider create form*/
+	$("form.provider-create").valForm('default');
 	$('.f2').popUp('.container_16','class', 20, 20);
 	$('.f3').popUp('.container_16','class', 20, 20);
 	
 /*	
  *  ХЗ ,что такое
- 	$("div.fast-firm").find("span.dropdown-button").toggleClass('nodisplay');
-	$("div.fast-firm").find("span.dropdown-button").toggleClass('display');
-	$("div.fast-firm").find("a").toggleClass('nodisplay');
-	$("div.fast-firm").find("a").toggleClass('display');
+ 	$("div.fast-provider").find("span.dropdown-button").toggleClass('nodisplay');
+	$("div.fast-provider").find("span.dropdown-button").toggleClass('display');
+	$("div.fast-provider").find("a").toggleClass('nodisplay');
+	$("div.fast-provider").find("a").toggleClass('display');
 /*	
 	/*region select form*/
 	$('#f4').popUp('.container_16','id', 20, 20);

@@ -1,0 +1,15 @@
+.b-providers-list {
+	
+}
+
+.b-providers-list__list {
+	list-style: disc inside;
+}
+
+.b-providers-list__line {
+	
+}
+
+.b-providers-list__link {
+	display:block; 
+}

@@ -12,7 +12,7 @@
 						<li>Пароль</li>
 					</w3fu:if>
 					
-					<w3fu:if test="firms-admin/form/errors/name">
+					<w3fu:if test="providers-admin/form/errors/name">
 						<li>Название компании</li>
 					</w3fu:if>
 					
