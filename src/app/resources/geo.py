@@ -6,7 +6,7 @@ from w3fu.data.args import StrArg, BoolArg
 from app.resources.middleware.transform import json, xml
 from app.resources.middleware.context import user
 
-from app.storage.collections.geo import Places
+from app.storage.geo import Places
 
 
 class PlaceSuggestForm(Form):

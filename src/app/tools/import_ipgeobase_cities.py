@@ -7,8 +7,7 @@ from w3fu.storage.base import Database
 
 from app import config
 
-from app.storage.collections.geo import Places
-from app.storage.documents.geo import Place
+from app.storage.geo import Places, Place
 
 
 database = Database(config.db_uri, config.db_name)

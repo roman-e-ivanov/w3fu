@@ -6,8 +6,7 @@ from w3fu.resources import Form, Resource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
-from app.storage.collections.providers import Providers
-from app.storage.documents.providers import Provider
+from app.storage.providers import Providers, Provider
 
 
 class ProvidersPublic(Resource):

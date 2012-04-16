@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from w3fu.data.args import StrArg, ArgError
 
-from app.storage.collections.auth import Users
+from app.storage.auth import Users
 
 
 class SessionState(object):

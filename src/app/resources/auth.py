@@ -9,8 +9,7 @@ from app.resources.middleware.transform import xml
 from app.resources.home import Home
 from app.resources.index import Index
 
-from app.storage.collections.auth import Users
-from app.storage.documents.auth import User, Session
+from app.storage.auth import Users, User, Session
 
 
 class RegisterForm(Form):
