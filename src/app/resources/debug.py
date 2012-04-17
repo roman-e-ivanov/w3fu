@@ -9,6 +9,6 @@ class Debug(Resource):
 
     route = Route('/debug')
 
-    @xml('pages/debug/debug.html.xsl')
+    @xml('pages/debug/html.xsl')
     def get(self, req):
         return Response.ok({})

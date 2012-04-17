@@ -4,36 +4,31 @@
 	<w3fu:include href="../../blocks/b-page-head/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
 	<w3fu:include href="../../blocks/b-development-menu/html.xsl" />
-	<w3fu:include href="../../blocks/b-form-login/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
-	
+ 	
 	<w3fu:template match="/">
 		<html>
 			<head>
-			<title>Вход на сайт</title>
+			<title>Главная страница</title>
 			<meta name="keywords" content="войти, вход, залогиниться" />
     		<meta name="description" content="Вход на сайт" />
 			<w3fu:call-template name="w3fu:links" />
-			<link rel="stylesheet" href="/s/pages/login/login.html.css" type="text/css" />
-			<script type="text/javascript" src="/s/pages/login/login.html.js" />
+			<link rel="stylesheet" href="/s/pages/index/html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/index/html.js" />
 			</head>
 			
-			<body class="p-login">
-				<w3fu:call-template name="w3fu:b-development-menu" />
-			
+			<body>
+			<w3fu:call-template name="w3fu:b-development-menu" />
 				<div class="container_16">
-				<w3fu:call-template name="w3fu:b-page-top" />
-				
-					<div class="grid_3 l-main"><br/></div>	
-					<div class="grid_10">						
-					
-						<w3fu:call-template name="w3fu:b-form-login" />
-					</div>
-					<div class="grid_3 l-main"><br/></div>
+					<w3fu:call-template name="w3fu:b-page-top" />
+			
+					<div class="grid_4 l-main">Блок 1<br /><br /><br /><br /><br /></div>
+					<div class="grid_4 l-main">Блок 2<br /><br /><br /><br /><br /></div>
+					<div class="grid_4 l-main">Блок 3<br /><br /><br /><br /><br /></div>
+					<div class="grid_4 l-main">Блок 4<br /><br /><br /><br /><br /></div>
 					<div class="clear"></div>
-
-					<w3fu:call-template name="w3fu:b-page-footer" />
-				
+				 	
+				 	<w3fu:call-template name="w3fu:b-page-footer" />									
 				</div>
 			</body>
 		</html>

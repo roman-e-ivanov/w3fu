@@ -14,8 +14,8 @@
 			<meta name="keywords" content="войти, вход, зарегистрироваться" />
     		<meta name="description" content="Регистрация на сайте" />
 			<w3fu:call-template name="w3fu:links" />
-			<link rel="stylesheet" href="/s/pages/register/register.html.css" type="text/css" />
-			<script type="text/javascript" src="/s/pages/register/register.html.js" />
+			<link rel="stylesheet" href="/s/pages/register/html.css" type="text/css" />
+			<script type="text/javascript" src="/s/pages/register/html.js" />
 			</head>
 			
 			<body>

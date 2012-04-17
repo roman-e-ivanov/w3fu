@@ -13,8 +13,8 @@
 				<meta name="keywords" content="" />
     			<meta name="description" content="" />
 				<w3fu:call-template name="w3fu:links" />
-				<link rel="stylesheet" href="/s/pages/provider-public/provider-public.html.css" type="text/css" />
-				<script type="text/javascript" src="/s/pages/provider-public/provider-public.html.js" />
+				<link rel="stylesheet" href="/s/pages/provider-public/html.css" type="text/css" />
+				<script type="text/javascript" src="/s/pages/provider-public/html.js" />
 			</head>
 			
 			<body>

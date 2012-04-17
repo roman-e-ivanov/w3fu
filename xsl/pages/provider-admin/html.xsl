@@ -14,8 +14,8 @@
 				<meta name="keywords" content="" />
     			<meta name="description" content="" />
 				<w3fu:call-template name="w3fu:links" />
-				<link rel="stylesheet" href="/s/pages/providers-admin/providers-admin.html.css" type="text/css" />
-				<script type="text/javascript" src="/s/pages/providers-admin/providers-admin.html.js" />
+				<link rel="stylesheet" href="/s/pages/providers-admin/html.css" type="text/css" />
+				<script type="text/javascript" src="/s/pages/providers-admin/html.js" />
 			</head>
 			
 			<body>

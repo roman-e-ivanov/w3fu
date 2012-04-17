@@ -13,7 +13,7 @@ class ProvidersPublic(Resource):
 
     route = Route('/providers')
 
-    @xml('pages/providers-public/providers-public.html.xsl')
+    @xml('pages/providers-public/html.xsl')
     @user()
     def get(self, req):
         return Response.ok({})
@@ -23,7 +23,7 @@ class ProviderPublic(Resource):
 
     route = Route('/providers/{id}', id=IdArg('id'))
 
-    @xml('pages/provider-public/provider-public.html.xsl')
+    @xml('pages/provider-public/html.xsl')
     @user()
     def get(self, req):
         provider = Providers(self.ctx.db).find_id(req.ctx.args['id'])
@@ -41,12 +41,12 @@ class ProvidersAdmin(Resource):
 
     route = Route('/home/providers')
 
-    @xml('pages/providers-admin/providers-admin.html.xsl')
+    @xml('pages/providers-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         return Response.ok({})
 
-    @xml('pages/providers-admin/providers-admin.html.xsl')
+    @xml('pages/providers-admin/html.xsl')
     @user(required=True)
     def post(self, req):
         form = ProviderForm(req)
@@ -62,7 +62,7 @@ class ProviderAdmin(Resource):
 
     route = Route('/home/providers/{id}', id=IdArg('id'))
 
-    @xml('pages/provider-admin/provider-admin.html.xsl')
+    @xml('pages/provider-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         provider = Providers(self.ctx.db).find_id(req.ctx.args['id'])
@@ -70,7 +70,7 @@ class ProviderAdmin(Resource):
             return Response.not_found()
         return Response.ok({'provider': provider})
 
-    @xml('pages/provider-admin/provider-admin.html.xsl')
+    @xml('pages/provider-admin/html.xsl')
     @user(required=True)
     def put(self, req):
         form = ProviderForm(req)
@@ -101,7 +101,7 @@ class ProvidersListAdmin(Resource):
 
     route = Route('/home/providers/list')
 
-    @xml('pages/providers-list-admin/providers-list-admin.html.xsl')
+    @xml('pages/providers-list-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         found = Providers(self.ctx.db).find_user(req.ctx.state['user'])
