@@ -5,7 +5,7 @@
 	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
 	<w3fu:include href="../../blocks/b-development-menu/html.xsl" />
  	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
- 	<w3fu:include href="../../common/datepicker.html.xsl" />
+ 	<w3fu:include href="../../blocks/b-datepicker/html.xsl" />
 
 	<w3fu:template match="/">
 		<html>
