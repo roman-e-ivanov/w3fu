@@ -85,7 +85,7 @@ class ProviderAdmin(Resource):
             return Response.ok({'form': form})
         provider.name = form.data['name']
         providers.update(provider)
-        return Response.redirect(ProvidersAdmin.route.url(req))
+        return Response.redirect(ProvidersListAdmin.route.url(req))
 
     @user(required=True)
     def delete(self, req):
@@ -97,7 +97,7 @@ class ProviderAdmin(Resource):
             return Response.forbidden()
         Users(self.ctx.db).pull_owned(provider.id)
         providers.remove_id(provider.id)
-        return Response.redirect(ProvidersAdmin.route.url(req))
+        return Response.redirect(ProvidersListAdmin.route.url(req))
 
 
 def block_providers(req, providers):
