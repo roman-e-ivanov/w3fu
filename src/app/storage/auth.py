@@ -22,9 +22,10 @@ class User(Document):
 
     id = Property('_id')
     email = Property('email')
-    password = Property('password', [])
+    password = Property('password', formats=[])
     shortcut = Property('shortcut')
-    sessions = ListContainer('sessions', Session, [])
+    owned = Property('owned', default=[])
+    sessions = ListContainer('sessions', Session, formats=[])
 
     def _new(self, email):
         self.email = email
@@ -37,13 +38,17 @@ class User(Document):
     def check_password(self, password):
         return self.password == salted_hash(password, self.password)
 
+    def can_write(self, provider_id):
+        return provider_id in self.own
+
 
 class Users(Collection):
 
     _doc_cls = User
     _indexes = [('email', {'unique': True}),
                 ('shortcut', {}),
-                ('sessions.id', {})]
+                ('sessions.id', {}),
+                ('owned', {})]
 
     @errorsafe
     def push_session(self, user, session):
@@ -51,9 +56,19 @@ class Users(Collection):
                                 {'$push': {'sessions': session.raw}})
 
     @errorsafe
-    def pull_session(self, id):
-        self._collection.update({'sessions.id': id},
-                                {'$pull': {'sessions': {'id': id}}})
+    def pull_session(self, session_id):
+        self._collection.update({'sessions.id': session_id},
+                                {'$pull': {'sessions': {'id': session_id}}})
+
+    @errorsafe
+    def push_owned(self, user, provider_id):
+        self._collection.update({'_id': user.id},
+                                {'$push': {'owned': provider_id}})
+
+    @errorsafe
+    def pull_owned(self, provider_id):
+        self._collection.update({'owned': provider_id},
+                                {'$pull': {'owned': provider_id}})
 
     @errorsafe
     def update_password(self, user):

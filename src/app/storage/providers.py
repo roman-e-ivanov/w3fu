@@ -5,21 +5,15 @@ from w3fu.storage.collections import Collection, errorsafe, wrapped
 class Provider(Document):
 
     id = Property('_id')
-    owner_id = Property('owner_id')
     name = Property('name')
 
-    def _new(self, owner, name):
-        self.owner_id = owner.id
+    def _new(self, name):
         self.name = name
-
-    def writable_by(self, user):
-        return self.owner_id == user.id
 
 
 class Providers(Collection):
 
     _doc_cls = Provider
-    _indexes = [('owner_id', {})]
 
     @errorsafe
     def update(self, provider):
@@ -28,5 +22,5 @@ class Providers(Collection):
 
     @wrapped
     @errorsafe
-    def find_user(self, user):
-        return self._collection.find({'owner_id': user.id})
+    def find_from_user(self, user):
+        return self._collection.find({'_id': {'$in': user.owned}})

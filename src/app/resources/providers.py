@@ -6,6 +6,7 @@ from w3fu.resources import Form, Resource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
+from app.storage.auth import Users
 from app.storage.providers import Providers, Provider
 
 
@@ -52,9 +53,9 @@ class ProvidersAdmin(Resource):
         form = ProviderForm(req)
         if form.errors:
             return Response.ok({'form': form})
-        provider = Provider.new(name=form.data['name'],
-                        owner=req.ctx.state['user'])
+        provider = Provider.new(form.data['name'])
         Providers(self.ctx.db).insert(provider)
+        Users(self.ctx.db).push_owned(req.ctx.state['user'], provider.id)
         return Response.redirect(ProviderAdmin.route.url(req, id=provider.id))
 
 
@@ -73,27 +74,35 @@ class ProviderAdmin(Resource):
     @xml('pages/provider-admin/html.xsl')
     @user(required=True)
     def put(self, req):
+        providers = Providers(self.ctx.db)
+        provider = providers.find_id(req.ctx.args['id'])
+        if provider is None:
+            return Response.not_found()
+        if not req.ctx.state['user'].can_write(provider.id):
+            return Response.forbidden()
         form = ProviderForm(req)
         if form.errors:
             return Response.ok({'form': form})
-        providers = Providers(self.ctx.db)
-        provider = providers.find_id(req.ctx.args['id'])
-        if provider is not None and provider.writable_by(req.ctx.state['user']):
-            provider.name = form.data['name']
-            providers.update(provider)
+        provider.name = form.data['name']
+        providers.update(provider)
         return Response.redirect(ProvidersAdmin.route.url(req))
 
     @user(required=True)
     def delete(self, req):
         providers = Providers(self.ctx.db)
         provider = providers.find_id(req.ctx.args['id'])
-        if provider is not None and provider.writable_by(req.ctx.state['user']):
-            providers.remove_id(provider.id)
+        if provider is None:
+            return Response.not_found()
+        if not req.ctx.state['user'].can_write(provider.id):
+            return Response.forbidden()
+        Users(self.ctx.db).pull_owned(provider.id)
+        providers.remove_id(provider.id)
         return Response.redirect(ProvidersAdmin.route.url(req))
 
 
 def block_providers(req, providers):
-    return [{'provider': provider, 'path': ProviderAdmin.route.path(id=provider.id)}
+    return [{'provider': provider,
+             'path': ProviderAdmin.route.path(id=provider.id)}
             for provider in providers]
 
 
@@ -104,5 +113,5 @@ class ProvidersListAdmin(Resource):
     @xml('pages/providers-list-admin/html.xsl')
     @user(required=True)
     def get(self, req):
-        found = Providers(self.ctx.db).find_user(req.ctx.state['user'])
+        found = Providers(self.ctx.db).find_from_user(req.ctx.state['user'])
         return Response.ok({'providers': block_providers(req, found)})

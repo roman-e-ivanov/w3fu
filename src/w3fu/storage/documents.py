@@ -1,3 +1,4 @@
+from copy import copy
 from pymongo.dbref import DBRef
 
 
@@ -43,15 +44,17 @@ class Document(object):
 
 class Property(object):
 
-    def __init__(self, name, formats=None):
+    def __init__(self, name, default=None, formats=None):
         self._name = name
+        self._default = default
         self._formats = None if formats is None else set(formats)
 
     def __get__(self, doc, owner):
         try:
             return doc.raw[self._name]
         except KeyError:
-            return None
+            doc.raw[self._name] = default = copy(self._default)
+            return default
 
     def __set__(self, doc, value):
         doc.raw[self._name] = value
@@ -70,9 +73,9 @@ class Property(object):
 
 class Container(Property):
 
-    def __init__(self, name, cls, formats=None):
-        super(Container, self).__init__(name, formats)
+    def __init__(self, name, cls, default={}, formats=None):
         self._cls = cls
+        super(Container, self).__init__(name, default, formats)
 
     def __get__(self, doc, owner):
         try:
@@ -107,6 +110,9 @@ class Reference(Container):
 
 class ListContainer(Container):
 
+    def __init__(self, name, cls, formats=None):
+        super(ListContainer, self).__init__(name, cls, [], formats)
+
     def _wrap(self, doc, raw):
         return [self._cls(doc.collection, v) for v in raw]
 
@@ -118,6 +124,9 @@ class ListContainer(Container):
 
 
 class DictContainer(Container):
+
+    def __init__(self, name, cls, formats=None):
+        super(DictContainer, self).__init__(name, cls, {}, formats)
 
     def _wrap(self, doc, raw):
         return dict([(k, self._cls(doc.collection, v)) for k, v in raw.iteritems()])
