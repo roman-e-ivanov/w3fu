@@ -39,7 +39,7 @@ class User(Document):
         return self.password == salted_hash(password, self.password)
 
     def can_write(self, provider_id):
-        return provider_id in self.own
+        return provider_id in self.owned
 
 
 class Users(Collection):
