@@ -6,6 +6,8 @@ from w3fu.resources import Form, Resource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
+from app.resources.workers import WorkersAdmin
+
 from app.storage.auth import Users
 from app.storage.providers import Providers, Provider
 
@@ -69,7 +71,9 @@ class ProviderAdmin(Resource):
         provider = Providers(self.ctx.db).find_id(req.ctx.args['id'])
         if provider is None:
             return Response.not_found()
-        return Response.ok({'provider': provider})
+        workers = WorkersAdmin.route.path(id=provider.id)
+        return Response.ok({'provider': provider,
+                            'nav': {'workers': workers}})
 
     @xml('pages/provider-admin/html.xsl')
     @user(required=True)

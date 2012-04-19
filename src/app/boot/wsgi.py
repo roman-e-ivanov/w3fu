@@ -11,6 +11,7 @@ from app.resources.home import Home
 from app.resources.auth import Login, Register, ShortcutLogin
 from app.resources.providers import ProviderPublic, ProvidersPublic, \
     ProviderAdmin, ProvidersAdmin, ProvidersListAdmin
+from app.resources.workers import WorkerAdmin, WorkersAdmin, WorkersListAdmin
 from app.resources.geo import PlaceSuggest
 
 from app.state import SessionState, UserState
@@ -20,7 +21,9 @@ from app.caching import CacheHandler
 resources = [Debug,
              Index, Home,
              ShortcutLogin, Login, Register,
-             ProviderPublic, ProvidersPublic, ProviderAdmin, ProvidersAdmin, ProvidersListAdmin,
+             ProviderPublic, ProvidersPublic,
+             ProviderAdmin, ProvidersListAdmin, ProvidersAdmin,
+             WorkerAdmin, WorkersListAdmin, WorkersAdmin,
              PlaceSuggest]
 
 database = Database(config.db_uri, config.db_name)
