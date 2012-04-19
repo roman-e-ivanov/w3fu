@@ -19,12 +19,12 @@ class WorkersAdmin(Resource):
 
     route = Route('/home/providers/{id}/workers', id=IdArg('id'))
 
-    @xml()
+    @xml('pages/workers-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         return Response.ok({})
 
-    @xml()
+    @xml('pages/workers-admin/html.xsl')
     @user(required=True)
     def post(self, req):
         provider_id = req.ctx.args['id']
@@ -45,7 +45,7 @@ class WorkerAdmin(Resource):
 
     route = Route('/home/workers/{id}', id=IdArg('id'))
 
-    @xml()
+    @xml('pages/worker-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         worker = Workers(self.ctx.db).find_id(req.ctx.args['id'])
@@ -53,7 +53,7 @@ class WorkerAdmin(Resource):
             return Response.not_found()
         return Response.ok({'worker': worker})
 
-    @xml()
+    @xml('pages/worker-admin/html.xsl')
     @user(required=True)
     def put(self, req):
         workers = Workers(self.ctx.db)
@@ -93,7 +93,7 @@ class WorkersListAdmin(Resource):
 
     route = Route('/home/providers/{id}/workers/list', id=IdArg('id'))
 
-    @xml('pages/providers-list-admin/html.xsl')
+    @xml('pages/workers-list-admin/html.xsl')
     @user(required=True)
     def get(self, req):
         found = Workers(self.ctx.db).find_provider(req.ctx.args['id'])
