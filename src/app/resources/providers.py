@@ -7,6 +7,7 @@ from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
 from app.resources.workers import WorkersAdmin
+from app.resources.services import ServicesAdmin
 
 from app.storage.auth import Users
 from app.storage.providers import Providers, Provider
@@ -72,8 +73,10 @@ class ProviderAdmin(Resource):
         if provider is None:
             return Response.not_found()
         workers = WorkersAdmin.route.path(id=provider.id)
+        services = ServicesAdmin.route.path(id=provider.id)
         return Response.ok({'provider': provider,
-                            'nav': {'workers': workers}})
+                            'nav': {'workers': workers,
+                                    'services': services}})
 
     @xml('pages/provider-admin/html.xsl')
     @user(required=True)
