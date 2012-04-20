@@ -26,8 +26,8 @@ class PlaceSuggest(Resource):
     route = Route('/place/suggest')
 
     @json()
-    def get(self, req):
-        form = PlaceSuggestForm(req)
+    def get(self, ctx):
+        form = PlaceSuggestForm(ctx.req)
         places = Places(self.ctx.db)
         found = places.find_pattern(form.data['pattern'])
         return Response.ok({'found': found})
@@ -39,13 +39,13 @@ class Place(Resource):
 
     @xml()
     @user()
-    def get(self, req):
-        return Response.ok({'form': PlaceForm(req)})
+    def get(self, ctx):
+        return Response.ok({'form': PlaceForm(ctx.req)})
 
-    def post(self, req):
-        form = PlaceForm(req, True)
+    def post(self, ctx):
+        form = PlaceForm(ctx.req, True)
         if form.err:
-            return Response.redirect(self.route.url(req, form.src))
+            return Response.redirect(self.route.url(ctx.req, form.src))
         if form.data['auto']:
             place = None
             # place = autodetect
@@ -54,4 +54,4 @@ class Place(Resource):
             place = places.find_name(form.data['name'])
         if place is None:
             form.data['error'] = 'notfound'
-            return Response.redirect(self.route.url(req, form.query()))
+            return Response.redirect(self.route.url(ctx.req, form.query()))

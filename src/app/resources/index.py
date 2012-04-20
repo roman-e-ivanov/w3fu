@@ -12,5 +12,5 @@ class Index(Resource):
 
     @xml('pages/index/html.xsl')
     @user()
-    def get(self, req):
+    def get(self, ctx):
         return Response.ok({})

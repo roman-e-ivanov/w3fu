@@ -26,24 +26,24 @@ class WorkersAdmin(Resource):
 
     @xml('pages/workers-admin/html.xsl')
     @user(required=True)
-    def get(self, req):
+    def get(self, ctx):
         return Response.ok({})
 
     @xml('pages/workers-admin/html.xsl')
     @user(required=True)
-    def post(self, req):
-        provider_id = req.ctx.args['id']
+    def post(self, ctx):
+        provider_id = ctx.args['id']
         provider = Providers(self.ctx.db).find_id(provider_id)
         if provider is None:
             return Response.not_found()
-        if not req.ctx.state['user'].can_write(provider_id):
+        if not ctx.state['user'].can_write(provider_id):
             return Response.forbidden()
-        form = WorkerForm(req)
+        form = WorkerForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         worker = Worker.new(provider_id, form.data['name'])
         Workers(self.ctx.db).insert(worker)
-        return Response.redirect(WorkerAdmin.route.url(req, id=worker.id))
+        return Response.redirect(WorkerAdmin.route.url(ctx.req, id=worker.id))
 
 
 class WorkerAdmin(Resource):
@@ -52,46 +52,40 @@ class WorkerAdmin(Resource):
 
     @xml('pages/worker-admin/html.xsl')
     @user(required=True)
-    def get(self, req):
-        worker = Workers(self.ctx.db).find_id(req.ctx.args['id'])
+    def get(self, ctx):
+        worker = Workers(self.ctx.db).find_id(ctx.args['id'])
         if worker is None:
             return Response.not_found()
         return Response.ok({'worker': worker})
 
     @xml('pages/worker-admin/html.xsl')
     @user(required=True)
-    def put(self, req):
+    def put(self, ctx):
         workers = Workers(self.ctx.db)
-        worker = workers.find_id(req.ctx.args['id'])
+        worker = workers.find_id(ctx.args['id'])
         if worker is None:
             return Response.not_found()
-        if not req.ctx.state['user'].can_write(worker.provider_id):
+        if not ctx.state['user'].can_write(worker.provider_id):
             return Response.forbidden()
-        form = WorkerForm(req)
+        form = WorkerForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         worker.name = form.data['name']
         workers.update(worker)
-        location = WorkersListAdmin.route.url(req, id=worker.provider_id)
+        location = WorkersListAdmin.route.url(ctx.req, id=worker.provider_id)
         return Response.redirect(location)
 
     @user(required=True)
-    def delete(self, req):
+    def delete(self, ctx):
         workers = Workers(self.ctx.db)
-        worker = workers.find_id(req.ctx.args['id'])
+        worker = workers.find_id(ctx.args['id'])
         if worker is None:
             return Response.not_found()
-        if not req.ctx.state['user'].can_write(worker.provider_id):
+        if not ctx.state['user'].can_write(worker.provider_id):
             return Response.forbidden()
         workers.remove_id(worker.id)
-        location = WorkersListAdmin.route.url(req, id=worker.provider_id)
+        location = WorkersListAdmin.route.url(ctx.req, id=worker.provider_id)
         return Response.redirect(location)
-
-
-def block_workers(req, workers):
-    return [{'worker': worker,
-             'path': WorkerAdmin.route.path(id=worker.id)}
-            for worker in workers]
 
 
 class WorkersListAdmin(Resource):
@@ -100,7 +94,7 @@ class WorkersListAdmin(Resource):
 
     @xml('pages/workers-list-admin/html.xsl')
     @user(required=True)
-    def get(self, req):
-        found = Workers(self.ctx.db).find_provider(req.ctx.args['id'])
+    def get(self, ctx):
+        found = Workers(self.ctx.db).find_provider(ctx.args['id'])
         return Response.ok({'workers': [block_worker(doc)
                                         for doc in found]})

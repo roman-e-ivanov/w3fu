@@ -10,5 +10,5 @@ class Debug(Resource):
     route = Route('/debug')
 
     @xml('pages/debug/html.xsl')
-    def get(self, req):
+    def get(self, ctx):
         return Response.ok({})

@@ -10,9 +10,9 @@ class SessionState(object):
     _cookie = StrArg('u')
     _ttl = timedelta(days=1)
 
-    def get(self, req):
+    def get(self, ctx):
         try:
-            session_id = self._cookie.unpack(req.cookie)
+            session_id = self._cookie.unpack(ctx.req.cookie)
         except ArgError:
             return None
         return session_id
@@ -33,8 +33,8 @@ class UserState(object):
     def __init__(self, ctx):
         self._users = Users(ctx.db)
 
-    def get(self, req):
-        session_id = req.ctx.state['session_id']
+    def get(self, ctx):
+        session_id = ctx.state['session_id']
         if session_id is None:
             return None
         return self._users.find_valid_session(session_id, datetime.utcnow())

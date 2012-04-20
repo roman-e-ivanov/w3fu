@@ -39,12 +39,12 @@ class Login(Resource):
 
     @xml('pages/login/html.xsl')
     @user()
-    def get(self, req):
+    def get(self, ctx):
         return Response.ok({})
 
     @xml('pages/login/html.xsl')
-    def post(self, req):
-        form = LoginForm(req)
+    def post(self, ctx):
+        form = LoginForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
@@ -53,16 +53,16 @@ class Login(Resource):
             return Response.ok({'form': form, 'user-auth-error': {}})
         session = Session.new()
         users.push_session(user, session)
-        req.ctx.state['session_id'] = session.id
-        return Response.redirect(Home.route.url(req))
+        ctx.state['session_id'] = session.id
+        return Response.redirect(Home.route.url(ctx.req))
 
-    def delete(self, req):
-        session_id = req.ctx.state['session_id']
+    def delete(self, ctx):
+        session_id = ctx.state['session_id']
         if session_id is not None:
             users = Users(self.ctx.db)
             users.pull_session(session_id)
-        del req.ctx.state['session_id']
-        return Response.redirect(req.referer or Index.route.url(req))
+        del ctx.state['session_id']
+        return Response.redirect(ctx.req.referer or Index.route.url(ctx.req))
 
 
 class ShortcutLogin(Resource):
@@ -71,28 +71,28 @@ class ShortcutLogin(Resource):
                   shortcut=StrArg('shortcut', pattern='[\da-zA-Z_-]{22}'))
 
     @xml('pages/shortcut-login/html.xsl')
-    def get(self, req):
+    def get(self, ctx):
         users = Users(self.ctx.db)
-        user = users.find_shortcut(req.ctx.args['shortcut'])
+        user = users.find_shortcut(ctx.args['shortcut'])
         if user is None:
             return Response.not_found()
         return Response.ok({})
 
     @xml('pages/shortcut-login/html.xsl')
-    def post(self, req):
+    def post(self, ctx):
         users = Users(self.ctx.db)
-        user = users.find_shortcut(req.ctx.args['shortcut'])
+        user = users.find_shortcut(ctx.args['shortcut'])
         if user is None:
             return Response.not_found()
-        form = SetPasswordForm(req)
+        form = SetPasswordForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         user.set_password(form.data['password'])
         users.update_password(user)
         session = Session.new()
         users.push_session(user, session)
-        req.ctx.state['session_id'] = session.id
-        return Response.redirect(Home.route.url(req))
+        ctx.state['session_id'] = session.id
+        return Response.redirect(Home.route.url(ctx.req))
 
 
 class Register(Resource):
@@ -100,17 +100,17 @@ class Register(Resource):
     route = Route('/register')
 
     @xml('pages/register/html.xsl')
-    def get(self, req):
+    def get(self, ctx):
         return Response.ok({})
 
     @xml('pages/register/html.xsl')
-    def post(self, req):
-        form = RegisterForm(req)
+    def post(self, ctx):
+        form = RegisterForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         users = Users(self.ctx.db)
         user = User.new(form.data['email'])
         if not users.insert(user, True):
             return Response.ok({'form': form, 'user-exists-error': {}})
-        url = ShortcutLogin.route.url(req, shortcut=user.shortcut)
+        url = ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut)
         return Response.redirect(url)
