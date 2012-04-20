@@ -13,6 +13,13 @@ from app.storage.auth import Users
 from app.storage.providers import Providers, Provider
 
 
+def block_provider(doc):
+    nav = {'main': ProviderAdmin.route.path(id=doc.id),
+           'workers': WorkersAdmin.route.path(id=doc.id),
+           'services': ServicesAdmin.route.path(id=doc.id)}
+    return {'doc': doc, 'nav': nav}
+
+
 class ProvidersPublic(Resource):
 
     route = Route('/providers')
@@ -72,11 +79,7 @@ class ProviderAdmin(Resource):
         provider = Providers(self.ctx.db).find_id(req.ctx.args['id'])
         if provider is None:
             return Response.not_found()
-        workers = WorkersAdmin.route.path(id=provider.id)
-        services = ServicesAdmin.route.path(id=provider.id)
-        return Response.ok({'provider': provider,
-                            'nav': {'workers': workers,
-                                    'services': services}})
+        return Response.ok({'provider': block_provider(provider)})
 
     @xml('pages/provider-admin/html.xsl')
     @user(required=True)
@@ -107,12 +110,6 @@ class ProviderAdmin(Resource):
         return Response.redirect(ProvidersListAdmin.route.url(req))
 
 
-def block_providers(req, providers):
-    return [{'provider': provider,
-             'path': ProviderAdmin.route.path(id=provider.id)}
-            for provider in providers]
-
-
 class ProvidersListAdmin(Resource):
 
     route = Route('/home/providers/list')
@@ -121,4 +118,5 @@ class ProvidersListAdmin(Resource):
     @user(required=True)
     def get(self, req):
         found = Providers(self.ctx.db).find_from_user(req.ctx.state['user'])
-        return Response.ok({'providers': block_providers(req, found)})
+        return Response.ok({'providers': [block_provider(doc)
+                                          for doc in found]})

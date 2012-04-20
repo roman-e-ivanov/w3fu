@@ -10,6 +10,11 @@ from app.storage.providers import Providers
 from app.storage.services import Services, Service
 
 
+def block_service(doc):
+    nav = {'main': ServiceAdmin.route.path(id=doc.id)}
+    return {'doc': doc, 'nav': nav}
+
+
 class ServiceForm(Form):
 
     name = StrArg('name', min_size=1, max_size=100)
@@ -97,4 +102,5 @@ class ServicesListAdmin(Resource):
     @user(required=True)
     def get(self, req):
         found = Services(self.ctx.db).find_provider(req.ctx.args['id'])
-        return Response.ok({'services': block_services(req, found)})
+        return Response.ok({'services': [block_service(doc)
+                                         for doc in found]})

@@ -10,6 +10,11 @@ from app.storage.providers import Providers
 from app.storage.workers import Workers, Worker
 
 
+def block_worker(doc):
+    nav = {'main': WorkerAdmin.route.path(id=doc.id)}
+    return {'doc': doc, 'nav': nav}
+
+
 class WorkerForm(Form):
 
     name = StrArg('name', min_size=1, max_size=100)
@@ -97,4 +102,5 @@ class WorkersListAdmin(Resource):
     @user(required=True)
     def get(self, req):
         found = Workers(self.ctx.db).find_provider(req.ctx.args['id'])
-        return Response.ok({'workers': block_workers(req, found)})
+        return Response.ok({'workers': [block_worker(doc)
+                                        for doc in found]})
