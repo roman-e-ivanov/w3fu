@@ -10,13 +10,13 @@ class Router(object):
     def __init__(self, resources):
         self._resources = resources
 
-    def __call__(self, req):
+    def __call__(self, ctx):
         for res in self._resources:
-            args = res.route.match(req.path)
+            args = res.route.match(ctx.req.path)
             if args is None:
                 continue
-            req.ctx['args'] = args
-            return res(req)
+            ctx.args = args
+            return res(ctx)
         return Response.not_found()
 
 

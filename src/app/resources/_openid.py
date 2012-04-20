@@ -11,18 +11,18 @@ from w3fu.web.base import Response
 class OpenIdAuth(Resource):
 
     @storage()
-    def get(self, req):
-        pprint(req.args, sys.stderr)
+    def get(self, ctx):
+        pprint(ctx.args, sys.stderr)
         consumer = Consumer(self.app.session, self.app.store)
-        info = consumer.complete(req.args, 'http://localhost/profile')
+        info = consumer.complete(ctx.args, 'http://localhost/profile')
         self.app.session = {}
         if info.status == SUCCESS:
             return Response(200, content="OK")
         return Response(401, 'Unauthorized')
 
     @storage()
-    def post(self, req):
-        store = req.db.openidstore
+    def post(self, ctx):
+        store = ctx.db.openidstore
         session = {}
         consumer = Consumer(session, store)
         try:
@@ -32,5 +32,5 @@ class OpenIdAuth(Resource):
             return Response(401, 'Unauthorized')
         url = authrequest.redirectURL('http://localhost',
                                       return_to='http://localhost/profile')
-        req.db.commit()
+        ctx.db.commit()
         return Response(302).location(url)

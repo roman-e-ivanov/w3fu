@@ -19,8 +19,8 @@ class Application(object):
         self._handler = handler
 
     def __call__(self, environ, start_response):
-        req = Request(environ)
-        resp = self._handler(req)
+        ctx = Context(req=Request(environ))
+        resp = self._handler(ctx)
         return resp(start_response)
 
     def debug(self, environ):
@@ -37,7 +37,6 @@ class Request(object):
 
     def __init__(self, environ):
         self.environ = environ
-        self.ctx = Context()
 
     @property
     def method(self):

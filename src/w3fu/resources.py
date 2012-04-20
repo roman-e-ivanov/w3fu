@@ -12,23 +12,23 @@ class Resource(object):
     def __init__(self, context):
         self.ctx = context
 
-    def __call__(self, req):
-        method = req.method.lower()
+    def __call__(self, ctx):
+        method = ctx.req.method.lower()
         if method == 'post':
-            overloaded = req.fs.getfirst('method')
+            overloaded = ctx.req.fs.getfirst('method')
             if overloaded in OVERLOADABLE:
                 method = overloaded
         handler = getattr(self, method, None)
         if handler is None:
             return Response.method_not_allowed()
-        return handler(req)
+        return handler(ctx)
 
 
 class Middleware(object):
 
     def __call__(self, handler):
-        def f(res, req):
-            return self._handler(res, req, handler)
+        def f(res, ctx):
+            return self._handler(res, ctx, handler)
         return f
 
 

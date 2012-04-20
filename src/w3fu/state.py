@@ -1,7 +1,7 @@
 class State(object):
 
-    def __init__(self, req, args):
-        self._req = req
+    def __init__(self, ctx, args):
+        self._ctx = ctx
         self._args = args
         self._get = {}
         self._set = {}
@@ -13,7 +13,7 @@ class State(object):
         except KeyError:
             if key not in self._args:
                 raise AttributeError
-            self._get[key] = self._args[key].get(self._req)
+            self._get[key] = self._args[key].get(self._ctx)
             return self._get[key]
 
     def __setitem__(self, key, value):
@@ -35,8 +35,8 @@ class StateHandler(object):
         self._handler = handler
         self._args = args
 
-    def __call__(self, req):
-        req.ctx.state = State(req, self._args)
-        resp = self._handler(req)
-        req.ctx.state.output(resp)
+    def __call__(self, ctx):
+        ctx.state = State(ctx, self._args)
+        resp = self._handler(ctx)
+        ctx.state.output(resp)
         return resp
