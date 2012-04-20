@@ -28,6 +28,15 @@
 							<w3fu:with-param name="mode" select="1" />
 						</w3fu:call-template>
 					</div>
+					
+					<a class="link"> 
+						
+						<w3fu:attribute name="href">
+							<w3fu:value-of select="*/provider/nav/@workers" />
+						</w3fu:attribute>
+					<w3fu:text>Воркеры</w3fu:text>
+					
+					</a>
 						
 					<div class="grid_6 l-main">
 						

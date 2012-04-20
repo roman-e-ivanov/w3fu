@@ -9,7 +9,7 @@
 			<w3fu:call-template name="w3fu:b-form-error-msg" />
 			<w3fu:call-template name="w3fu:b-edit-provider-name">
 				<w3fu:with-param name="name" select="'name'" />
-				<w3fu:with-param name="value" select="/*/provider/@name" />
+				<w3fu:with-param name="value" select="/*/provider/doc/@name" />
 			</w3fu:call-template>
 			
 			<w3fu:if test="$mode=1">

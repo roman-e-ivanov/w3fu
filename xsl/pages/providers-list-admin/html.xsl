@@ -25,7 +25,8 @@
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					<div class="grid_10 l-main">	
-						<w3fu:call-template name="w3fu:b-providers-list" />
+						<w3fu:call-template name="w3fu:b-providers-list" /><br />
+						<a class="link" href="/home/providers">Создать компанию</a>
 					</div>
 						
 					<div class="grid_6 l-main">

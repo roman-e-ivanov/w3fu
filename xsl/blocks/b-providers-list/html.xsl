@@ -8,9 +8,9 @@
 					<li class="b-providers-list__line">
 						<a class="i-link b-providers-list__link">
 							<w3fu:attribute name="href">
-								<w3fu:value-of select="@path" />
+								<w3fu:value-of select="nav/@main" />
 							</w3fu:attribute>
-							<w3fu:value-of select="provider/@name" />
+							<w3fu:value-of select="doc/@name" />
 						</a>
 					</li>
 				</w3fu:for-each>
