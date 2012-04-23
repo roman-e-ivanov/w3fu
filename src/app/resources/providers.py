@@ -6,8 +6,8 @@ from w3fu.resources import Form, Resource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
-from app.resources.workers import WorkersAdmin
-from app.resources.services import ServicesAdmin
+from app.resources.workers import WorkersListAdmin
+from app.resources.services import ServicesListAdmin
 
 from app.storage.auth import Users
 from app.storage.providers import Providers, Provider
@@ -15,8 +15,8 @@ from app.storage.providers import Providers, Provider
 
 def block_provider(doc):
     nav = {'main': ProviderAdmin.route.path(id=doc.id),
-           'workers': WorkersAdmin.route.path(id=doc.id),
-           'services': ServicesAdmin.route.path(id=doc.id)}
+           'workers': WorkersListAdmin.route.path(id=doc.id),
+           'services': ServicesListAdmin.route.path(id=doc.id)}
     return {'doc': doc, 'nav': nav}
 
 
