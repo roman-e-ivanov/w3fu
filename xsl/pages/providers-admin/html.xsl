@@ -6,6 +6,7 @@
 	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
 	<w3fu:include href="../../blocks/b-development-menu/html.xsl" />
 	<w3fu:include href="../../blocks/b-form-provider/html.xsl" />
+	<w3fu:include href="../../blocks/b-providers-nav/html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -27,10 +28,16 @@
 						<w3fu:call-template name="w3fu:b-form-provider" >
 							<w3fu:with-param name="mode" select="0" />
 						</w3fu:call-template>
+						<a class="i-link b-providers-list__link">
+							<w3fu:attribute name="href">
+								<w3fu:value-of select="nav/@main" />
+							</w3fu:attribute>
+							<w3fu:value-of select="doc/@name" />
+						</a>
 					</div>
 						
 					<div class="grid_6 l-main">
-						123
+						<w3fu:call-template name="w3fu:b-providers-nav" />
 					</div>
 					
 					<div class="clear"></div>

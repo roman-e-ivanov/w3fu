@@ -6,6 +6,7 @@
 	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
 	<w3fu:include href="../../blocks/b-form-provider/html.xsl" />
+	<w3fu:include href="../../blocks/b-providers-nav/html.xsl" />
 		
 	<w3fu:template match="/">
 		<html>
@@ -26,20 +27,11 @@
 					<div class="grid_10">
 						<w3fu:call-template name="w3fu:b-form-provider" >
 							<w3fu:with-param name="mode" select="1" />
-						</w3fu:call-template>
+						</w3fu:call-template>					
 					</div>
-					
-					<a class="link"> 
-						
-						<w3fu:attribute name="href">
-							<w3fu:value-of select="*/provider/nav/@workers" />
-						</w3fu:attribute>
-					<w3fu:text>Воркеры</w3fu:text>
-					
-					</a>
-						
+
 					<div class="grid_6 l-main">
-						
+						<w3fu:call-template name="w3fu:b-providers-nav" />
 					</div>
 					
 					<div class="clear"></div>

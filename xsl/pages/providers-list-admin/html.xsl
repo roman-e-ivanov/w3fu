@@ -6,7 +6,7 @@
 	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
 	<w3fu:include href="../../blocks/b-providers-list/html.xsl" />
-	
+	<w3fu:include href="../../blocks/b-providers-nav/html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -25,11 +25,11 @@
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					<div class="grid_10 l-main">	
-						<w3fu:call-template name="w3fu:b-providers-list" /><br />
-						<a class="link" href="/home/providers">Создать компанию</a>
+						<w3fu:call-template name="w3fu:b-providers-list" />
 					</div>
 						
 					<div class="grid_6 l-main">
+						<w3fu:call-template name="w3fu:b-providers-nav" />
 					</div>
 					
 					<div class="clear"></div>

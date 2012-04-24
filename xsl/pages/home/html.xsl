@@ -5,6 +5,7 @@
 	<w3fu:include href="../../blocks/b-development-menu/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-footer/html.xsl" />
 	<w3fu:include href="../../blocks/b-page-top/html.xsl" />
+	<w3fu:include href="../../blocks/b-providers-nav/html.xsl" />
 	
 	<w3fu:template match="/">
 		<html>
@@ -23,12 +24,11 @@
 					<w3fu:call-template name="w3fu:b-page-top" />
 				
 					<div class="grid_10 l-main">
-						<a class="link" href="/home/providers/list">Компании</a>
-						
+						123
 					</div>
 						
 					<div class="grid_6 l-main">
-						123
+						<w3fu:call-template name="w3fu:b-providers-nav" />
 					</div>
 					
 					<div class="clear"></div>
