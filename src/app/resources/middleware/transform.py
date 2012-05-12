@@ -2,6 +2,7 @@ import os
 
 from w3fu.resources import Middleware
 from w3fu.data.dumpers import JsonDumper, XmlDumper, prettify
+from w3fu.templating import Block
 
 from app import config
 
@@ -33,4 +34,21 @@ class xml(Middleware):
             resp.content_type = 'application/xhtml+xml'
             resp.content = self._dumper.dump(resp.content, name,
                                              'no-xslt' in ctx.req.cookie)
+        return resp
+
+
+class block(Middleware):
+
+    def __init__(self, name=None, format='raw'):
+        self._dumper = Block(name) if name else None
+
+    def _handler(self, res, ctx, handler):
+        resp = handler(res, ctx)
+        if resp.status == 200:
+            resp.content_type = 'text/html'
+            if self._dumper:
+                content = self._dumper.render(resp.content)
+            else:
+                content = str(resp.content)
+            resp.content = content.encode('utf-8')
         return resp

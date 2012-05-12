@@ -6,6 +6,7 @@ from w3fu.state import StateHandler
 from app import config
 
 from app.resources.debug import Debug
+from app.resources.test import Test
 from app.resources.index import Index
 from app.resources.home import Home
 from app.resources.auth import Login, Register, ShortcutLogin
@@ -20,7 +21,7 @@ from app.state import SessionState, UserState
 from app.caching import CacheHandler
 
 
-resources = [Debug,
+resources = [Debug, Test,
              Index, Home,
              ShortcutLogin, Login, Register,
              ProviderPublic, ProvidersPublic,
