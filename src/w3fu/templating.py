@@ -1,5 +1,6 @@
 import os.path
 from json import load
+from codecs import open
 
 from app import config
 
@@ -121,7 +122,7 @@ class File(Function):
 
     def _load(self):
         path = os.path.join(self._block.root, self._data.render({}))
-        f = open(path, 'r')
+        f = open(path, 'r', 'utf-8')
         self._content = f.read()
         f.close()
 
