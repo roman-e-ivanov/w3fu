@@ -2,7 +2,20 @@ import os.path
 from json import load
 from codecs import open
 
-from app import config
+
+class Blocks(object):
+
+    def __init__(self, root_dir):
+        self._root_dir = root_dir
+        self._blocks = {}
+
+    def __getitem__(self, block_dir):
+        try:
+            return self._blocks[block_dir]
+        except KeyError:
+            block = Block(self, os.path.join(self._root_dir, block_dir))
+            self._blocks[block_dir] = block
+            return block
 
 
 class Operand(object):
@@ -121,7 +134,7 @@ class File(Function):
         self._load()
 
     def _load(self):
-        path = os.path.join(self._block.root, self._data.render({}))
+        path = os.path.join(self._block.work_dir, self._data.render({}))
         f = open(path, 'r', 'utf-8')
         self._content = f.read()
         f.close()
@@ -136,12 +149,12 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, name):
-        self.root = os.path.join(config.blocks_root, name)
+    def __init__(self, blocks, work_dir):
+        self.work_dir = work_dir
         self._load()
         include = self._src.get('include', {})
         define = self._src.get('define', {})
-        self.subs = dict([(k, Block(v)) for k, v in include.iteritems()])
+        self.subs = dict([(k, blocks[v]) for k, v in include.iteritems()])
         self.subs.update(dict([(k, self.compile(v))
                                for k, v in define.iteritems()]))
         self._body = self.compile(self._src.get('body'))
@@ -161,7 +174,7 @@ class Block(object):
         return self._body.render(ctx)
 
     def _load(self):
-        path = os.path.join(self.root, 'block.json')
+        path = os.path.join(self.work_dir, 'block.json')
         f = open(path, 'r')
         self._src = load(f)
         f.close()
