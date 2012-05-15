@@ -1,12 +1,15 @@
 {
 	"include": {
-		"layout": "layout/common"
+		"layout": "layouts/common"
 	},
 	"body": {
 		"call": "layout",
 		"args": {
 			"title": "Тестовая страница", 
 			"keywords": "Ключевые слова",
+			"description": "Описание",
+			"style": "pages/home/html.css",
+			"script": "pages/home/html.js",
 			"content": {"format": {"file": "test.html"}}
 		}
 	}

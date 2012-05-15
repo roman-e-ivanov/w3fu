@@ -1,0 +1,15 @@
+{
+	"include": {
+		"head": "common/header",
+		"footer": "common/footer",
+		"top": "common/top"
+	},
+	"body": {
+		"format": {"file": "common.html"},
+		"args": {
+			"header": {"call": "head"},
+			"footer": {"call": "footer"},
+			"top": {"call": "top"}
+		}
+	}
+}

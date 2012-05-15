@@ -8,7 +8,7 @@
 	
 	<w3fu:template name="w3fu:links">
 		<link rel="shortcut" href="img/favicon.ico" />
-		<script type="text/javascript" src="/s/js/jquery.js" />
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />
 		<!--   <script type="text/javascript" src="/s/js/general.html.js" /> -->
 	</w3fu:template>
 </w3fu:stylesheet>
