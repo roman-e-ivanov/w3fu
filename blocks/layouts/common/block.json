@@ -5,7 +5,7 @@
 		"top": "common/top"
 	},
 	"body": {
-		"format": {"file": "common.html"},
+		"fill": {"file": "common.html"},
 		"args": {
 			"header": {"call": "head"},
 			"footer": {"call": "footer"},

@@ -1,5 +1,5 @@
 {
 	"body": {
-		"format": {"file": "footer.html"}
+		"fill": {"file": "footer.html"}
 	}
 }

@@ -10,7 +10,7 @@
 			"description": "Описание",
 			"style": "pages/home/html.css",
 			"script": "pages/home/html.js",
-			"content": {"format": {"file": "test.html"}}
+			"content": {"fill": {"file": "test.html"}}
 		}
 	}
 }

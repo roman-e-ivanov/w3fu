@@ -108,7 +108,7 @@ class Data(Function):
         return res
 
 
-class Format(Function):
+class Fill(Function):
 
     _required = {'args': {}}
 
@@ -145,7 +145,7 @@ class File(Function):
 
 class Block(object):
 
-    _functions = [Join, Map, If, Data, Format, Call, File]
+    _functions = [Join, Map, If, Data, Fill, Call, File]
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
