@@ -1,0 +1,13 @@
+{
+	"include": {
+		"layout": "layout/common"
+	},
+	"body": {
+		"call": "layout",
+		"args": {
+			"title": "Тестовая страница", 
+			"keywords": "Ключевые слова",
+			"content": {"format": {"file": "test.html"}}
+		}
+	}
+}

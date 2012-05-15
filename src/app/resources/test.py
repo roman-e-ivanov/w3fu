@@ -12,6 +12,6 @@ class Test(Resource):
 
     route = Route('/test')
 
-    @block('test')
+    @block('pages/test')
     def get(self, ctx):
         return Response.ok({"user": "John"})

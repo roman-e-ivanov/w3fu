@@ -1,9 +1,0 @@
-{
-	"include": {
-		"head": "b-head"
-	},
-	"body": {
-		"call": "head",
-		"args": {"title": "Test"}
-	}
-}
