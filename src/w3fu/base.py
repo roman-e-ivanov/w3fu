@@ -33,14 +33,14 @@ class Application(object):
             print(data)
 
 
+
+OVERLOADABLE = frozenset(['PUT', 'DELETE'])
+
+
 class Request(object):
 
     def __init__(self, environ):
         self.environ = environ
-
-    @property
-    def method(self):
-        return self.environ.get('REQUEST_METHOD', '')
 
     @property
     def scheme(self):
@@ -57,6 +57,23 @@ class Request(object):
     @property
     def referer(self):
         return self.environ.get('HTTP_REFERER')
+
+    @property
+    def method(self):
+        return self.environ.get('REQUEST_METHOD', '')
+
+    @property
+    def overriden_method(self):
+        try:
+            return self._overriden_method
+        except AttributeError:
+            method = self.method.lower()
+            if method == 'POST':
+                overloaded = self.fs.getfirst('method')
+                if overloaded in OVERLOADABLE:
+                    method = overloaded
+            self._overriden_method = method
+            return method
 
     @property
     def cookie(self):
@@ -80,6 +97,10 @@ class Request(object):
                                     keep_blank_values=True)
             return self._fs
 
+    @property
+    def accept(self):
+        return ['html']
+
 
 class Response(object):
 
@@ -90,6 +111,10 @@ class Response(object):
     @classmethod
     def redirect(cls, url):
         return cls(302, 'Found').header('Location', url)
+
+    @classmethod
+    def bad_request(cls):
+        return cls(400, 'Bad Request')
 
     @classmethod
     def forbidden(cls):

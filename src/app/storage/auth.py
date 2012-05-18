@@ -22,10 +22,10 @@ class User(Document):
 
     id = Property('_id')
     email = Property('email')
-    password = Property('password', formats=[])
+    password = Property('password', hidden=True)
     shortcut = Property('shortcut')
-    owned = Property('owned', default=[])
-    sessions = ListContainer('sessions', Session, formats=[])
+    owned = Property('owned', hidden=True)
+    sessions = ListContainer('sessions', Session, hidden=True)
 
     def _new(self, email):
         self.email = email

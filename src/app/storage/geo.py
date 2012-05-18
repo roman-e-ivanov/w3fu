@@ -18,12 +18,12 @@ class IpRange(Document):
 class Place(Document):
 
     id = Property('_id')
-    ext_id = Property('ext_id', formats=[])
+    ext_id = Property('ext_id', hidden=True)
     name = Property('name')
-    pattern = Property('pattern', formats=[])
+    pattern = Property('pattern', hidden=True)
     region = Property('region')
     district = Property('district')
-    ranges = Property('ranges', formats=[])
+    ranges = Property('ranges', hidden=True)
 
     def _new(self, ext_id, name, region, district):
         self.ext_id = ext_id

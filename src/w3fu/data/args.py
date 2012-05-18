@@ -13,10 +13,24 @@ class ArgError(Exception):
         return {prettify(self.__class__.__name__): self._params}
 
 
-class ArgAbsentError(ArgError): pass
-class ArgSizeError(ArgError): pass
-class ArgTypeError(ArgError): pass
-class ArgRangeError(ArgError): pass
+class ArgAbsentError(ArgError):
+
+    code = 'absent'
+
+
+class ArgSizeError(ArgError):
+
+    code = 'size'
+
+
+class ArgTypeError(ArgError):
+
+    code = 'type'
+
+
+class ArgRangeError(ArgError):
+
+    code = 'range'
 
 
 class SingleArg(object):

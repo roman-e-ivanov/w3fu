@@ -36,7 +36,7 @@ blocks = Blocks(config.blocks_root)
 
 ctx = Context(db=database, blocks=blocks)
 
-router = Router([cls(ctx) for cls in resources])
+router = Router(ctx, resources)
 
 state = StateHandler(router,
                      session_id=SessionState(),

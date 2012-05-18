@@ -7,16 +7,17 @@ from w3fu.data.args import ArgError
 
 class Router(object):
 
-    def __init__(self, resources):
+    def __init__(self, ctx, resources):
+        self._ctx = ctx
         self._resources = resources
 
     def __call__(self, ctx):
-        for res in self._resources:
-            args = res.route.match(ctx.req.path)
+        for res_cls in self._resources:
+            args = res_cls.route.match(ctx.req.path)
             if args is None:
                 continue
             ctx.args = args
-            return res(ctx)
+            return res_cls(self._ctx)(ctx)
         return Response.not_found()
 
 

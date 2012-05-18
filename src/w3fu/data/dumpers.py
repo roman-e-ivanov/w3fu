@@ -34,7 +34,7 @@ class JsonDumper(Dumper):
 
     def _default(self, data):
         try:
-            return data.dump(format)
+            return data.dump()
         except AttributeError:
             pass
         return super(JsonDumper, self)._default(data)
@@ -61,7 +61,7 @@ class XmlDumper(Dumper):
             if data is None:
                 return
             if hasattr(data, 'dump'):
-                worker(root, name, data.dump(self._format), extend)
+                worker(root, name, data.dump(), extend)
                 return
             if isinstance(data, basestring):
                 if extend:

@@ -1,27 +1,54 @@
 from urllib import urlencode
 
 from w3fu.base import Response
-from w3fu.data.args import ArgAbsentError, ArgError
-
-
-OVERLOADABLE = frozenset(['put', 'delete'])
+from w3fu.data.args import ArgError
+from w3fu.data.codecs import dump, json_dump
 
 
 class Resource(object):
 
-    def __init__(self, context):
-        self.ctx = context
+    _block = None
+
+    def __init__(self, ctx):
+        self.ctx = ctx
+        self._template = ctx.blocks[self._block] if self._block else None
 
     def __call__(self, ctx):
-        method = ctx.req.method.lower()
-        if method == 'post':
-            overloaded = ctx.req.fs.getfirst('method')
-            if overloaded in OVERLOADABLE:
-                method = overloaded
-        handler = getattr(self, method, None)
+        self._format = 'html'
+        handler = getattr(self, ctx.req.overriden_method.lower(), None)
         if handler is None:
             return Response.method_not_allowed()
         return handler(ctx)
+
+    def _render(self, data):
+        if data is None:
+            return ''
+        serialized = dump(data)
+        if self._format == 'html':
+            if self._template is None:
+                return str(serialized).encode('utf-8')
+            else:
+                return self._template.render(serialized)
+        elif self._format == 'json':
+            return json_dump(serialized)
+
+    def _forbidden(self):
+        return Response.forbidden()
+
+    def _not_found(self):
+        return Response.not_found()
+
+    def _bad_request(self, data=None):
+        if self._format == 'html':
+            return Response.ok(self._render(data))
+        else:
+            return Response.bad_request()
+
+    def _ok(self, data=None, redirect=None):
+        if self._format == 'html' and redirect is not None:
+            return Response.redirect(redirect)
+        else:
+            return Response.ok(self._render(data))
 
 
 class Middleware(object):
@@ -57,7 +84,7 @@ class Form(object):
         self.src = self._decode(req.fs)
         self._unpack(self.src)
 
-    def dump(self, format=None):
+    def dump(self, private=True):
         return {'source': self.src, 'errors': self.errors}
 
     def query(self, **unpacked):
