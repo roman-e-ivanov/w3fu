@@ -2,14 +2,16 @@
 	"include": {
 		"head": "common/header",
 		"footer": "common/footer",
-		"top": "common/top"
+		"top": "common/top",
+		"devmenu": "common/devmenu"
 	},
 	"body": {
 		"fill": {"file": "common.html"},
 		"args": {
 			"header": {"call": "head"},
 			"footer": {"call": "footer"},
-			"top": {"call": "top"}
+			"top": {"call": "top"},
+			"devmenu": {"call": "devmenu"}
 		}
 	}
 }
