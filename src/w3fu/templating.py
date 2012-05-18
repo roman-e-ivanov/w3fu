@@ -78,14 +78,14 @@ class Join(Function):
 
 class Map(Function):
 
-    _required = {'body': None, 'local': '_'}
+    _required = {'list': None, 'local': '_'}
 
     def render(self, ctx):
         local = self._args['local'].render(ctx)
         new_ctx = dict(ctx)
-        for v in self._data.render(ctx):
+        for v in self._args['list'].render(ctx):
             new_ctx[local] = v
-            yield(self._args['body'].render(new_ctx))
+            yield(self._data.render(new_ctx))
 
 
 class If(Function):
@@ -171,7 +171,7 @@ class Block(object):
         return Operand(self, src)
 
     def render(self, ctx):
-        return self._body.render(ctx)
+        return self._body.render(ctx).encode('utf-8')
 
     def _load(self):
         path = os.path.join(self.work_dir, 'block.json')
