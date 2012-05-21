@@ -5,9 +5,9 @@
 			"links": {
 				"join" : {
 					"map": {
-						"fill": "<li class=\"b-development-menu__line\"><a href=\"{_}\">{_}</a></li>"
+						"fill": "<li class=\"b-development-menu__line\"><a class=\"b-development-menu__link\" href=\"{_}\">{_}</a></li>"
 					},
-					"list": ["link1", "link2"]
+					"list": ["/", "/login", "/register", "/home","/home/providers","/home/providers/list","/providers","/debug"]
 				}
 			}
 		}
