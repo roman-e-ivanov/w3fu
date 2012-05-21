@@ -171,7 +171,7 @@ class Block(object):
         return Operand(self, src)
 
     def render(self, ctx):
-        return self._body.render(ctx).encode('utf-8')
+        return self._body.render(ctx)
 
     def _load(self):
         path = os.path.join(self.work_dir, 'block.json')

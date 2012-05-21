@@ -28,7 +28,7 @@ class Resource(object):
             if self._template is None:
                 return str(serialized).encode('utf-8')
             else:
-                return self._template.render(serialized)
+                return self._template.render(serialized).encode('utf-8')
         elif self._format == 'json':
             return json_dump(serialized)
 
