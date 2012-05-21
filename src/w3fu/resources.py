@@ -5,6 +5,10 @@ from w3fu.data.args import ArgError
 from w3fu.data.codecs import dump, json_dump
 
 
+CONTENT_TYPES = {'html': 'text/html',
+                 'json': 'application/json'}
+
+
 class Resource(object):
 
     _block = None
@@ -48,7 +52,8 @@ class Resource(object):
         if self._format == 'html' and redirect is not None:
             return Response.redirect(redirect)
         else:
-            return Response.ok(self._render(data))
+            content_type = CONTENT_TYPES.get(self._format)
+            return Response.ok(self._render(data), content_type=content_type)
 
 
 class Middleware(object):

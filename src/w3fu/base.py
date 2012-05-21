@@ -105,7 +105,7 @@ class Request(object):
 class Response(object):
 
     @classmethod
-    def ok(cls, content=None, content_type='application/xhtml+xml'):
+    def ok(cls, content=None, content_type='text/html'):
         return cls(200, 'OK', content, content_type)
 
     @classmethod
