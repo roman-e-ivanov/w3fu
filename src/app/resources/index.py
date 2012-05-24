@@ -8,6 +8,3 @@ class Index(BaseResource):
     route = Route('/')
 
     _block = 'pages/index'
-
-    def get(self, ctx):
-        return self._ok({})

@@ -1,16 +1,15 @@
-from w3fu.base import Response
 from w3fu.routing import Route
-from w3fu.resources import Resource
 
-from app.resources.middleware.context import user
-from app.resources.middleware.transform import xml
+from app.resources.base import BaseResource
 
 
-class Home(Resource):
+class Home(BaseResource):
 
     route = Route('/home')
 
-    @xml('pages/home/html.xsl')
-    @user(required=True)
+    _block = 'pages/home'
+
     def get(self, ctx):
-        return Response.ok({})
+        if not self.rc.state['user']:
+            return self._forbidden()
+        return self._ok({})
