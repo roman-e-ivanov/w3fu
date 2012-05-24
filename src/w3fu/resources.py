@@ -2,7 +2,7 @@ from urllib import urlencode
 
 from w3fu.base import Response
 from w3fu.data.args import ArgError
-from w3fu.data.codecs import dump, json_dump
+from w3fu.data.codecs import json_dump
 
 
 CONTENT_TYPES = {'html': 'text/html',
@@ -13,9 +13,11 @@ class Resource(object):
 
     _block = None
 
-    def __init__(self, ctx):
-        self.ctx = ctx
-        self._template = ctx.blocks[self._block] if self._block else None
+    def __init__(self, ac, rc):
+        self.ctx = ac
+        self.ac = ac
+        self.rc = rc
+        self._template = ac.blocks[self._block] if self._block else None
 
     def __call__(self, ctx):
         self._format = 'html'
@@ -24,17 +26,20 @@ class Resource(object):
             return Response.method_not_allowed()
         return handler(ctx)
 
+    def _extra(self, data):
+        pass
+
     def _render(self, data):
         if data is None:
             return ''
-        serialized = dump(data)
+        self._extra(data)
         if self._format == 'html':
             if self._template is None:
-                return str(serialized).encode('utf-8')
+                return str(data).encode('utf-8')
             else:
-                return self._template.render(serialized).encode('utf-8')
+                return self._template.render(data).encode('utf-8')
         elif self._format == 'json':
-            return json_dump(serialized)
+            return json_dump(data)
 
     def _forbidden(self):
         return Response.forbidden()

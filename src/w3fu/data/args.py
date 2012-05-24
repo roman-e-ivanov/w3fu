@@ -2,35 +2,38 @@ import re
 from bson.objectid import ObjectId
 
 from w3fu.data.codecs import b64d, b64e
-from w3fu.data.dumpers import prettify
 
 
 class ArgError(Exception):
 
-    _params = {}
+    def __init__(self):
+        self._contents = dict(error=self._code)
 
     def dump(self, format):
-        return {prettify(self.__class__.__name__): self._params}
+        return self._contents
+
+    def __getitem__(self, name):
+        return self._contents[name]
 
 
 class ArgAbsentError(ArgError):
 
-    code = 'absent'
+    _code = 'absent'
 
 
 class ArgSizeError(ArgError):
 
-    code = 'size'
+    _code = 'size'
 
 
 class ArgTypeError(ArgError):
 
-    code = 'type'
+    _code = 'type'
 
 
 class ArgRangeError(ArgError):
 
-    code = 'range'
+    _code = 'range'
 
 
 class SingleArg(object):

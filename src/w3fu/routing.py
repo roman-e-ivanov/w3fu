@@ -17,7 +17,7 @@ class Router(object):
             if args is None:
                 continue
             ctx.args = args
-            return res_cls(self._ctx)(ctx)
+            return res_cls(self._ctx, ctx)(ctx)
         return Response.not_found()
 
 

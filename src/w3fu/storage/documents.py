@@ -41,6 +41,12 @@ class Document(object):
                 doc[name] = value
         return doc
 
+    def __getitem__(self, name):
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            raise KeyError
+
 
 class Property(object):
 

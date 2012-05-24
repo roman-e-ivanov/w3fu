@@ -25,21 +25,12 @@ def salted_hash(value, salted=None):
     return salt + b64e(sha1(salt + value).digest())
 
 
-def dump(data, private=True):
-    if hasattr(data, 'dump'):
-        return dump(data.dump(private))
-    if isinstance(data, dict):
-        return dict([(k, dump(v)) for k, v in data.iteritems()])
-    if isinstance(data, list):
-        return [dump(v) for v in data]
-#    if isinstance(data, ObjectId):
-#        return b64e(data.binary)
-#    if isinstance(data, datetime):
-#        return int(mktime(data.timetuple()))
-    return data
-
 def json_dump(data):
     def default(self, data):
+        try:
+            return data.dump(False)
+        except AttributeError:
+            pass
         try:
             return b64e(data.binary)
         except AttributeError:

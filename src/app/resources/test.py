@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from w3fu.base import Response
 from w3fu.routing import Route
-from w3fu.resources import Resource, Form
+from w3fu.resources import Form
 from w3fu.data.args import StrArg
+
+from app.resources.base import BaseResource
 
 
 class LoginForm(Form):
@@ -15,12 +16,12 @@ class LoginForm(Form):
                       min_size=4, max_size=32)
 
 
-class Test(Resource):
+class Test(BaseResource):
 
     route = Route('/test')
 
-    _block = 'pages/test'
+    #_block = 'pages/test'
 
     def get(self, ctx):
         form = LoginForm(ctx.req)
-        return self._ok({"form": form})
+        return self._ok({'form': form})
