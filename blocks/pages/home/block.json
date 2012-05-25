@@ -1,0 +1,16 @@
+{
+	"include": {
+		"layout": "layouts/common"
+	},
+	"body": {
+		"call": "layout",
+		"args": {
+			"title": "Домашняя страница", 
+			"keywords": "Ключевые слова",
+			"description": "Описание",
+			"style": "pages/home/html.css",
+			"script": "pages/home/html.js",
+			"content": {"fill": {"file": "home.html"}}
+		}
+	}
+}
