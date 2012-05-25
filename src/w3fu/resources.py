@@ -20,7 +20,7 @@ class Resource(object):
         self._template = ac.blocks[self._block] if self._block else None
 
     def __call__(self, ctx):
-        self._format = 'json'
+        self._format = 'html'
         handler = getattr(self, ctx.req.overriden_method.lower(), None)
         if handler is None:
             return Response.method_not_allowed()
