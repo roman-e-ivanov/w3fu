@@ -20,7 +20,7 @@ class Test(BaseResource):
 
     route = Route('/test')
 
-    #_block = 'pages/test'
+    _block = 'pages/test'
 
     def get(self, ctx):
         form = LoginForm(ctx.req)
