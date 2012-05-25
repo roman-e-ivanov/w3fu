@@ -20,7 +20,7 @@ class Resource(object):
         self._template = ac.blocks[self._block] if self._block else None
 
     def __call__(self, ctx):
-        self._format = 'html'
+        self._format = 'json'
         handler = getattr(self, ctx.req.overriden_method.lower(), None)
         if handler is None:
             return Response.method_not_allowed()
@@ -94,7 +94,7 @@ class Form(object):
         self.src = self._decode(req.fs)
         self._unpack(self.src)
 
-    def dump(self, private=True):
+    def dump(self):
         return {'source': self.src, 'errors': self.errors}
 
     def query(self, **unpacked):

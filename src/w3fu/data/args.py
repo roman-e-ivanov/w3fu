@@ -9,7 +9,7 @@ class ArgError(Exception):
     def __init__(self):
         self._contents = dict(error=self._code)
 
-    def dump(self, format):
+    def dump(self):
         return self._contents
 
     def __getitem__(self, name):

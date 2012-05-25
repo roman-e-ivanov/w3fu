@@ -26,9 +26,9 @@ def salted_hash(value, salted=None):
 
 
 def json_dump(data):
-    def default(self, data):
+    def default(data):
         try:
-            return data.dump(False)
+            return data.dump()
         except AttributeError:
             pass
         try:

@@ -33,10 +33,10 @@ class Document(object):
     def ref(self):
         return DBRef(self.collection.name(), self.id)
 
-    def dump(self, private=True):
+    def dump(self):
         doc = {}
         for name, prop in self.props.iteritems():
-            value = prop.dump(self, name, private)
+            value = prop.dump(self, name)
             if value is not None:
                 doc[name] = value
         return doc
@@ -50,10 +50,9 @@ class Document(object):
 
 class Property(object):
 
-    def __init__(self, name, default=None, private=True, hidden=False):
+    def __init__(self, name, default=None, hidden=False):
         self._name = name
         self._default = default
-        self._private = private
         self._hidden = hidden
 
     def __get__(self, doc, owner):
@@ -69,20 +68,18 @@ class Property(object):
     def __delete__(self, doc):
         del doc.raw[self._name]
 
-    def dump(self, doc, name, private):
-        if self._hidden or (not private and self._private):
-            return None
-        return self._dump(getattr(doc, name), private)
+    def dump(self, doc, name):
+        return None if self._hidden else self._dump(getattr(doc, name))
 
-    def _dump(self, attr, private):
+    def _dump(self, attr):
         return attr
 
 
 class Container(Property):
 
-    def __init__(self, name, cls, default={}, private=True, hidden=False):
+    def __init__(self, name, cls, default={}, hidden=False):
         self._cls = cls
-        super(Container, self).__init__(name, default, private, hidden)
+        super(Container, self).__init__(name, default, hidden)
 
     def __get__(self, doc, owner):
         try:
@@ -102,8 +99,8 @@ class Container(Property):
     def _unwrap(self, doc):
         return doc.raw
 
-    def _dump(self, doc, private):
-        return doc.dump(private)
+    def _dump(self, doc):
+        return doc.dump()
 
 
 class Reference(Container):
@@ -117,8 +114,8 @@ class Reference(Container):
 
 class ListContainer(Container):
 
-    def __init__(self, name, cls, private=True, hidden=False):
-        super(ListContainer, self).__init__(name, cls, [], private, hidden)
+    def __init__(self, name, cls, hidden=False):
+        super(ListContainer, self).__init__(name, cls, [], hidden)
 
     def _wrap(self, doc, raw):
         return [self._cls(doc.collection, v) for v in raw]
@@ -126,14 +123,14 @@ class ListContainer(Container):
     def _unwrap(self, docs):
         return [doc.raw for doc in docs]
 
-    def _dump(self, docs, private):
-        return [doc.dump(private) for doc in docs]
+    def _dump(self, docs):
+        return [doc.dump() for doc in docs]
 
 
 class DictContainer(Container):
 
-    def __init__(self, name, cls, private=True, hidden=False):
-        super(DictContainer, self).__init__(name, cls, {}, private, hidden)
+    def __init__(self, name, cls, hidden=False):
+        super(DictContainer, self).__init__(name, cls, {}, hidden)
 
     def _wrap(self, doc, raw):
         return dict([(k, self._cls(doc.collection, v)) for k, v in raw.iteritems()])
@@ -141,5 +138,5 @@ class DictContainer(Container):
     def _unwrap(self, docs):
         return dict([(k, doc.raw) for k, doc in docs.iteritems()])
 
-    def _dump(self, docs, private):
-        return dict([(k, doc.dump(private)) for k, doc in docs.iteritems()])
+    def _dump(self, docs):
+        return dict([(k, doc.dump()) for k, doc in docs.iteritems()])
