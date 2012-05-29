@@ -33,10 +33,6 @@ class Application(object):
             print(data)
 
 
-
-OVERLOADABLE = frozenset(['PUT', 'DELETE'])
-
-
 class Request(object):
 
     def __init__(self, environ):
@@ -63,19 +59,6 @@ class Request(object):
         return self.environ.get('REQUEST_METHOD', '')
 
     @property
-    def overriden_method(self):
-        try:
-            return self._overriden_method
-        except AttributeError:
-            method = self.method.lower()
-            if method == 'POST':
-                overloaded = self.fs.getfirst('method')
-                if overloaded in OVERLOADABLE:
-                    method = overloaded
-            self._overriden_method = method
-            return method
-
-    @property
     def cookie(self):
         try:
             return self._cookie
@@ -97,15 +80,11 @@ class Request(object):
                                     keep_blank_values=True)
             return self._fs
 
-    @property
-    def accept(self):
-        return ['html']
-
 
 class Response(object):
 
     @classmethod
-    def ok(cls, content=None, content_type='text/html'):
+    def ok(cls, content=None, content_type=None):
         return cls(200, 'OK', content, content_type)
 
     @classmethod
@@ -113,8 +92,8 @@ class Response(object):
         return cls(302, 'Found').header('Location', url)
 
     @classmethod
-    def bad_request(cls):
-        return cls(400, 'Bad Request')
+    def bad_request(cls, content=None, content_type=None):
+        return cls(400, 'Bad Request', content, content_type)
 
     @classmethod
     def forbidden(cls):
@@ -129,15 +108,23 @@ class Response(object):
         return cls(405, 'Method Not Allowed')
 
     @classmethod
-    def error(cls, content=None):
-        return cls(500, 'Internal Server Error', content)
+    def conflict(cls, content=None, content_type=None):
+        return cls(409, 'Conflict', content, content_type)
+
+    @classmethod
+    def unsupported_media_type(cls):
+        return cls(415, 'Unsupported Media Type')
+
+    @classmethod
+    def internal_server_error(cls, content=None, content_type=None):
+        return cls(500, 'Internal Server Error', content, content_type)
 
     @classmethod
     def unavailable(cls):
         return cls(503, 'Service Unavailable')
 
     def __init__(self, status=200, reason='OK',
-                 content=None, content_type='text/plain'):
+                 content=None, content_type=None):
         self.status = status
         self.reason = reason
         self.content = content

@@ -4,6 +4,7 @@ from w3fu.routing import Route
 from w3fu.resources import Resource, Form
 from w3fu.data.args import StrArg
 
+from app.resources.base import BaseResource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 from app.resources.home import Home
@@ -95,22 +96,19 @@ class ShortcutLogin(Resource):
         return Response.redirect(Home.route.url(ctx.req))
 
 
-class Register(Resource):
+class Register(BaseResource):
 
     route = Route('/register')
 
-    @xml('pages/register/html.xsl')
-    def get(self, ctx):
-        return Response.ok({})
+#    _block = 'pages/register'
 
-    @xml('pages/register/html.xsl')
     def post(self, ctx):
-        form = RegisterForm(ctx.req)
+        form = RegisterForm(self.rc.req)
         if form.errors:
-            return Response.ok({'form': form})
-        users = Users(self.ctx.db)
+            return self._bad_request({'form': form})
+        users = Users(self.ac.db)
         user = User.new(form.data['email'])
         if not users.insert(user, True):
-            return Response.ok({'form': form, 'user-exists-error': {}})
-        url = ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut)
-        return Response.redirect(url)
+            return self._conflict({'form': form, 'user_exists': True})
+        url = ShortcutLogin.route.url(self.rc.req, shortcut=user.shortcut)
+        return self._ok(redirect=url)

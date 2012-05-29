@@ -5,6 +5,8 @@ from w3fu.data.args import ArgError
 from w3fu.data.codecs import json_dump
 
 
+OVERLOADABLE = frozenset(['PUT', 'DELETE'])
+
 CONTENT_TYPES = {'html': 'text/html',
                  'json': 'application/json'}
 
@@ -12,6 +14,7 @@ CONTENT_TYPES = {'html': 'text/html',
 class Resource(object):
 
     _block = None
+    _formats = ['html', 'json']
 
     def __init__(self, ac, rc):
         self.ctx = ac
@@ -19,15 +22,26 @@ class Resource(object):
         self.rc = rc
         self._template = ac.blocks[self._block] if self._block else None
 
+    def _content_type(self):
+        return CONTENT_TYPES.get(self._format)
+
     def __call__(self, ctx):
-        self._format = 'html'
-        handler = getattr(self, ctx.req.overriden_method.lower(), None)
+        fmt = self.rc.req.fs.getfirst('format')
+        if fmt is None:
+            self._format = self._formats[0]
+        elif fmt in self._formats:
+            self._format = fmt
+        else:
+            return Response.unsupported_media_type()
+        method = self.rc.req.method.lower()
+        if method == 'POST':
+            overloaded = self.rc.req.fs.getfirst('method')
+            if overloaded is not None and overloaded in OVERLOADABLE:
+                method = overloaded
+        handler = getattr(self, method, None)
         if handler is None:
             return Response.method_not_allowed()
         return handler(ctx)
-
-    def _extra(self, data):
-        pass
 
     def _render(self, data):
         if data is None:
@@ -47,18 +61,30 @@ class Resource(object):
     def _not_found(self):
         return Response.not_found()
 
-    def _bad_request(self, data=None):
+    def _conflict(self, data=None):
+        content = self._render(data)
+        content_type = self._content_type()
         if self._format == 'html':
-            return Response.ok(self._render(data))
+            return Response.ok(content, content_type)
         else:
-            return Response.bad_request()
+            return Response.conflict(content, content_type)
+
+    def _bad_request(self, data=None):
+        content = self._render(data)
+        content_type = self._content_type()
+        if self._format == 'html':
+            return Response.ok(content, content_type)
+        else:
+            return Response.bad_request(content, content_type)
 
     def _ok(self, data=None, redirect=None):
         if self._format == 'html' and redirect is not None:
             return Response.redirect(redirect)
         else:
-            content_type = CONTENT_TYPES.get(self._format)
-            return Response.ok(self._render(data), content_type=content_type)
+            return Response.ok(self._render(data), self._content_type())
+
+    def _extra(self, data):
+        pass
 
 
 class Middleware(object):
