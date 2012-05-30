@@ -100,11 +100,16 @@ class If(Function):
 
 class Data(Function):
 
+    _required = {'default': ''}
+
     def render(self, ctx):
         path = self._data.render(ctx)
         res = ctx
         for p in path:
-            res = res.get(p)
+            try:
+                res = res[p]
+            except KeyError:
+                return self._args['default'].render(ctx)
         return res
 
 
