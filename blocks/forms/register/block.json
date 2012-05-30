@@ -1,0 +1,26 @@
+{
+	"include": {
+		"edit-login" : "forms/components/edit",
+		"submit" : "forms/components/button"
+	},
+	"body": {
+		"fill": {"file": "form-register.html"},
+		"args" : {
+			"edit-login" : {
+				"call": "edit-login",
+				"args":{
+					"class" : "b-edit",
+					"name" : "email",
+					"maxlenght": "254"
+				}
+			},
+			"submit" :{
+				"call" : "submit",
+				"args" : {
+					"class" : "b-button",
+					"value" : "ОК"
+				}
+			}
+		}
+	}
+}

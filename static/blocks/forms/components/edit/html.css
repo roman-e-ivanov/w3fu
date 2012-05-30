@@ -1,0 +1,25 @@
+.b-edit {
+	font-size: 10pt;
+	padding:8px 40px 8px 8px;
+	font-weight:bold;
+	border:1px solid #909090;
+	background:#fff;
+}
+
+.b-edit__name {
+	
+}
+
+.b-edit__label {
+	margin:2px 0 0 0;
+	font-size: 8pt;
+	color:#777;
+}
+
+.b-form-login .b-edit, 
+.b-form-register .b-edit, 
+.b-form-password .b-edit, 
+.b-form-provider .b-edit,
+.b-form-worker .b-edit {
+	width:306px;
+}

@@ -1,0 +1,23 @@
+{
+	"include": {
+		"layout": "layouts/common",
+		"form": "forms/register"
+	},
+	"body": {
+		"call": "layout",
+		"args": {
+			"title": "Регистрация нового пользователя", 
+			"keywords": "Ключевые слова",
+			"description": "Описание",
+			"style": "pages/register/html.css",
+			"script": "pages/register/html.js",
+			"content": {
+				"fill": {"file": "register.html"},
+				"args": {
+					"form-register" : {"call": "form"}
+					
+				}
+			}
+		}
+	}
+}
