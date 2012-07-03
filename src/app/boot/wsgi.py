@@ -2,8 +2,7 @@ from w3fu.base import Application, Context
 from w3fu.routing import Router
 from w3fu.storage.base import Database
 from w3fu.state import StateHandler
-from w3fu.templating import Blocks
-
+from w3fu import templates
 from app import config
 
 from app.resources.debug import Debug
@@ -32,9 +31,10 @@ resources = [Debug, Test,
              PlaceSuggest]
 
 database = Database(config.db_uri, config.db_name)
-blocks = Blocks(config.blocks_root)
 
-ctx = Context(db=database, blocks=blocks)
+templates.registry.push(root_dir=config.blocks_root)
+
+ctx = Context(db=database)
 
 router = Router(ctx, resources)
 

@@ -7,4 +7,4 @@ class Index(BaseResource):
 
     route = Route('/')
 
-    _block = 'pages/index'
+    _block_path = 'pages/index'

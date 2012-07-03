@@ -3,6 +3,7 @@ from urllib import urlencode
 from w3fu.base import Response
 from w3fu.data.args import ArgError
 from w3fu.data.codecs import json_dump
+from w3fu import templates
 
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
@@ -13,14 +14,17 @@ CONTENT_TYPES = {'html': 'text/html',
 
 class Resource(object):
 
-    _block = None
+    _block_path = None
     _formats = ['html', 'json']
 
     def __init__(self, ac, rc):
         self.ctx = ac
         self.ac = ac
         self.rc = rc
-        self._template = ac.blocks[self._block] if self._block else None
+        if self._block_path:
+            self._block = templates.registry.pull().block(self._block_path)
+        else:
+            self._block = None
 
     def _content_type(self):
         return CONTENT_TYPES.get(self._format)
@@ -48,10 +52,10 @@ class Resource(object):
             return ''
         self._extra(data)
         if self._format == 'html':
-            if self._template is None:
+            if self._block is None:
                 return str(data).encode('utf-8')
             else:
-                return self._template.render(data).encode('utf-8')
+                return self._block.render(data).encode('utf-8')
         elif self._format == 'json':
             return json_dump(data)
 

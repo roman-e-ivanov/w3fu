@@ -2,6 +2,8 @@ import os.path
 from json import load
 from codecs import open
 
+from w3fu import util
+
 
 class Blocks(object):
 
@@ -9,7 +11,7 @@ class Blocks(object):
         self._root_dir = root_dir
         self._blocks = {}
 
-    def __getitem__(self, block_dir):
+    def block(self, block_dir):
         try:
             return self._blocks[block_dir]
         except KeyError:
@@ -159,7 +161,7 @@ class Block(object):
         self._load()
         include = self._src.get('include', {})
         define = self._src.get('define', {})
-        self.subs = dict([(k, blocks[v]) for k, v in include.iteritems()])
+        self.subs = dict([(k, blocks.block(v)) for k, v in include.iteritems()])
         self.subs.update(dict([(k, self.compile(v))
                                for k, v in define.iteritems()]))
         self._body = self.compile(self._src.get('body'))
@@ -183,3 +185,6 @@ class Block(object):
         f = open(path, 'r')
         self._src = load(f)
         f.close()
+
+
+registry = util.Registry(Blocks)

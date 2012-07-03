@@ -100,7 +100,7 @@ class Register(BaseResource):
 
     route = Route('/register')
 
-    _block = 'pages/register'
+    _block_path = 'pages/register'
 
     def post(self, ctx):
         form = RegisterForm(self.rc.req)

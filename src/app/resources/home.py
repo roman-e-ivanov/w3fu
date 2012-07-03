@@ -7,7 +7,7 @@ class Home(BaseResource):
 
     route = Route('/home')
 
-    _block = 'pages/home'
+    _block_path = 'pages/home'
 
     def get(self, ctx):
         if not self.rc.state['user']:
