@@ -2,8 +2,7 @@ from urllib import urlencode
 
 from w3fu.base import Response
 from w3fu.data.args import ArgError
-from w3fu.data.codecs import json_dump
-from w3fu import templates
+from w3fu import templates, util
 
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
@@ -57,7 +56,7 @@ class Resource(object):
             else:
                 return self._block.render(data).encode('utf-8')
         elif self._format == 'json':
-            return json_dump(data)
+            return util.json_dump(data)
 
     def _forbidden(self):
         return Response.forbidden()

@@ -1,7 +1,7 @@
 import re
 from bson.objectid import ObjectId
 
-from w3fu.data.codecs import b64d, b64e
+from w3fu import util
 
 
 class ArgError(Exception):
@@ -128,7 +128,7 @@ class IdArg(StrArg):
 
     def _unpack(self, value):
         value = super(IdArg, self)._unpack(value)
-        return ObjectId(b64d(value))
+        return ObjectId(util.b64d(value))
 
     def _pack(self, value):
-        return b64e(value.binary)
+        return util.b64e(value.binary)

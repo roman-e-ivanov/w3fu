@@ -3,7 +3,7 @@ from lxml import etree
 from json import dumps
 from time import mktime
 
-from w3fu.data.codecs import b64e
+from w3fu import util
 
 
 def prettify(s):
@@ -17,7 +17,7 @@ class Dumper(object):
 
     def _default(self, data):
         try:
-            return b64e(data.binary)
+            return util.b64e(data.binary)
         except AttributeError:
             pass
         try:

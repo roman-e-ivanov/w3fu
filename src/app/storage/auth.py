@@ -1,8 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from w3fu import storage
-from w3fu.data.codecs import b64e, salted_hash
+from w3fu import storage, util
 
 from app import config
 
@@ -13,7 +12,7 @@ class Session(storage.Model):
     expires = storage.Property('expires')
 
     def _new(self):
-        self.id = b64e(uuid4().bytes)
+        self.id = util.b64e(uuid4().bytes)
         self.expires = datetime.utcnow() + config.session_ttl
 
 
@@ -34,14 +33,14 @@ class User(storage.Model):
 
     def _new(self, email):
         self.email = email
-        self.shortcut = b64e(uuid4().bytes)
+        self.shortcut = util.b64e(uuid4().bytes)
 
     def set_password(self, password):
-        self.password = salted_hash(password)
+        self.password = util.salted_hash(password)
         del self.shortcut
 
     def check_password(self, password):
-        return self.password == salted_hash(password, self.password)
+        return self.password == util.salted_hash(password, self.password)
 
     def can_write(self, provider_id):
         return provider_id in self.owned
