@@ -3,15 +3,13 @@
 import sys
 import codecs
 
-from w3fu.storage.base import Database
+from w3fu import storage
 
 from app import config
+from app.storage import geo
 
-from app.storage.geo import Places, Place
 
-
-database = Database(config.db_uri, config.db_name)
-places = Places(database)
+storage.Database.push(uri=config.db_uri, dbname=config.db_name)
 
 for line in codecs.getreader('cp1251')(sys.stdin):
     (ext_id, name, region, district) = line.split('\t')[:4]
@@ -19,6 +17,6 @@ for line in codecs.getreader('cp1251')(sys.stdin):
         ext_id = int(ext_id)
     except ValueError:
         continue
-    place = Place.new(ext_id, name, region, district)
-    if place.insert():
+    place = geo.Place.new(ext_id, name, region, district)
+    if geo.Place.insert():
         print('\t'.join([str(ext_id), name, region, district]))
