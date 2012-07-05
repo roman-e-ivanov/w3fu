@@ -1,47 +1,36 @@
-from w3fu.base import Application, Context
-from w3fu.routing import Router
-from w3fu.storage.base import Database
-from w3fu.state import StateHandler
-from w3fu import templates
+from w3fu import base, routing, state, templates, storage
+
 from app import config
-
-from app.resources.debug import Debug
-from app.resources.test import Test
-from app.resources.index import Index
-from app.resources.home import Home
-from app.resources.auth import Login, Register, ShortcutLogin
-from app.resources.providers import ProviderPublic, ProvidersPublic, \
-    ProviderAdmin, ProvidersAdmin, ProvidersListAdmin
-from app.resources.workers import WorkerAdmin, WorkersAdmin, WorkersListAdmin
-from app.resources.services import ServiceAdmin, ServicesAdmin, \
-    ServicesListAdmin
-from app.resources.geo import PlaceSuggest
-
 from app.state import SessionState, UserState
-from app.caching import CacheHandler
+
+from app.resources import debug, test, index, home, auth, \
+    providers, workers, services
 
 
-resources = [Debug, Test,
-             Index, Home,
-             ShortcutLogin, Login, Register,
-             ProviderPublic, ProvidersPublic,
-             ProviderAdmin, ProvidersListAdmin, ProvidersAdmin,
-             WorkerAdmin, WorkersListAdmin, WorkersAdmin,
-             ServiceAdmin, ServicesAdmin, ServicesListAdmin,
-             PlaceSuggest]
+resources = [debug.Debug, test.Test,
+             index.Index, home.Home,
+             auth.ShortcutLogin, auth.Login, auth.Register,
+             providers.ProviderPublic,
+             providers.ProvidersPublic,
+             providers.ProviderAdmin,
+             providers.ProvidersListAdmin,
+             providers.ProvidersAdmin,
+             workers.WorkerAdmin,
+             workers.WorkersListAdmin,
+             workers.WorkersAdmin,
+             services.ServiceAdmin,
+             services.ServicesAdmin,
+             services.ServicesListAdmin]
 
-database = Database(config.db_uri, config.db_name)
+templates.Blocks.push(root_dir=config.blocks_root)
+storage.Database.push(uri=config.db_uri, dbname=config.db_name)
 
-templates.registry.push(root_dir=config.blocks_root)
+ctx = base.Context()
 
-ctx = Context(db=database)
+router = routing.Router(ctx, resources)
 
-router = Router(ctx, resources)
+state = state.StateHandler(router,
+                           session_id=SessionState(),
+                           user=UserState())
 
-state = StateHandler(router,
-                     session_id=SessionState(),
-                     user=UserState(ctx))
-
-cache = CacheHandler(state)
-
-app = Application(ctx, cache)
+app = base.Application(ctx, state)

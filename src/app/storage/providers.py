@@ -1,26 +1,23 @@
-from w3fu.storage.documents import Document, Property
-from w3fu.storage.collections import Collection, errorsafe, wrapped
+from w3fu import storage
 
 
-class Provider(Document):
+class Provider(storage.Model):
 
-    id = Property('_id')
-    name = Property('name')
+    _collection = 'providers'
+
+    id = storage.Property('_id')
+    name = storage.Property('name')
 
     def _new(self, name):
         self.name = name
 
+    @classmethod
+    @storage.safe()
+    def update(cls, provider):
+        return cls._c().update({'_id': provider.id},
+                               {'$set': {'name': provider.name}})
 
-class Providers(Collection):
-
-    _doc_cls = Provider
-
-    @errorsafe
-    def update(self, provider):
-        return self._collection.update({'_id': provider.id},
-                                       {'$set': {'name': provider.name}})
-
-    @wrapped
-    @errorsafe
-    def find_from_user(self, user):
-        return self._collection.find({'_id': {'$in': user.owned}})
+    @classmethod
+    @storage.safe(True)
+    def find_from_user(cls, user):
+        return cls._c().find({'_id': {'$in': user.owned}})

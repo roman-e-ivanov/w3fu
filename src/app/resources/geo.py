@@ -6,7 +6,7 @@ from w3fu.data.args import StrArg, BoolArg
 from app.resources.middleware.transform import json, xml
 from app.resources.middleware.context import user
 
-from app.storage.geo import Places
+from app.storage import geo
 
 
 class PlaceSuggestForm(Form):
@@ -28,8 +28,7 @@ class PlaceSuggest(Resource):
     @json()
     def get(self, ctx):
         form = PlaceSuggestForm(ctx.req)
-        places = Places(self.ctx.db)
-        found = places.find_pattern(form.data['pattern'])
+        found = geo.Place.find_pattern(form.data['pattern'])
         return Response.ok({'found': found})
 
 
@@ -50,8 +49,7 @@ class Place(Resource):
             place = None
             # place = autodetect
         else:
-            places = Places(self.ctx.db)
-            place = places.find_name(form.data['name'])
+            place = geo.Place.find_name(form.data['name'])
         if place is None:
             form.data['error'] = 'notfound'
             return Response.redirect(self.route.url(ctx.req, form.query()))

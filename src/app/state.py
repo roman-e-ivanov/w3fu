@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from w3fu.data.args import StrArg, ArgError
 
-from app.storage.auth import Users
+from app.storage.auth import User
 
 
 class SessionState(object):
@@ -30,11 +30,8 @@ class SessionState(object):
 
 class UserState(object):
 
-    def __init__(self, ctx):
-        self._users = Users(ctx.db)
-
     def get(self, ctx):
         session_id = ctx.state['session_id']
         if session_id is None:
             return None
-        return self._users.find_valid_session(session_id, datetime.utcnow())
+        return User.find_valid_session(session_id, datetime.utcnow())

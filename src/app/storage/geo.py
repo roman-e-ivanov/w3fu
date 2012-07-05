@@ -1,11 +1,10 @@
-from w3fu.storage.documents import Document, Property
-from w3fu.storage.collections import Collection, errorsafe, wrapped
+from w3fu import storage
 
 
-class IpRange(Document):
+class IpRange(storage.Model):
 
-    begin = Property('a')
-    end = Property('b')
+    begin = storage.Property('a')
+    end = storage.Property('b')
 
     def _new(self, begin, end):
         self.begin = begin
@@ -15,15 +14,20 @@ class IpRange(Document):
         return self.begin <= ip <= self.end
 
 
-class Place(Document):
+class Place(storage.Model):
 
-    id = Property('_id')
-    ext_id = Property('ext_id', hidden=True)
-    name = Property('name')
-    pattern = Property('pattern', hidden=True)
-    region = Property('region')
-    district = Property('district')
-    ranges = Property('ranges', hidden=True)
+    _collection = 'places'
+    _indexes = [('ext_id', {'unique': True}),
+               ('pattern', {}),
+               ('ranges.a', {})]
+
+    id = storage.Property('_id')
+    ext_id = storage.Property('ext_id', hidden=True)
+    name = storage.Property('name')
+    pattern = storage.Property('pattern', hidden=True)
+    region = storage.Property('region')
+    district = storage.Property('district')
+    ranges = storage.Property('ranges', hidden=True)
 
     def _new(self, ext_id, name, region, district):
         self.ext_id = ext_id
@@ -38,35 +42,28 @@ class Place(Document):
                 return True
         return False
 
-
-class Places(Collection):
-
-    _doc_cls = Place
-    _indexes = [('ext_id', {'unique': True}),
-               ('pattern', {}),
-               ('ranges.a', {})]
-
-    @errorsafe
-    def replace_ranges(self, ext_id, ranges):
+    @classmethod
+    @storage.safe()
+    def replace_ranges(cls, ext_id, ranges):
         raw = [range.raw for range in ranges]
-        return self._collection.update({'ext_id': ext_id}, {'$set': {'ranges': raw}},
-                                       safe=True)['n']
+        return cls._c().update({'ext_id': ext_id}, {'$set': {'ranges': raw}},
+                               safe=True)['n']
 
-    @wrapped
-    @errorsafe
-    def find_ip(self, ip):
-        doc = self._collection.find_one({'ips.a': {'$lte': ip}}).sort('ranges.a', -1)
+    @classmethod
+    @storage.safe(True)
+    def find_ip(cls, ip):
+        doc = cls._c().find_one({'ips.a': {'$lte': ip}}).sort('ranges.a', -1)
         if doc is not None and doc.has_ip(ip):
             return doc
         return None
 
-    @wrapped
-    @errorsafe
-    def find_pattern(self, pattern):
-        return self._collection.find({'pattern': {'$regex': '^' + pattern.lower()}}
+    @classmethod
+    @storage.safe(True)
+    def find_pattern(cls, pattern):
+        return cls._c().find({'pattern': {'$regex': '^' + pattern.lower()}}
                                      ).sort('pattern').limit(10)
 
-    @wrapped
-    @errorsafe
-    def find_name(self, name):
-        return self._collection.find_one({'pattern': name.lower()})
+    @classmethod
+    @storage.safe(True)
+    def find_name(cls, name):
+        return cls._c().find_one({'pattern': name.lower()})

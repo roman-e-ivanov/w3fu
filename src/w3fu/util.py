@@ -1,11 +1,13 @@
-class Registry(dict):
+class RegistryMixin(object):
 
-    def __init__(self, factory, default_name=''):
-        self._factory = factory
-        self._default_name = default_name
+    @classmethod
+    def push(cls, key='', *args, **kwargs):
+        try:
+            instances = cls._instances
+        except AttributeError:
+            instances = cls._instances = {}
+        instances[key] = cls(*args, **kwargs)
 
-    def push(self, name=None, *args, **kwargs):
-        self[name or self._default_name] = self._factory(*args, **kwargs)
-
-    def pull(self, name=None):
-        return self[name or self._default_name]
+    @classmethod
+    def pull(cls, key=''):
+        return cls._instances[key]

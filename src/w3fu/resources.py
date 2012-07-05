@@ -22,7 +22,7 @@ class Resource(object):
         self.ac = ac
         self.rc = rc
         if self._block_path:
-            self._block = templates.registry.pull().block(self._block_path)
+            self._block = templates.Blocks.pull().block(self._block_path)
         else:
             self._block = None
 

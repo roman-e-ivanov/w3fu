@@ -1,31 +1,36 @@
 from datetime import datetime
 from uuid import uuid4
 
-from w3fu.storage.collections import Collection, errorsafe, wrapped
-from w3fu.storage.documents import Document, Property, ListContainer
+from w3fu import storage
 from w3fu.data.codecs import b64e, salted_hash
 
 from app import config
 
 
-class Session(Document):
+class Session(storage.Model):
 
-    id = Property('id')
-    expires = Property('expires')
+    id = storage.Property('id')
+    expires = storage.Property('expires')
 
     def _new(self):
         self.id = b64e(uuid4().bytes)
         self.expires = datetime.utcnow() + config.session_ttl
 
 
-class User(Document):
+class User(storage.Model):
 
-    id = Property('_id')
-    email = Property('email')
-    password = Property('password', hidden=True)
-    shortcut = Property('shortcut')
-    owned = Property('owned', hidden=True)
-    sessions = ListContainer('sessions', Session, hidden=True)
+    _collection = 'users'
+    _indexes = [('email', {'unique': True}),
+                ('shortcut', {}),
+                ('sessions.id', {}),
+                ('owned', {})]
+
+    id = storage.Property('_id')
+    email = storage.Property('email')
+    password = storage.Property('password', hidden=True)
+    shortcut = storage.Property('shortcut')
+    owned = storage.Property('owned', hidden=True)
+    sessions = storage.ListContainer('sessions', Session, hidden=True)
 
     def _new(self, email):
         self.email = email
@@ -41,54 +46,50 @@ class User(Document):
     def can_write(self, provider_id):
         return provider_id in self.owned
 
+    @classmethod
+    @storage.safe()
+    def push_session(cls, user, session):
+        cls._c().update({'_id': user.id},
+                      {'$push': {'sessions': session.raw}})
 
-class Users(Collection):
+    @classmethod
+    @storage.safe()
+    def pull_session(cls, session_id):
+        cls._c().update({'sessions.id': session_id},
+                      {'$pull': {'sessions': {'id': session_id}}})
 
-    _doc_cls = User
-    _indexes = [('email', {'unique': True}),
-                ('shortcut', {}),
-                ('sessions.id', {}),
-                ('owned', {})]
+    @classmethod
+    @storage.safe()
+    def push_owned(cls, user, provider_id):
+        cls._c().update({'_id': user.id},
+                       {'$push': {'owned': provider_id}})
 
-    @errorsafe
-    def push_session(self, user, session):
-        self._collection.update({'_id': user.id},
-                                {'$push': {'sessions': session.raw}})
+    @classmethod
+    @storage.safe()
+    def pull_owned(cls, provider_id):
+        cls._c().update({'owned': provider_id},
+                      {'$pull': {'owned': provider_id}})
 
-    @errorsafe
-    def pull_session(self, session_id):
-        self._collection.update({'sessions.id': session_id},
-                                {'$pull': {'sessions': {'id': session_id}}})
+    @classmethod
+    @storage.safe()
+    def update_password(cls, user):
+        cls._c().update({'_id': user.id},
+                      {'$set': {'password': user.password},
+                       '$unset': {'shortcut': 1}})
 
-    @errorsafe
-    def push_owned(self, user, provider_id):
-        self._collection.update({'_id': user.id},
-                                {'$push': {'owned': provider_id}})
+    @classmethod
+    @storage.safe(True)
+    def find_email(cls, email):
+        return cls._c().find_one({'email': email})
 
-    @errorsafe
-    def pull_owned(self, provider_id):
-        self._collection.update({'owned': provider_id},
-                                {'$pull': {'owned': provider_id}})
+    @classmethod
+    @storage.safe(True)
+    def find_shortcut(cls, shortcut):
+        return cls._c().find_one({'shortcut': shortcut})
 
-    @errorsafe
-    def update_password(self, user):
-        self._collection.update({'_id': user.id},
-                                {'$set': {'password': user.password},
-                                 '$unset': {'shortcut': 1}})
-
-    @wrapped
-    @errorsafe
-    def find_email(self, email):
-        return self._collection.find_one({'email': email})
-
-    @wrapped
-    @errorsafe
-    def find_shortcut(self, shortcut):
-        return self._collection.find_one({'shortcut': shortcut})
-
-    @wrapped
-    @errorsafe
-    def find_valid_session(self, id, expires):
+    @classmethod
+    @storage.safe(True)
+    def find_valid_session(cls, id, expires):
         query = {'sessions': {'$elemMatch': {'id': id,
                                              'expires': {'$gt': expires}}}}
-        return self._collection.find_one(query)
+        return cls._c().find_one(query)
