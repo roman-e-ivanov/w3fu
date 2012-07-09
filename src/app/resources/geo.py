@@ -1,7 +1,4 @@
-from w3fu.base import Response
-from w3fu.routing import Route
-from w3fu.resources import Resource, Form
-from w3fu.data.args import StrArg, BoolArg
+from w3fu import args, http, resources, routing
 
 from app.resources.middleware.transform import json, xml
 from app.resources.middleware.context import user
@@ -9,42 +6,42 @@ from app.resources.middleware.context import user
 from app.storage import geo
 
 
-class PlaceSuggestForm(Form):
+class PlaceSuggestForm(resources.Form):
 
-    pattern = StrArg('pattern', min_size=1, max_size=100, default='')
-
-
-class PlaceForm(Form):
-
-    name = StrArg('name', min_size=0, max_size=100, default='')
-    auto = BoolArg('auto')
-    error = StrArg('error', default='')
+    pattern = args.StrArg('pattern', min_size=1, max_size=100, default='')
 
 
-class PlaceSuggest(Resource):
+class PlaceForm(resources.Form):
 
-    route = Route('/place/suggest')
+    name = args.StrArg('name', min_size=0, max_size=100, default='')
+    auto = args.BoolArg('auto')
+    error = args.StrArg('error', default='')
+
+
+class PlaceSuggest(resources.Resource):
+
+    route = routing.Route('/place/suggest')
 
     @json()
     def get(self, ctx):
         form = PlaceSuggestForm(ctx.req)
         found = geo.Place.find_pattern(form.data['pattern'])
-        return Response.ok({'found': found})
+        return http.Response.ok({'found': found})
 
 
-class Place(Resource):
+class Place(resources.Resource):
 
-    route = Route('/place')
+    route = routing.Route('/place')
 
     @xml()
     @user()
     def get(self, ctx):
-        return Response.ok({'form': PlaceForm(ctx.req)})
+        return http.Response.ok({'form': PlaceForm(ctx.req)})
 
     def post(self, ctx):
         form = PlaceForm(ctx.req, True)
         if form.err:
-            return Response.redirect(self.route.url(ctx.req, form.src))
+            return http.Response.redirect(self.route.url(ctx.req, form.src))
         if form.data['auto']:
             place = None
             # place = autodetect
@@ -52,4 +49,4 @@ class Place(Resource):
             place = geo.Place.find_name(form.data['name'])
         if place is None:
             form.data['error'] = 'notfound'
-            return Response.redirect(self.route.url(ctx.req, form.query()))
+            return http.Response.redirect(self.route.url(ctx.req, form.query()))

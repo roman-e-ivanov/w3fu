@@ -1,8 +1,7 @@
-from re import compile
-from urlparse import urlunsplit
+import re
+import urlparse
 
-from w3fu.base import Response
-from w3fu.data.args import ArgError
+from w3fu import args, http
 
 
 class Router(object):
@@ -18,7 +17,7 @@ class Router(object):
                 continue
             ctx.args = args
             return res_cls(self._ctx, ctx)(ctx)
-        return Response.not_found()
+        return http.Response.not_found()
 
 
 class Route(object):
@@ -30,8 +29,8 @@ class Route(object):
         self._compile()
 
     def url(self, req, query='', **args):
-        return urlunsplit((self._scheme, req.host, self.path(**args),
-                           query, ''))
+        return urlparse.urlunsplit((self._scheme, req.host, self.path(**args),
+                                    query, ''))
 
     def path(self, **args):
         return self.pattern.format(**self._pack(args))
@@ -43,14 +42,14 @@ class Route(object):
     def _compile(self):
         args_pattern = dict((k, '(?P<{0}>{1})'.format(k, v.pattern()))
                        for k, v in self._args.iteritems())
-        self._re = compile('^' + self.pattern.format(**args_pattern) + '$')
+        self._re = re.compile('^' + self.pattern.format(**args_pattern) + '$')
 
     def _unpack(self, packed):
         unpacked = {}
         for name, arg in self._args.iteritems():
             try:
                 unpacked[name] = arg.unpack(packed)
-            except ArgError:
+            except args.ArgError:
                 return None
         return unpacked
 

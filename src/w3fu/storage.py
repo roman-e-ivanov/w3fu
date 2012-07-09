@@ -1,8 +1,5 @@
-from pymongo import Connection
-from pymongo.cursor import Cursor
-from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
-from pymongo.dbref import DBRef
-from copy import copy
+import pymongo
+import copy
 
 from w3fu import util
 
@@ -10,7 +7,7 @@ from w3fu import util
 class Database(util.RegistryMixin):
 
     def __init__(self, uri, dbname):
-        self._connection = Connection(uri)
+        self._connection = pymongo.Connection(uri)
         self._db = self._connection[dbname]
 
     def collection(self, name):
@@ -32,18 +29,18 @@ def safe(wrap=False):
                     result = method(cls, *args, **kwargs)
                     if not wrap:
                         return result
-                    if isinstance(result, Cursor):
+                    if isinstance(result, pymongo.cursor.Cursor):
                         return [cls(doc) for doc in result]
                     if result is not None:
                         return cls(result)
                     return None
-                except AutoReconnect as e:
+                except pymongo.errors.AutoReconnect as e:
                     if tried:
                         raise StorageError(e)
                     tried = True
-                except DuplicateKeyError:
+                except pymongo.errors.DuplicateKeyError:
                     return False
-                except PyMongoError as e:
+                except pymongo.errors.PyMongoError as e:
                     raise StorageError(e)
         return handler
     return decorator
@@ -110,7 +107,7 @@ class Model(object):
         self.raw = dict(*args, **kwargs)
 
     def ref(self):
-        return DBRef(self.collection.name(), self.id)
+        return pymongo.dbref.DBRef(self.collection.name(), self.id)
 
     def dump(self):
         doc = {}
@@ -138,7 +135,7 @@ class Property(object):
         try:
             return doc.raw[self._name]
         except KeyError:
-            doc.raw[self._name] = default = copy(self._default)
+            doc.raw[self._name] = default = copy.copy(self._default)
             return default
 
     def __set__(self, doc, value):

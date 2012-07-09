@@ -1,6 +1,6 @@
 import os.path
-from json import load
-from codecs import open
+import json
+import codecs
 
 from w3fu import util
 
@@ -142,7 +142,7 @@ class File(Function):
 
     def _load(self):
         path = os.path.join(self._block.work_dir, self._data.render({}))
-        f = open(path, 'r', 'utf-8')
+        f = codecs.open(path, 'r', 'utf-8')
         self._content = f.read()
         f.close()
 
@@ -182,6 +182,6 @@ class Block(object):
 
     def _load(self):
         path = os.path.join(self.work_dir, 'block.json')
-        f = open(path, 'r')
-        self._src = load(f)
+        f = codecs.open(path, 'r')
+        self._src = json.load(f)
         f.close()

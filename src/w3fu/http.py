@@ -1,6 +1,5 @@
-from Cookie import SimpleCookie, CookieError, Morsel
-from cgi import FieldStorage
-from Cookie import Morsel
+import Cookie
+import cgi
 
 
 class Context(dict):
@@ -64,8 +63,8 @@ class Request(object):
             return self._cookie
         except AttributeError:
             try:
-                cookie = SimpleCookie(self.environ.get('HTTP_COOKIE'))
-            except CookieError:
+                cookie = Cookie.SimpleCookie(self.environ.get('HTTP_COOKIE'))
+            except Cookie.CookieError:
                 cookie = {}
             self._cookie = dict((k, v.value) for k, v in cookie.iteritems())
             return self._cookie
@@ -75,9 +74,9 @@ class Request(object):
         try:
             return self._fs
         except AttributeError:
-            self._fs = FieldStorage(fp=self.environ['wsgi.input'],
-                                    environ=self.environ,
-                                    keep_blank_values=True)
+            self._fs = cgi.FieldStorage(fp=self.environ['wsgi.input'],
+                                        environ=self.environ,
+                                        keep_blank_values=True)
             return self._fs
 
 
@@ -142,7 +141,7 @@ class Response(object):
         return self
 
     def set_cookie(self, name, value, expires=None, path='/'):
-        morsel = Morsel()
+        morsel = Cookie.Morsel()
         morsel.set(name, value, str(value))
         morsel['path'] = path
         if expires is not None:

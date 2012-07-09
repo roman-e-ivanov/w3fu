@@ -1,24 +1,22 @@
 # -*- coding: utf-8 -*-
 
-from w3fu.routing import Route
-from w3fu.resources import Form
-from w3fu.data.args import StrArg
+from w3fu import args, resources, routing
 
 from app.resources.base import BaseResource
 
 
-class LoginForm(Form):
+class LoginForm(resources.Form):
 
-    email = StrArg('email', pattern=u'^[^@]+@[^@]+$',
-                   min_size=4, max_size=254)
+    email = args.StrArg('email', pattern=u'^[^@]+@[^@]+$',
+                        min_size=4, max_size=254)
 
-    password = StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$',
-                      min_size=4, max_size=32)
+    password = args.StrArg('password', pattern=u'^[а-яА-Я\x21-\x7e]+$',
+                           min_size=4, max_size=32)
 
 
 class Test(BaseResource):
 
-    route = Route('/test')
+    route = routing.Route('/test')
 
     _block_path = 'pages/test'
 
