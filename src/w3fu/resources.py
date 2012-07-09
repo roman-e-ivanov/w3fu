@@ -2,7 +2,7 @@ from urllib import urlencode
 
 from w3fu.base import Response
 from w3fu.data.args import ArgError
-from w3fu import templates, util
+from w3fu import view, util
 
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
@@ -14,6 +14,7 @@ CONTENT_TYPES = {'html': 'text/html',
 class Resource(object):
 
     _block_path = None
+    _block_group = ''
     _formats = ['html', 'json']
 
     def __init__(self, ac, rc):
@@ -21,7 +22,8 @@ class Resource(object):
         self.ac = ac
         self.rc = rc
         if self._block_path:
-            self._block = templates.Blocks.pull().block(self._block_path)
+            blocks = view.Blocks.pull(self._block_group)
+            self._block = blocks.block(self._block_path)
         else:
             self._block = None
 
