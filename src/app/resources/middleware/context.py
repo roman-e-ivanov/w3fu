@@ -1,4 +1,4 @@
-from w3fu import http
+from w3fu.base import Response
 from w3fu.resources import Middleware
 
 
@@ -10,7 +10,7 @@ class user(Middleware):
     def _handler(self, res, ctx, handler):
         user = ctx.state['user']
         if self._required and user is None:
-            return http.Response.forbidden()
+            return Response.forbidden()
         resp = handler(res, ctx)
         if user is not None and resp.status == 200:
             resp.content['user'] = user

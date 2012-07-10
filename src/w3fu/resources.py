@@ -1,6 +1,8 @@
-import urllib
+from urllib import urlencode
 
-from w3fu import args, view, util, http
+from w3fu.base import Response
+from w3fu.data.args import ArgError
+from w3fu import view, util
 
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
@@ -35,7 +37,7 @@ class Resource(object):
         elif fmt in self._formats:
             self._format = fmt
         else:
-            return http.Response.unsupported_media_type()
+            return Response.unsupported_media_type()
         method = self.rc.req.method.lower()
         if method == 'POST':
             overloaded = self.rc.req.fs.getfirst('method')
@@ -43,7 +45,7 @@ class Resource(object):
                 method = overloaded
         handler = getattr(self, method, None)
         if handler is None:
-            return http.Response.method_not_allowed()
+            return Response.method_not_allowed()
         return handler(ctx)
 
     def _render(self, data):
@@ -59,32 +61,32 @@ class Resource(object):
             return util.json_dump(data)
 
     def _forbidden(self):
-        return http.Response.forbidden()
+        return Response.forbidden()
 
     def _not_found(self):
-        return http.Response.not_found()
+        return Response.not_found()
 
     def _conflict(self, data=None):
         content = self._render(data)
         content_type = self._content_type()
         if self._format == 'html':
-            return http.Response.ok(content, content_type)
+            return Response.ok(content, content_type)
         else:
-            return http.Response.conflict(content, content_type)
+            return Response.conflict(content, content_type)
 
     def _bad_request(self, data=None):
         content = self._render(data)
         content_type = self._content_type()
         if self._format == 'html':
-            return http.Response.ok(content, content_type)
+            return Response.ok(content, content_type)
         else:
-            return http.Response.bad_request(content, content_type)
+            return Response.bad_request(content, content_type)
 
     def _ok(self, data=None, redirect=None):
         if self._format == 'html' and redirect is not None:
-            return http.Response.redirect(redirect)
+            return Response.redirect(redirect)
         else:
-            return http.Response.ok(self._render(data), self._content_type())
+            return Response.ok(self._render(data), self._content_type())
 
     def _extra(self, data):
         pass
@@ -141,12 +143,12 @@ class Form(object):
         for name, arg in self.args.iteritems():
             try:
                 self.data[name] = arg.unpack(packed)
-            except args.ArgError as e:
+            except ArgError as e:
                 self.errors[name] = e
 
     def _encode(self, packed):
-        return urllib.urlencode([(k, v.encode('utf-8'))
-                                 for k, v in packed.iteritems()])
+        return urlencode([(k, v.encode('utf-8'))
+                          for k, v in packed.iteritems()])
 
     def _decode(self, fs):
         return dict([(k, fs.getfirst(k).decode('utf-8'))

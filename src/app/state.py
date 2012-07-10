@@ -1,19 +1,19 @@
 from datetime import datetime, timedelta
 
-from w3fu import args
+from w3fu.data.args import StrArg, ArgError
 
 from app.storage.auth import User
 
 
 class SessionState(object):
 
-    _cookie = args.StrArg('u')
+    _cookie = StrArg('u')
     _ttl = timedelta(days=1)
 
     def get(self, ctx):
         try:
             session_id = self._cookie.unpack(ctx.req.cookie)
-        except args.ArgError:
+        except ArgError:
             return None
         return session_id
 

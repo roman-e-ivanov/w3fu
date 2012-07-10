@@ -1,12 +1,14 @@
-from w3fu import http, routing, resources
+from w3fu.base import Response
+from w3fu.routing import Route
+from w3fu.resources import Resource
 
 from app.resources.middleware.transform import xml
 
 
-class Debug(resources.Resource):
+class Debug(Resource):
 
-    route = routing.Route('/debug')
+    route = Route('/debug')
 
     @xml('pages/debug/html.xsl')
     def get(self, ctx):
-        return http.Response.ok({})
+        return Response.ok({})
