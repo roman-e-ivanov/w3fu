@@ -2,10 +2,10 @@ import os.path
 from json import load
 from codecs import open
 
-from w3fu import util
+from w3fu.util import RegistryMixin
 
 
-class Blocks(util.RegistryMixin):
+class Blocks(RegistryMixin):
 
     def __init__(self, root_dir):
         self._root_dir = root_dir

@@ -2,7 +2,7 @@ import os
 
 from w3fu.resources import Middleware
 from w3fu.data.dumpers import JsonDumper, XmlDumper, prettify
-from w3fu.templates import Blocks
+from w3fu.view import Blocks
 
 from app import config
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from w3fu.base import Response
+from w3fu.http import Response
 from w3fu.routing import Route
 from w3fu.resources import Resource, Form
 from w3fu.data.args import StrArg
@@ -10,7 +10,7 @@ from app.resources.middleware.transform import xml
 from app.resources.home import Home
 from app.resources.index import Index
 
-from app.storage import auth
+from app.storage.auth import User, Session
 
 
 class RegisterForm(Form):
@@ -48,18 +48,18 @@ class Login(Resource):
         form = LoginForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
-        user = auth.User.find_email(form.data['email'])
+        user = User.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
             return Response.ok({'form': form, 'user-auth-error': {}})
-        session = auth.Session.new()
-        auth.User.push_session(user, session)
+        session = Session.new()
+        User.push_session(user, session)
         ctx.state['session_id'] = session.id
         return Response.redirect(Home.route.url(ctx.req))
 
     def delete(self, ctx):
         session_id = ctx.state['session_id']
         if session_id is not None:
-            auth.User.pull_session(session_id)
+            User.pull_session(session_id)
         del ctx.state['session_id']
         return Response.redirect(ctx.req.referer or Index.route.url(ctx.req))
 
@@ -71,23 +71,23 @@ class ShortcutLogin(Resource):
 
     @xml('pages/shortcut-login/html.xsl')
     def get(self, ctx):
-        user = auth.User.find_shortcut(ctx.args['shortcut'])
+        user = User.find_shortcut(ctx.args['shortcut'])
         if user is None:
             return Response.not_found()
         return Response.ok({})
 
     @xml('pages/shortcut-login/html.xsl')
     def post(self, ctx):
-        user = auth.User.find_shortcut(ctx.args['shortcut'])
+        user = User.find_shortcut(ctx.args['shortcut'])
         if user is None:
             return Response.not_found()
         form = SetPasswordForm(ctx.req)
         if form.errors:
             return Response.ok({'form': form})
         user.set_password(form.data['password'])
-        auth.User.update_password(user)
-        session = auth.Session.new()
-        auth.User.push_session(user, session)
+        User.update_password(user)
+        session = Session.new()
+        User.push_session(user, session)
         ctx.state['session_id'] = session.id
         return Response.redirect(Home.route.url(ctx.req))
 
@@ -102,8 +102,8 @@ class Register(BaseResource):
         form = RegisterForm(self.rc.req)
         if form.errors:
             return self._bad_request({'form': form})
-        user = auth.User.new(form.data['email'])
-        if not auth.User.insert(user, True):
+        user = User.new(form.data['email'])
+        if not User.insert(user, True):
             return self._conflict({'form': form, 'user_exists': True})
         url = ShortcutLogin.route.url(self.rc.req, shortcut=user.shortcut)
         return self._ok(redirect=url)

@@ -4,10 +4,10 @@ from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
 from pymongo.dbref import DBRef
 from copy import copy
 
-from w3fu import util
+from w3fu.util import RegistryMixin
 
 
-class Database(util.RegistryMixin):
+class Database(RegistryMixin):
 
     def __init__(self, uri, dbname):
         self._connection = Connection(uri)

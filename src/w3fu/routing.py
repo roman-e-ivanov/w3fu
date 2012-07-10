@@ -1,7 +1,7 @@
 from re import compile
 from urlparse import urlunsplit
 
-from w3fu.base import Response
+from w3fu.http import Response
 from w3fu.data.args import ArgError
 
 

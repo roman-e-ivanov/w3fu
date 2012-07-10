@@ -1,4 +1,4 @@
-from w3fu.base import Response
+from w3fu.http import Response
 from w3fu.routing import Route
 from w3fu.resources import Resource
 
