@@ -4,7 +4,7 @@ from w3fu.routing import Route
 from w3fu.resources import Form
 from w3fu.data.args import StrArg
 
-from app.resources.base import BaseResource
+from app.resources import Resource
 
 
 class LoginForm(Form):
@@ -16,7 +16,7 @@ class LoginForm(Form):
                       min_size=4, max_size=32)
 
 
-class Test(BaseResource):
+class Test(Resource):
 
     route = Route('/test')
 

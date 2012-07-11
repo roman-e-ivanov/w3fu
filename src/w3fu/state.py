@@ -31,12 +31,11 @@ class State(object):
 
 class StateHandler(object):
 
-    def __init__(self, handler, **args):
-        self._handler = handler
+    def __init__(self, **args):
         self._args = args
 
     def __call__(self, ctx):
         ctx.state = State(ctx, self._args)
-        resp = self._handler(ctx)
+        resp = self.next(ctx)
         ctx.state.output(resp)
         return resp

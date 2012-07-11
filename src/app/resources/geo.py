@@ -1,8 +1,9 @@
 from w3fu.http import Response
 from w3fu.routing import Route
-from w3fu.resources import Resource, Form
+from w3fu.resources import Form
 from w3fu.data.args import StrArg, BoolArg
 
+from app.resources import Resource
 from app.resources.middleware.transform import json, xml
 from app.resources.middleware.context import user
 

@@ -4,10 +4,8 @@ from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
 from pymongo.dbref import DBRef
 from copy import copy
 
-from w3fu.util import RegistryMixin
 
-
-class Database(RegistryMixin):
+class Database(object):
 
     def __init__(self, uri, dbname):
         self._connection = Connection(uri)
@@ -49,21 +47,20 @@ def safe(wrap=False):
     return decorator
 
 
-class ModelMeta(type):
+class BaseModelMeta(type):
 
     def __init__(cls, name, bases, attrs):
         cls.props = {}
         for name, attr in attrs.iteritems():
             if hasattr(attr, 'dump'):
                 cls.props[name] = attr
-        super(ModelMeta, cls).__init__(name, bases, attrs)
+        super(BaseModelMeta, cls).__init__(name, bases, attrs)
 
 
-class Model(object):
+class BaseModel(object):
 
-    __metaclass__ = ModelMeta
+    __metaclass__ = BaseModelMeta
 
-    _database = ''
     _collection = ''
     _indexes = []
 
@@ -73,7 +70,7 @@ class Model(object):
 
     @classmethod
     def _c(cls):
-        return Database.pull(cls._database).collection(cls._collection)
+        return cls._database.collection(cls._collection)
 
     @classmethod
     @safe()

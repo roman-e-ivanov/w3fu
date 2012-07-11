@@ -1,7 +1,6 @@
 from wsgiref.util import setup_testing_defaults
 
-from app import config
-from app.boot.wsgi import app
+from app import config, application
 
 
 environ = {'HTTP_HOST': config.cli_http_host,
@@ -11,4 +10,4 @@ environ = {'HTTP_HOST': config.cli_http_host,
            'QUERY_STRING': config.cli_query_string}
 
 setup_testing_defaults(environ)
-app.debug(environ)
+application.debug(environ)

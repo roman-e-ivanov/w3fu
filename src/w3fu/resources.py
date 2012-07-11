@@ -2,7 +2,6 @@ from urllib import urlencode
 
 from w3fu.http import Response
 from w3fu.data.args import ArgError
-from w3fu.view import Blocks
 from w3fu.util import json_dump
 
 
@@ -12,19 +11,15 @@ CONTENT_TYPES = {'html': 'text/html',
                  'json': 'application/json'}
 
 
-class Resource(object):
+class BaseResource(object):
 
     _block_path = None
-    _block_group = ''
     _formats = ['html', 'json']
 
-    def __init__(self, ac, rc):
-        self.ctx = ac
-        self.ac = ac
-        self.rc = rc
+    def __init__(self, ctx):
+        self._ctx = ctx
         if self._block_path:
-            blocks = Blocks.pull(self._block_group)
-            self._block = blocks.block(self._block_path)
+            self._block = self._blocks.block(self._block_path)
         else:
             self._block = None
 
@@ -32,16 +27,16 @@ class Resource(object):
         return CONTENT_TYPES.get(self._format)
 
     def __call__(self, ctx):
-        fmt = self.rc.req.fs.getfirst('format')
+        fmt = ctx.req.fs.getfirst('format')
         if fmt is None:
             self._format = self._formats[0]
         elif fmt in self._formats:
             self._format = fmt
         else:
             return Response.unsupported_media_type()
-        method = self.rc.req.method.lower()
+        method = ctx.req.method.lower()
         if method == 'POST':
-            overloaded = self.rc.req.fs.getfirst('method')
+            overloaded = ctx.req.fs.getfirst('method')
             if overloaded is not None and overloaded in OVERLOADABLE:
                 method = overloaded
         handler = getattr(self, method, None)

@@ -1,9 +1,9 @@
 from w3fu.routing import Route
 
-from app.resources.base import BaseResource
+from app.resources import Resource
 
 
-class Index(BaseResource):
+class Index(Resource):
 
     route = Route('/')
 

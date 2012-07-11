@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from w3fu.data.args import StrArg, ArgError
+from w3fu.state import StateHandler
 
 from app.storage.auth import User
 
@@ -35,3 +36,6 @@ class UserState(object):
         if session_id is None:
             return None
         return User.find_valid_session(session_id, datetime.utcnow())
+
+
+state = StateHandler(session_id=SessionState(), user=UserState())

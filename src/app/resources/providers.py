@@ -1,11 +1,12 @@
 from w3fu.http import Response
 from w3fu.routing import Route
 from w3fu.data.args import StrArg, IdArg
-from w3fu.resources import Form, Resource
+from w3fu.resources import Form
 
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 
+from app.resources import Resource
 from app.resources.workers import WorkersListAdmin
 from app.resources.services import ServicesListAdmin
 

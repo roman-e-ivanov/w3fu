@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from w3fu.http import Response
 from w3fu.routing import Route
-from w3fu.resources import Resource, Form
+from w3fu.resources import Form
 from w3fu.data.args import StrArg
 
-from app.resources.base import BaseResource
+from app.resources import Resource
 from app.resources.middleware.context import user
 from app.resources.middleware.transform import xml
 from app.resources.home import Home
@@ -92,7 +92,7 @@ class ShortcutLogin(Resource):
         return Response.redirect(Home.route.url(ctx.req))
 
 
-class Register(BaseResource):
+class Register(Resource):
 
     route = Route('/register')
 
