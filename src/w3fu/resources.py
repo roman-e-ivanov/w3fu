@@ -1,7 +1,7 @@
 from urllib import urlencode
 
 from w3fu.http import Response
-from w3fu.data.args import ArgError
+from w3fu.args import ArgError
 from w3fu.util import json_dump
 
 

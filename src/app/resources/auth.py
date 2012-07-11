@@ -2,7 +2,7 @@
 from w3fu.http import Response
 from w3fu.routing import Route
 from w3fu.resources import Form
-from w3fu.data.args import StrArg
+from w3fu.args import StrArg
 
 from app.resources import Resource
 from app.resources.middleware.context import user

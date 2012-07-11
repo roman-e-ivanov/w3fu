@@ -2,7 +2,7 @@ from re import compile
 from urlparse import urlunsplit
 
 from w3fu.http import Response
-from w3fu.data.args import ArgError
+from w3fu.args import ArgError
 
 
 class Router(object):

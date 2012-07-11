@@ -1,6 +1,6 @@
 from w3fu.http import Response
 from w3fu.routing import Route
-from w3fu.data.args import StrArg, IdArg
+from w3fu.args import StrArg, IdArg
 from w3fu.resources import Form
 
 from app.resources import Resource

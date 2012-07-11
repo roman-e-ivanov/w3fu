@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from w3fu.data.args import StrArg, ArgError
+from w3fu.args import StrArg, ArgError
 from w3fu.state import StateHandler
 
 from app.storage.auth import User

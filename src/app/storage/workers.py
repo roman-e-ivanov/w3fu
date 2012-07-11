@@ -1,4 +1,4 @@
-from w3fu.storage import safe, Property, ListContainer
+from w3fu.storage import safe, Property
 
 from app.storage import Model
 
