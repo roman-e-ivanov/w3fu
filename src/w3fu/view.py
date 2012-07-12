@@ -3,7 +3,7 @@ from json import load
 from codecs import open
 
 
-class Blocks(object):
+class Templates(object):
 
     def __init__(self, root_dir):
         self._root_dir = root_dir
@@ -154,12 +154,13 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, blocks, work_dir):
+    def __init__(self, templates, work_dir):
         self.work_dir = work_dir
         self._load()
         include = self._src.get('include', {})
         define = self._src.get('define', {})
-        self.subs = dict([(k, blocks.block(v)) for k, v in include.iteritems()])
+        self.subs = dict([(k, templates.block(v))
+                          for k, v in include.iteritems()])
         self.subs.update(dict([(k, self.compile(v))
                                for k, v in define.iteritems()]))
         self._body = self.compile(self._src.get('body'))

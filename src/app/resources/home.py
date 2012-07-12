@@ -1,5 +1,6 @@
 from w3fu.routing import Route
 
+from app.view import templates
 from app.resources import Resource
 
 
@@ -7,7 +8,7 @@ class Home(Resource):
 
     route = Route('/home')
 
-    _block_path = 'pages/home'
+    _block = templates.block('pages/home')
 
     def get(self, ctx):
         if not self.rc.state['user']:

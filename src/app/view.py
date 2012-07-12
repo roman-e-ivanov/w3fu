@@ -1,6 +1,6 @@
-from w3fu.view import Blocks
+from w3fu.view import Templates
 
 from app import config
 
 
-blocks = Blocks(root_dir=config.blocks_root)
+templates = Templates(root_dir=config.blocks_root)

@@ -13,15 +13,11 @@ CONTENT_TYPES = {'html': 'text/html',
 
 class BaseResource(object):
 
-    _block_path = None
+    _block = None
     _formats = ['html', 'json']
 
     def __init__(self, ctx):
         self._ctx = ctx
-        if self._block_path:
-            self._block = self._blocks.block(self._block_path)
-        else:
-            self._block = None
 
     def _content_type(self):
         return CONTENT_TYPES.get(self._format)

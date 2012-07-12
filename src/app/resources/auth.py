@@ -3,6 +3,7 @@ from w3fu.http import Response
 from w3fu.routing import Route
 from w3fu.resources import Form
 from w3fu.args import StrArg
+from app.view import templates
 
 from app.resources import Resource
 from app.resources.middleware.context import user
@@ -96,14 +97,14 @@ class Register(Resource):
 
     route = Route('/register')
 
-    _block_path = 'pages/register'
+    _block = templates.block('pages/register')
 
     def post(self, ctx):
-        form = RegisterForm(self.rc.req)
+        form = RegisterForm(ctx.req)
         if form.errors:
             return self._bad_request({'form': form})
         user = User.new(form.data['email'])
         if not User.insert(user, True):
             return self._conflict({'form': form, 'user_exists': True})
-        url = ShortcutLogin.route.url(self.rc.req, shortcut=user.shortcut)
+        url = ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut)
         return self._ok(redirect=url)

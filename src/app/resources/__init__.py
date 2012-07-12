@@ -1,12 +1,8 @@
 from w3fu.routing import Router
 from w3fu.resources import BaseResource
 
-from app.view import blocks
-
 
 class Resource(BaseResource):
-
-    _blocks = blocks
 
     def _extra(self, data):
         data['user'] = self._ctx.state['user']

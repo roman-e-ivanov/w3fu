@@ -2,9 +2,9 @@ import os
 
 from w3fu.resources import Middleware
 from w3fu.data.dumpers import JsonDumper, XmlDumper, prettify
-from w3fu.view import Blocks
 
 from app import config
+from app.view import templates
 
 
 class json(Middleware):
@@ -40,8 +40,7 @@ class xml(Middleware):
 class block(Middleware):
 
     def __init__(self, name=None, format='raw'):
-        blocks = Blocks(config.blocks_root)
-        self._dumper = blocks[name] if name else None
+        self._dumper = templates.block(name) if name else None
 
     def _handler(self, res, ctx, handler):
         resp = handler(res, ctx)
