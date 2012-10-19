@@ -8,8 +8,8 @@
 			"title": "Тестовая страница", 
 			"keywords": "Ключевые слова",
 			"description": "Описание",
-			"style": "pages/home/html.css",
-			"script": "pages/home/html.js",
+			"style": "css/html.css",
+			"script": "html.js",
 			"content": {"fill": {"file": "test.html"}}
 		}
 	}

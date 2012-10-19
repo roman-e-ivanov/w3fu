@@ -8,8 +8,8 @@
 			"title": "Корневая страница", 
 			"keywords": "Ключевые слова",
 			"description": "Описание",
-			"style": "pages/index/html.css",
-			"script": "pages/index/html.js",
+			"style": "css/html.css",
+			"script": "html.js",
 			"content": {"fill": {"file": "index.html"}}
 		}
 	}

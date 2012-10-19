@@ -1,0 +1,25 @@
+.b-development-menu {
+	position:absolute;
+}
+
+.b-development-menu__list {
+	padding:1px;
+	left:0; top:0;
+	display:block;
+}
+
+.b-development-menu__line {
+	margin:5px;
+	font-size:8pt;
+}
+
+.b-development-menu__link {
+	display:block; 
+	background:#bbb;
+	color:#000;
+}
+
+.b-development-menu__link:hover {
+	background:#FF6347;
+	color:#000;
+}
