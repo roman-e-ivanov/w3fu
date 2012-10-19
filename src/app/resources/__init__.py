@@ -1,11 +1,12 @@
 from w3fu.routing import Router
 
-from app.resources import test, auth
+from app.resources import test, auth, index, home
 #debug, index, home, providers, workers, services
 
-resources = [test.Test(), auth.ShortcutLogin(), auth.Login(), auth.Register(),
+resources = [test.Test(),
+             index.Index(), home.Home(),
+             auth.ShortcutLogin(), auth.Login(), auth.Register(),
 #             debug.Debug(),
-#             index.Index, home.Home,
 #             providers.ProviderPublic,
 #             providers.ProvidersPublic,
 #             providers.ProviderAdmin,
