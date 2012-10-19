@@ -1,7 +1,7 @@
 from re import compile
 from urlparse import urlunsplit
 
-from w3fu.http import Response
+from w3fu.http import NotFound
 from w3fu.args import ArgError
 
 
@@ -11,13 +11,12 @@ class Router(object):
         self._resources = resources
 
     def __call__(self, ctx):
-        for res_cls in self._resources:
-            args = res_cls.route.match(ctx.req.path)
+        for res in self._resources:
+            args = res.route.match(ctx.req.path)
             if args is None:
                 continue
-            ctx.args = args
-            return res_cls(ctx)(ctx)
-        return Response.not_found()
+            return res(ctx, **args)
+        raise NotFound
 
 
 class Route(object):

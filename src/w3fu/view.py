@@ -1,15 +1,16 @@
+import sys
 import os.path
 from json import load
 from codecs import open
 
 
-class Templates(object):
+class Blocks(object):
 
     def __init__(self, root_dir):
         self._root_dir = root_dir
         self._blocks = {}
 
-    def block(self, block_dir):
+    def __getitem__(self, block_dir):
         try:
             return self._blocks[block_dir]
         except KeyError:
@@ -154,12 +155,12 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, templates, work_dir):
+    def __init__(self, blocks, work_dir):
         self.work_dir = work_dir
         self._load()
         include = self._src.get('include', {})
         define = self._src.get('define', {})
-        self.subs = dict([(k, templates.block(v))
+        self.subs = dict([(k, blocks[v])
                           for k, v in include.iteritems()])
         self.subs.update(dict([(k, self.compile(v))
                                for k, v in define.iteritems()]))
@@ -181,6 +182,10 @@ class Block(object):
 
     def _load(self):
         path = os.path.join(self.work_dir, 'block.json')
-        f = open(path, 'r')
-        self._src = load(f)
-        f.close()
+        try:
+            f = open(path, 'r')
+            self._src = load(f)
+            f.close()
+        except IOError:
+            self._src = {}
+            print >> sys.stderr, "Error loading " + self.work_dir

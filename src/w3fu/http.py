@@ -1,6 +1,6 @@
+import re
 from Cookie import SimpleCookie, CookieError, Morsel
 from cgi import FieldStorage
-from Cookie import Morsel
 
 
 class Context(dict):
@@ -14,13 +14,15 @@ class Context(dict):
 
 class Application(object):
 
-    def __init__(self, context, handler):
-        self.ctx = context
+    def __init__(self, handler):
         self._handler = handler
 
     def __call__(self, environ, start_response):
-        ctx = Context(req=Request(environ))
-        resp = self._handler(ctx)
+        context = Context(req=Request(environ))
+        try:
+            resp = self._handler(context)
+        except Error as e:
+            resp = e
         return resp(start_response)
 
     def debug(self, environ):
@@ -33,108 +35,62 @@ class Application(object):
             print(data)
 
 
+FORMAT_BY_TYPE = {'text/html': 'html',
+                  'application/json': 'json'}
+
+
 class Request(object):
 
+    _allowed_formats = frozenset(FORMAT_BY_TYPE.values())
+    _path_re = re.compile('^(.+)\.(\w+)?$')
+
     def __init__(self, environ):
-        self.environ = environ
+        self._env = environ
+        self._parse_cookie()
+        self._parse_fs()
+        self._parse_path()
+        self.formats = [self.path_format] if self.path_format else ['html']
+        self.scheme = self._env.get('wsgi.url_scheme', 'http')
+        self.host = self._env.get('HTTP_HOST', '')
+        self.referer = self._env.get('HTTP_REFERER')
+        self.method = self._env.get('REQUEST_METHOD', '')
 
-    @property
-    def scheme(self):
-        return self.environ.get('wsgi.url_scheme', 'http')
+    def _parse_path(self):
+        path = self._env.get('PATH_INFO', '')
+        match = self._path_re.match(path)
+        if match:
+            path, fmt = match.groups([1, 2])
+            if fmt in self._allowed_formats:
+                self.path = path
+                self.path_format = fmt
+                return
+        self.path = path
+        self.path_format = None
 
-    @property
-    def host(self):
-        return self.environ.get('HTTP_HOST', '')
-
-    @property
-    def path(self):
-        return self.environ.get('PATH_INFO', '')
-
-    @property
-    def referer(self):
-        return self.environ.get('HTTP_REFERER')
-
-    @property
-    def method(self):
-        return self.environ.get('REQUEST_METHOD', '')
-
-    @property
-    def cookie(self):
+    def _parse_cookie(self):
         try:
-            return self._cookie
-        except AttributeError:
-            try:
-                cookie = SimpleCookie(self.environ.get('HTTP_COOKIE'))
-            except CookieError:
-                cookie = {}
-            self._cookie = dict((k, v.value) for k, v in cookie.iteritems())
-            return self._cookie
+            cookie = SimpleCookie(self._env.get('HTTP_COOKIE'))
+        except CookieError:
+            cookie = {}
+        self.cookie = dict((k, v.value) for k, v in cookie.iteritems())
 
-    @property
-    def fs(self):
-        try:
-            return self._fs
-        except AttributeError:
-            self._fs = FieldStorage(fp=self.environ['wsgi.input'],
-                                    environ=self.environ,
-                                    keep_blank_values=True)
-            return self._fs
+    def _parse_fs(self):
+        self.fs = FieldStorage(fp=self._env['wsgi.input'],
+                               environ=self._env,
+                               keep_blank_values=True)
 
 
 class Response(object):
 
-    @classmethod
-    def ok(cls, content=None, content_type=None):
-        return cls(200, 'OK', content, content_type)
-
-    @classmethod
-    def redirect(cls, url):
-        return cls(302, 'Found').header('Location', url)
-
-    @classmethod
-    def bad_request(cls, content=None, content_type=None):
-        return cls(400, 'Bad Request', content, content_type)
-
-    @classmethod
-    def forbidden(cls):
-        return cls(403, 'Forbidden')
-
-    @classmethod
-    def not_found(cls):
-        return cls(404, 'Not Found')
-
-    @classmethod
-    def method_not_allowed(cls):
-        return cls(405, 'Method Not Allowed')
-
-    @classmethod
-    def conflict(cls, content=None, content_type=None):
-        return cls(409, 'Conflict', content, content_type)
-
-    @classmethod
-    def unsupported_media_type(cls):
-        return cls(415, 'Unsupported Media Type')
-
-    @classmethod
-    def internal_server_error(cls, content=None, content_type=None):
-        return cls(500, 'Internal Server Error', content, content_type)
-
-    @classmethod
-    def unavailable(cls):
-        return cls(503, 'Service Unavailable')
-
-    def __init__(self, status=200, reason='OK',
-                 content=None, content_type=None):
-        self.status = status
-        self.reason = reason
-        self.content = content
+    def __init__(self, content=None, content_type=None):
         self.content_type = content_type
+        self.content = content
         self.headers = []
 
     def __call__(self, start_response):
         if self.content is not None:
             self.header('Content-Type', self.content_type + '; charset=UTF-8')
-        start_response(str(self.status) + ' ' + self.reason, self.headers)
+        start_response(str(self.code) + ' ' + self.desc, self.headers)
         return [] if self.content is None else [self.content]
 
     def header(self, name, value):
@@ -149,3 +105,71 @@ class Response(object):
             morsel['expires'] = expires.strftime('%a, %d %b %Y %H:%M:%S GMT')
         self.header('Set-Cookie', morsel.OutputString())
         return self
+
+
+class OK(Response):
+
+    code = 200
+    desc = 'OK'
+
+
+class Redirect(Response, Exception):
+
+    code = 302
+    desc = 'Found'
+
+    def __init__(self, url):
+        super(Redirect).__init__()
+        self.url = url
+        self.header('Location', url)
+
+
+class Error(Response, Exception): pass
+
+
+class BadRequest(Error):
+
+    code = 400
+    desc = 'Bad Request'
+
+
+class Forbidden(Error):
+
+    code = 403
+    desc = 'Forbidden'
+
+
+class NotFound(Error):
+
+    code = 404
+    desc = 'Not Found'
+
+
+class MethodNotAllowed(Error):
+
+    code = 405
+    desc = 'Method Not Allowed'
+
+
+class Conflict(Error):
+
+    code = 409
+    desc = 'Conflict'
+
+
+class UnsupportedMediaType(Error):
+
+    code = 415
+    desc = 'Unsupported Media Type'
+
+
+class InternalServerError(Response, Exception):
+
+    code = 500
+    desc = 'Internal Server Error'
+
+
+class ServiceUnavailable(Error):
+
+    code = 503
+    desc = 'Service Unavailable'

@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
-from w3fu.http import Response
+from w3fu.http import OK, Redirect, BadRequest, NotFound, Conflict
 from w3fu.routing import Route
-from w3fu.resources import Form
+from w3fu.resources import Resource, Form, HTML
 from w3fu.args import StrArg
-from app.view import templates
 
-from app.resources import Resource
-from app.resources.middleware.context import user
-from app.resources.middleware.transform import xml
+from app.view import blocks
 from app.resources.home import Home
 from app.resources.index import Index
-
 from app.storage.auth import User, Session
 
 
@@ -39,30 +35,32 @@ class Login(Resource):
 
     route = Route('/login')
 
-    @xml('pages/login/html.xsl')
-    @user()
-    def get(self, ctx):
-        return Response.ok({})
+    html = HTML(blocks['pages/login'])
 
-    @xml('pages/login/html.xsl')
+    @html.GET
+    def get(self, ctx):
+        return OK({})
+
+    @html.POST
     def post(self, ctx):
         form = LoginForm(ctx.req)
         if form.errors:
-            return Response.ok({'form': form})
+            return BadRequest({'form': form})
         user = User.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
-            return Response.ok({'form': form, 'user-auth-error': {}})
+            raise BadRequest({'form': form, 'user-auth-error': {}})
         session = Session.new()
         User.push_session(user, session)
         ctx.state['session_id'] = session.id
-        return Response.redirect(Home.route.url(ctx.req))
+        raise Redirect(Home.route.url(ctx.req))
 
+    @html.DELETE
     def delete(self, ctx):
         session_id = ctx.state['session_id']
         if session_id is not None:
             User.pull_session(session_id)
         del ctx.state['session_id']
-        return Response.redirect(ctx.req.referer or Index.route.url(ctx.req))
+        raise Redirect(ctx.req.referer or Index.route.url(ctx.req))
 
 
 class ShortcutLogin(Resource):
@@ -70,41 +68,47 @@ class ShortcutLogin(Resource):
     route = Route('/login/{shortcut}',
                   shortcut=StrArg('shortcut', pattern='[\da-zA-Z_-]{22}'))
 
-    @xml('pages/shortcut-login/html.xsl')
-    def get(self, ctx):
-        user = User.find_shortcut(ctx.args['shortcut'])
-        if user is None:
-            return Response.not_found()
-        return Response.ok({})
+    html = HTML(blocks['pages/shortcut-login'])
 
-    @xml('pages/shortcut-login/html.xsl')
-    def post(self, ctx):
-        user = User.find_shortcut(ctx.args['shortcut'])
+    def __call__(self, ctx, shortcut):
+        user = User.find_shortcut(shortcut)
         if user is None:
-            return Response.not_found()
+            raise NotFound
+        super(ShortcutLogin, self).__call__(ctx, user=user)
+
+    @html.GET
+    def get(self, ctx, user):
+        return OK({})
+
+    @html.POST
+    def post(self, ctx, user):
         form = SetPasswordForm(ctx.req)
         if form.errors:
-            return Response.ok({'form': form})
+            raise BadRequest({'form': form})
         user.set_password(form.data['password'])
         User.update_password(user)
         session = Session.new()
         User.push_session(user, session)
         ctx.state['session_id'] = session.id
-        return Response.redirect(Home.route.url(ctx.req))
+        raise Redirect(Home.route.url(ctx.req))
 
 
 class Register(Resource):
 
     route = Route('/register')
 
-    _block = templates.block('pages/register')
+    html = HTML(blocks['pages/register'])
 
+    @html.GET
+    def get(self, ctx):
+        return OK({})
+
+    @html.POST
     def post(self, ctx):
         form = RegisterForm(ctx.req)
         if form.errors:
-            return self._bad_request({'form': form})
+            raise BadRequest({'form': form})
         user = User.new(form.data['email'])
         if not User.insert(user, True):
-            return self._conflict({'form': form, 'user_exists': True})
-        url = ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut)
-        return self._ok(redirect=url)
+            raise Conflict({'form': form, 'user_exists': True})
+        raise Redirect(ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut))

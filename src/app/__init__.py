@@ -1,4 +1,4 @@
-from w3fu.http import Context, Application
+from w3fu.http import Application
 
 from app.state import state
 from app.resources import router
@@ -6,4 +6,4 @@ from app.resources import router
 
 state.next = router
 
-application = Application(Context(), state)
+application = Application(state)

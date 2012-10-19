@@ -24,9 +24,9 @@ class State(object):
 
     def output(self, resp):
         for name, value in self._set.iteritems():
-            self._args[name].set(resp, value)
+            self._args[name].set(self._ctx, resp, value)
         for name in self._del:
-            self._args[name].delete(resp)
+            self._args[name].delete(self._ctx, resp)
 
 
 class StateHandler(object):

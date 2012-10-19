@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-
+from w3fu.http import OK
 from w3fu.routing import Route
-from w3fu.resources import Form
+from w3fu.resources import Resource, Form, HTML, JSON
 from w3fu.args import StrArg
 
-from app.view import templates
-from app.resources import Resource
+from app.view import blocks
 
 
 class LoginForm(Form):
@@ -21,8 +20,11 @@ class Test(Resource):
 
     route = Route('/test')
 
-    _block = templates.block('pages/test')
+    html = HTML(blocks['pages/test'])
+    json = JSON()
 
+    @html.GET
+    @json.GET
     def get(self, ctx):
         form = LoginForm(ctx.req)
-        return self._ok({'form': form})
+        return OK({'form': form})

@@ -1,95 +1,101 @@
 from urllib import urlencode
 
-from w3fu.http import Response
+import w3fu.http as http
 from w3fu.args import ArgError
 from w3fu.util import json_dump
 
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
 
-CONTENT_TYPES = {'html': 'text/html',
-                 'json': 'application/json'}
+
+class Resource(object):
+
+    def __call__(self, ctx, **kwargs):
+        for fmt in ctx.req.formats:
+            try:
+                renderer = getattr(self, fmt)
+            except (KeyError, AttributeError):
+                continue
+            return renderer(self, ctx, **kwargs)
+        raise http.UnsupportedMediaType
 
 
-class BaseResource(object):
+class Renderer(object):
 
-    _block = None
-    _formats = ['html', 'json']
+    def __init__(self):
+        self._handlers = {}
 
-    def __init__(self, ctx):
-        self._ctx = ctx
+    def __getattr__(self, method):
+        def decorator(f):
+            self._handlers[method] = f
+            return f
+        return decorator
 
-    def _content_type(self):
-        return CONTENT_TYPES.get(self._format)
-
-    def __call__(self, ctx):
-        fmt = ctx.req.fs.getfirst('format')
-        if fmt is None:
-            self._format = self._formats[0]
-        elif fmt in self._formats:
-            self._format = fmt
-        else:
-            return Response.unsupported_media_type()
-        method = ctx.req.method.lower()
+    def _handle(self, res, ctx, **kwargs):
+        method = ctx.req.method
         if method == 'POST':
             overloaded = ctx.req.fs.getfirst('method')
             if overloaded is not None and overloaded in OVERLOADABLE:
                 method = overloaded
-        handler = getattr(self, method, None)
-        if handler is None:
-            return Response.method_not_allowed()
-        return handler(ctx)
+        try:
+            handler = self._handlers[method]
+            return handler(res, ctx, **kwargs)
+        except KeyError:
+            raise http.MethodNotAllowed
 
-    def _render(self, data):
-        if data is None:
-            return ''
-        self._extra(data)
-        if self._format == 'html':
-            if self._block is None:
-                return str(data).encode('utf-8')
-            else:
-                return self._block.render(data).encode('utf-8')
-        elif self._format == 'json':
-            return json_dump(data)
 
-    def _forbidden(self):
-        return Response.forbidden()
+class HTML(Renderer):
 
-    def _not_found(self):
-        return Response.not_found()
+    def __init__(self, block=None, content_type='text/html'):
+        super(HTML, self).__init__()
+        self._block = block
+        self._content_type = content_type
 
-    def _conflict(self, data=None):
-        content = self._render(data)
-        content_type = self._content_type()
-        if self._format == 'html':
-            return Response.ok(content, content_type)
+    def __call__(self, res, ctx, **kwargs):
+        try:
+            resp = self._handle(res, ctx, **kwargs)
+            self._render(ctx, resp)
+            return resp
+        except http.Error as e:
+            self._render(ctx, e)
+            raise e
+
+    def _render(self, ctx, resp):
+        resp.content_type = self._content_type
+        if resp.content is None:
+            return
+        if self._block is None:
+            resp.content = str(resp.content).encode('utf-8')
         else:
-            return Response.conflict(content, content_type)
-
-    def _bad_request(self, data=None):
-        content = self._render(data)
-        content_type = self._content_type()
-        if self._format == 'html':
-            return Response.ok(content, content_type)
-        else:
-            return Response.bad_request(content, content_type)
-
-    def _ok(self, data=None, redirect=None):
-        if self._format == 'html' and redirect is not None:
-            return Response.redirect(redirect)
-        else:
-            return Response.ok(self._render(data), self._content_type())
-
-    def _extra(self, data):
-        pass
+            resp.content = self._block.render(resp.content).encode('utf-8')
 
 
-class Middleware(object):
+class JSON(Renderer):
 
-    def __call__(self, handler):
-        def f(res, ctx):
-            return self._handler(res, ctx, handler)
-        return f
+    def __init__(self, content_type='application/json', no_redirect=True):
+        super(JSON, self).__init__()
+        self._content_type = content_type
+        self._no_redirect = no_redirect
+
+    def __call__(self, res, ctx, **kwargs):
+        try:
+            resp = self._handle(res, ctx, **kwargs)
+            self._render(ctx, resp)
+            return resp
+        except http.Error as e:
+            self._render(ctx, e)
+            raise e
+        except http.Redirect as e:
+            if self._no_redirect:
+                resp = http.OK({'url': e.url})
+                self._render(ctx, resp)
+                return resp
+            raise e
+
+    def _render(self, ctx, resp):
+        resp.content_type = self._content_type
+        if resp.content is not None:
+            resp.content = json_dump(resp.content)
 
 
 class FormMeta(type):

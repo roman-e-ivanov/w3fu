@@ -18,13 +18,13 @@ class SessionState(object):
             return None
         return session_id
 
-    def set(self, resp, value):
+    def set(self, ctx, resp, value):
         packed = {}
         self._cookie.pack(value, packed)
         for name, cookie in packed.iteritems():
             resp.set_cookie(name, cookie, datetime.utcnow() + self._ttl)
 
-    def delete(self, resp):
+    def delete(self, ctx, resp):
         for field in self._cookie.fields():
             resp.set_cookie(field, 0, datetime.utcfromtimestamp(0))
 
