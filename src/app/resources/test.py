@@ -25,6 +25,6 @@ class Test(Resource):
 
     @html.GET
     @json.GET
-    def get(self, ctx):
-        form = LoginForm(ctx.req)
-        return OK({'form': form})
+    def get(self, req):
+        form = LoginForm(req)
+        return OK({})

@@ -10,12 +10,12 @@ class Router(object):
     def __init__(self, resources):
         self._resources = resources
 
-    def __call__(self, ctx):
+    def __call__(self, req):
         for res in self._resources:
-            args = res.route.match(ctx.req.path)
+            args = res.route.match(req.path)
             if args is None:
                 continue
-            return res(ctx, **args)
+            return res(req, **args)
         raise NotFound
 
 

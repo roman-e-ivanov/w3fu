@@ -10,13 +10,13 @@ OVERLOADABLE = frozenset(['PUT', 'DELETE'])
 
 class Resource(object):
 
-    def __call__(self, ctx, **kwargs):
-        for fmt in ctx.req.formats:
+    def __call__(self, req, **kwargs):
+        for fmt in req.formats:
             try:
                 renderer = getattr(self, fmt)
             except (KeyError, AttributeError):
                 continue
-            return renderer(self, ctx, **kwargs)
+            return renderer(self, req, **kwargs)
         raise http.UnsupportedMediaType
 
 
@@ -31,15 +31,15 @@ class Renderer(object):
             return f
         return decorator
 
-    def _handle(self, res, ctx, **kwargs):
-        method = ctx.req.method
+    def _handle(self, res, req, **kwargs):
+        method = req.method
         if method == 'POST':
-            overloaded = ctx.req.fs.getfirst('method')
+            overloaded = req.fs.getfirst('method')
             if overloaded is not None and overloaded in OVERLOADABLE:
                 method = overloaded
         try:
             handler = self._handlers[method]
-            return handler(res, ctx, **kwargs)
+            return handler(res, req, **kwargs)
         except KeyError:
             raise http.MethodNotAllowed
 
@@ -51,23 +51,24 @@ class HTML(Renderer):
         self._block = block
         self._content_type = content_type
 
-    def __call__(self, res, ctx, **kwargs):
+    def __call__(self, res, req, **kwargs):
         try:
-            resp = self._handle(res, ctx, **kwargs)
-            self._render(ctx, resp)
+            resp = self._handle(res, req, **kwargs)
+            self._render(req, resp)
             return resp
         except http.Error as e:
-            self._render(ctx, e)
+            self._render(req, e)
             raise e
 
-    def _render(self, ctx, resp):
+    def _render(self, req, resp):
         resp.content_type = self._content_type
         if resp.content is None:
             return
         if self._block is None:
             resp.content = str(resp.content).encode('utf-8')
         else:
-            resp.content = self._block.render(resp.content).encode('utf-8')
+            src = dict(req=req, **resp.content)
+            resp.content = self._block.render(src).encode('utf-8')
 
 
 class JSON(Renderer):
@@ -77,22 +78,22 @@ class JSON(Renderer):
         self._content_type = content_type
         self._no_redirect = no_redirect
 
-    def __call__(self, res, ctx, **kwargs):
+    def __call__(self, res, req, **kwargs):
         try:
-            resp = self._handle(res, ctx, **kwargs)
-            self._render(ctx, resp)
+            resp = self._handle(res, req, **kwargs)
+            self._render(req, resp)
             return resp
         except http.Error as e:
-            self._render(ctx, e)
+            self._render(req, e)
             raise e
         except http.Redirect as e:
             if self._no_redirect:
                 resp = http.OK({'url': e.url})
-                self._render(ctx, resp)
+                self._render(req, resp)
                 return resp
             raise e
 
-    def _render(self, ctx, resp):
+    def _render(self, req, resp):
         resp.content_type = self._content_type
         if resp.content is not None:
             resp.content = json_dump(resp.content)
@@ -112,19 +113,17 @@ class Form(object):
 
     __metaclass__ = FormMeta
 
-    @classmethod
-    def attribute(cls, name, attr):
-        if hasattr(attr, 'unpack'):
-            cls.args[name] = attr
-
     def __init__(self, req):
         self.data = {}
         self.errors = {}
         self.src = self._decode(req.fs)
         self._unpack(self.src)
 
-    def dump(self):
-        return {'source': self.src, 'errors': self.errors}
+    def __getitem__(self, name):
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            raise KeyError
 
     def query(self, **unpacked):
         packed = dict(self.src)

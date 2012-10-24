@@ -12,5 +12,5 @@ class Index(Resource):
     html = HTML(blocks['pages/index'])
 
     @html.GET
-    def get(self, ctx):
+    def get(self, req):
         return OK({})

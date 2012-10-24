@@ -8,7 +8,7 @@ from app.view import blocks
 from app.resources.home import Home
 from app.resources.index import Index
 from app.storage.auth import User, Session
-
+from app.state import SessionIdState
 
 class RegisterForm(Form):
 
@@ -38,29 +38,30 @@ class Login(Resource):
     html = HTML(blocks['pages/login'])
 
     @html.GET
-    def get(self, ctx):
+    def get(self, req):
         return OK({})
 
     @html.POST
-    def post(self, ctx):
-        form = LoginForm(ctx.req)
+    def post(self, req):
+        form = LoginForm(req)
         if form.errors:
             return BadRequest({'form': form})
         user = User.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
-            raise BadRequest({'form': form, 'user-auth-error': {}})
+            raise BadRequest({'user_auth_error': True})
         session = Session.new()
         User.push_session(user, session)
-        ctx.state['session_id'] = session.id
-        raise Redirect(Home.route.url(ctx.req))
+        resp = Redirect(Home.route.url(req))
+        SessionIdState.set(resp, session.id)
+        raise resp
 
     @html.DELETE
-    def delete(self, ctx):
-        session_id = ctx.state['session_id']
-        if session_id is not None:
-            User.pull_session(session_id)
-        del ctx.state['session_id']
-        raise Redirect(ctx.req.referer or Index.route.url(ctx.req))
+    def delete(self, req):
+        if req.session_id is not None:
+            User.pull_session(req.session_id)
+        resp = Redirect(req.referer or Index.route.url(req))
+        SessionIdState.delete(resp)
+        raise resp
 
 
 class ShortcutLogin(Resource):
@@ -70,27 +71,28 @@ class ShortcutLogin(Resource):
 
     html = HTML(blocks['pages/shortcut-login'])
 
-    def __call__(self, ctx, shortcut):
+    def __call__(self, req, shortcut):
         user = User.find_shortcut(shortcut)
         if user is None:
             raise NotFound
-        super(ShortcutLogin, self).__call__(ctx, user=user)
+        super(ShortcutLogin, self).__call__(req, user=user)
 
     @html.GET
-    def get(self, ctx, user):
+    def get(self, req, user):
         return OK({})
 
     @html.POST
-    def post(self, ctx, user):
-        form = SetPasswordForm(ctx.req)
+    def post(self, req, user):
+        form = SetPasswordForm(req)
         if form.errors:
-            raise BadRequest({'form': form})
+            raise BadRequest({})
         user.set_password(form.data['password'])
         User.update_password(user)
         session = Session.new()
         User.push_session(user, session)
-        ctx.state['session_id'] = session.id
-        raise Redirect(Home.route.url(ctx.req))
+        resp = Redirect(Home.route.url(req))
+        SessionIdState.set(resp, session.id)
+        raise resp
 
 
 class Register(Resource):
@@ -100,15 +102,15 @@ class Register(Resource):
     html = HTML(blocks['pages/register'])
 
     @html.GET
-    def get(self, ctx):
+    def get(self, req):
         return OK({})
 
     @html.POST
-    def post(self, ctx):
-        form = RegisterForm(ctx.req)
+    def post(self, req):
+        form = RegisterForm(req)
         if form.errors:
-            raise BadRequest({'form': form})
+            raise BadRequest({})
         user = User.new(form.data['email'])
         if not User.insert(user, True):
-            raise Conflict({'form': form, 'user_exists': True})
-        raise Redirect(ShortcutLogin.route.url(ctx.req, shortcut=user.shortcut))
+            raise Conflict({'user_exists': True})
+        raise Redirect(ShortcutLogin.route.url(req, shortcut=user.shortcut))

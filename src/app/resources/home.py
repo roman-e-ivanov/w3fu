@@ -12,5 +12,5 @@ class Home(Resource):
     html = HTML(blocks['pages/home'])
 
     @html.GET
-    def get(self, ctx):
+    def get(self, req):
         return OK({})

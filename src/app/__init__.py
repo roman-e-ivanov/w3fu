@@ -1,9 +1,13 @@
-from w3fu.http import Application
+from w3fu.http import BaseRequest, Application
 
-from app.state import state
 from app.resources import router
+from app.state import UserState, SessionIdState
 
 
-state.next = router
+class Request(BaseRequest):
 
-application = Application(state)
+    user = UserState()
+    session_id = SessionIdState()
+
+
+application = Application(router, Request)

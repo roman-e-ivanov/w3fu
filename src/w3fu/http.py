@@ -3,43 +3,11 @@ from Cookie import SimpleCookie, CookieError, Morsel
 from cgi import FieldStorage
 
 
-class Context(dict):
-
-    def __getattr__(self, name):
-        return self[name]
-
-    def __setattr__(self, name, value):
-        self[name] = value
-
-
-class Application(object):
-
-    def __init__(self, handler):
-        self._handler = handler
-
-    def __call__(self, environ, start_response):
-        context = Context(req=Request(environ))
-        try:
-            resp = self._handler(context)
-        except Error as e:
-            resp = e
-        return resp(start_response)
-
-    def debug(self, environ):
-        def start_response(status, headers):
-            print(status)
-            for name, value in headers:
-                print('{0}: {1}'.format(name, value))
-        for data in self(environ, start_response):
-            print
-            print(data)
-
-
 FORMAT_BY_TYPE = {'text/html': 'html',
                   'application/json': 'json'}
 
 
-class Request(object):
+class BaseRequest(object):
 
     _allowed_formats = frozenset(FORMAT_BY_TYPE.values())
     _path_re = re.compile('^(.+)\.(\w+)?$')
@@ -54,6 +22,12 @@ class Request(object):
         self.host = self._env.get('HTTP_HOST', '')
         self.referer = self._env.get('HTTP_REFERER')
         self.method = self._env.get('REQUEST_METHOD', '')
+
+    def __getitem__(self, name):
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            raise KeyError
 
     def _parse_path(self):
         path = self._env.get('PATH_INFO', '')
@@ -173,3 +147,27 @@ class ServiceUnavailable(Error):
 
     code = 503
     desc = 'Service Unavailable'
+
+
+class Application(object):
+
+    def __init__(self, handler, req_cls=BaseRequest):
+        self._handler = handler
+        self._req_cls = req_cls
+
+    def __call__(self, environ, start_response):
+        try:
+            req = self._req_cls(environ)
+            resp = self._handler(req)
+        except Error as e:
+            resp = e
+        return resp(start_response)
+
+    def debug(self, environ):
+        def start_response(status, headers):
+            print(status)
+            for name, value in headers:
+                print('{0}: {1}'.format(name, value))
+        for data in self(environ, start_response):
+            print
+            print(data)
