@@ -45,7 +45,7 @@ class Login(Resource):
     def post(self, req):
         form = LoginForm(req)
         if form.errors:
-            return BadRequest({'form': form})
+            return BadRequest({})
         user = User.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
             raise BadRequest({'user_auth_error': True})

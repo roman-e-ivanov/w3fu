@@ -68,7 +68,7 @@ class HTML(Renderer):
             resp.content = str(resp.content).encode('utf-8')
         else:
             src = dict(req=req, **resp.content)
-            resp.content = self._block.render(src).encode('utf-8')
+            resp.content = self._block.render('html', src).encode('utf-8')
 
 
 class JSON(Renderer):
