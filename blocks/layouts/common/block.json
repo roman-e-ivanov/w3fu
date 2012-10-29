@@ -6,12 +6,14 @@
 		"devmenu": "common/devmenu"
 	},
 	"body": {
-		"fill": {"file": "common.html"},
-		"args": {
-			"header": {"call": "head"},
-			"footer": {"call": "footer"},
-			"top": {"call": "top"},
-			"devmenu": {"call": "devmenu"}
+		"all": {
+			"fill": {"file": "common.html"},
+			"args": {
+				"header": {"call": "head"},
+				"footer": {"call": "footer"},
+				"top": {"call": "top"},
+				"devmenu": {"call": "devmenu"}
+			}
 		}
 	}
 }
