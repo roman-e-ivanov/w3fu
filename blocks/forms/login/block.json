@@ -1,20 +1,28 @@
 {
 	"include": {
 		"edit-login" : "forms/components/edit",
+		"edit-password" : "forms/components/edit-password",
+		"edit-password1" : "forms/components/edit-password",
 		"submit" : "forms/components/button"
 	},
 	"body": {
 		"all": {
-			"fill": {"file": "form-register.html"},
+			"fill": {"file": "form-login.html"},
 			"args" : {
 				"edit-login" : {
 					"call": "edit-login",
 					"args":{
-						"type" : "text",
+						"type"  :"text",
 						"class" : "b-edit",
 						"name" : "email",
 						"maxlength": "254"
 					}
+				},
+				"edit-password" : {
+					"call": "edit-password"
+				},
+				"edit-password1" : {
+					"call": "edit-password1"
 				},
 				"submit" :{
 					"call" : "submit",

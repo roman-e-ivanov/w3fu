@@ -1,5 +1,7 @@
 {
 	"body": {
-		"fill": {"file": "button.html"}
+		"all": {
+			"fill": {"file": "button.html"}
+		}
 	}
 }

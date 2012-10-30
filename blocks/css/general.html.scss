@@ -1,0 +1,260 @@
+    a {
+	cursor:pointer;
+	}
+
+	a:hover {
+	color:blue;
+	}
+    
+    .container_16 {
+     	position: relative;
+		background: #fff url("/s/img/16_col.gif") repeat-y;
+	}
+
+    .popup-user-login {
+    	position:absolute;
+  		top:0px; right:10px;
+  		text-align:right;
+    }
+    .popup1 {
+    	position:absolute;
+  		top:50px; right:10px;
+  		text-align:right;
+    }
+	.popup2 {
+    	position:absolute;
+  		top:300px; right:10px;
+  		text-align:right;
+    }
+    .dropdown-content {
+    	display: none;
+    	background: #ffffff;
+    	text-align:left;
+    }
+    
+    .dropdown-button {
+    	cursor: pointer;
+    }
+    	
+    .dropdown-button:hover {text-decoration:none;}
+    
+    div.datepicker-container {
+    	font-size: 10pt
+    }
+    table.datepicker-calendar {
+    	border-collapse: collapse;   			
+    }
+    
+    table.datepicker-calendar td {
+    	border:1px solid #ffffff;
+		padding: 2px 6px;
+		cursor: pointer;
+    }
+    
+    table.datepicker-calendar th {
+    	border:1px solid #ffffff;
+    	background-color:#9999cc;
+    	font-weight:bold;
+		padding: 2px 6px;
+		cursor: default;
+    }
+	.datepicker-next, .datepicker-prev {cursor:pointer;}
+    
+    input.datepicker-day, input.datepicker-month, input.datepicker-year {border:1px solid #444444;}
+
+	td.datepicker-workingday {background-color:#99cc99;}
+	td.datepicker-workingday:hover {background-color:#ccffcc;}
+	
+	td.datepicker-today {background-color:#ffff99;}
+	td.datepicker-today:hover {background-color:#ccffff;}
+	
+	td.datepicker-holiday {background-color:#cc9999;}
+	td.datepicker-holiday:hover {background-color:#ffcccc;}
+	
+	td.datepicker-anotherday {background-color:#cccccc; color:#888888;}
+	td.datepicker-anotherday:hover {background-color:#eeeeee; color:#444444;}
+	
+	
+	.exit-form {
+		display:inline;
+		/*border:1px solid black;*/
+	}
+
+	.exit-button {
+		border:1px solid black;
+		/*border:none;*/
+	}
+
+/* fast login dropdown form */	
+	
+	div.fast-login {
+    	position:absolute;
+  		top:0px; right:10px;
+  		text-align:right;		
+    }
+    
+    
+    div.fast-provider {
+   		background:#fff;
+   		padding:20px;
+    }
+    
+	div.fast-login-container {
+		padding:10px 20px 20px 20px;
+	}
+	
+/* common forms elements */	
+	
+	input.def, input.err, input.val {		
+		font-size: 10pt;
+		padding:8px 40px 8px 8px;
+		font-weight:bold;
+		border:1px solid #909090;
+		width:306px;
+		background:#fff;
+	}
+	
+	input.def {
+		background: #fff;
+	}
+	
+	input.err {
+		background:#fff url("/s/img/icon_error.png") right no-repeat;
+	}
+	
+	input.val {
+		background:#fff url("/s/img/icon_success.png") right no-repeat;
+	}
+	
+	input.button-enter-login, input.button-enter-reg, input.button-enter-create {
+		font-size: 12pt;
+		padding-top:5px;
+		padding-bottom:5px;
+		margin-top:20px;		
+		display:block;			
+	}
+	input.button-enter-login {
+		width:80px;
+		margin-left:280px;
+	}
+	
+	input.button-enter-reg {
+		width:180px;
+		margin-left:180px;
+	}
+	input.button-enter-create {
+		padding-left:10px;
+		padding-right:10px;		
+	}
+	
+	
+	
+	form div.bottom-label {
+		margin:2px 0 0 0;
+		font-size: 8pt;
+		/*text-align:right;*/
+		/*font-style:italic;*/
+		color:#777;
+		/*border: 1px solid green;*/
+		
+	}	
+
+	form div.title {
+		font-size: 12pt;
+		/*font-weight: bold;*/
+		display:inline;
+		/*border: 1px solid black;*/
+	}
+	
+	form div.error-auth {
+		padding:20px 0;
+		width:360px;
+		color:red;
+		text-align:center;
+	}
+		
+	
+/*forms*/
+	
+	form.login {
+		width:580px;
+	}
+	
+	form.fast-login {
+		width:380px;
+	}
+	
+	form.region {
+		/*border:1px solid black;*/
+	}
+	
+/* timetable table */
+	
+	table.timetable {
+    	border-collapse: collapse;
+    	font-size:10pt;
+    	display:inline;    	  			
+    }
+	
+	table.timetable td {
+    	border:1px solid #ffffff;
+		padding: 2px 6px;
+    }
+    
+    table.timetable th {
+    	border:1px solid #ffffff;
+    	background-color:#9999cc;
+    	font-weight:bold;
+		padding: 2px 6px;		
+    }
+    
+    td.timetable-cell-free {background-color:#99cc99; cursor: pointer}
+	td.timetable-cell-free:hover {background-color:#ccffcc;}
+	
+	td.timetable-cell-busy {background-color:#cc9999;}
+	/*td.timetable-cell-busy:hover {background-color:#ffcccc;}*/
+	
+	td.timetable-cell-off {background-color:#cccccc; color:#888888;}
+	/*td.timetable-cell-off:hover {background-color:#eeeeee; color:#444444;}*/
+	
+	
+    
+    .f2popup, .f3popup, #f4popup {
+    	position:absolute;   
+    	display:none;
+    }
+    
+    #f4popup {
+    	background: #fff;
+    
+    }
+/*region list*/
+
+
+.region-list {
+	
+	padding:1px;
+	/*position:absolute;*/
+	left:0; top:0;
+	display:block;
+}
+
+.region-line {
+	
+	margin:5px;	
+	font-size: 10pt;
+	
+}
+
+.region-line a {
+	display:block; 
+	background:#fff;
+	padding:5px;
+ 
+}
+
+.region-line a:hover {
+	/*background:#ccccff;*/
+	color:#000;
+	
+}

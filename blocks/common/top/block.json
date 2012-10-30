@@ -3,9 +3,11 @@
 		"user-control": "user/user-control"
 	},
 	"body": {
-		"fill": {"file": "top.html"},
-		"args": {
-			"user-control": {"call": "user-control"}
+		"all": {
+			"fill": {"file": "top.html"},
+			"args": {
+				"user-control": {"call": "user-control"}
+			}
 		}
 	}
 }

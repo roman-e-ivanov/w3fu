@@ -1,13 +1,15 @@
 {
 	"body": {
-		"fill": {"file": "devmenu.html"},
-		"args": {
-			"links": {
-				"join" : {
-					"map": {
-						"fill": "<li class=\"b-development-menu__line\"><a class=\"b-development-menu__link\" href=\"{_}\">{_}</a></li>"
-					},
-					"list": ["/", "/login", "/register", "/home","/home/providers","/home/providers/list","/providers","/debug"]
+		"all": {
+			"fill": {"file": "devmenu.html"},
+			"args": {
+				"links": {
+					"join" : {
+						"map": {
+							"fill": "<li class=\"b-development-menu__line\"><a class=\"b-development-menu__link\" href=\"{_}\">{_}</a></li>"
+						},
+						"list": ["/", "/login", "/register", "/home","/home/providers","/home/providers/list","/providers","/debug"]
+					}
 				}
 			}
 		}

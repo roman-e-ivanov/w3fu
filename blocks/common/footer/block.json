@@ -1,5 +1,7 @@
 {
 	"body": {
-		"fill": {"file": "footer.html"}
+		"all": {
+			"fill": {"file": "footer.html"}
+		}
 	}
 }

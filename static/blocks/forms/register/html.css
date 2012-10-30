@@ -1,8 +1,0 @@
-@import url("/s/blocks/forms/components/edit/html.css");
-@import url("/s/blocks/forms/components/button/html.css");
-@import url("/s/blocks/i-link/html.css");
-
-.b-form-register {
-	width:580px;
-	margin:50px 0;
-}

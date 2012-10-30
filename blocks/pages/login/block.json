@@ -1,21 +1,21 @@
 {
 	"include": {
 		"layout": "layouts/common",
-		"form": "forms/register"
+		"form": "forms/login"
 	},
 	"body": {
 		"all": {
 			"call": "layout",
 			"args": {
-				"title": "Регистрация нового пользователя", 
+				"title": "Вход в систему", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
 				"style": "css/html.css",
-				"script": "pages/register/html.js",
+				"script": "pages/login/html.js",
 				"content": {
-					"fill": {"file": "register.html"},
+					"fill": {"file": "login.html"},
 					"args": {
-						"form-register" : {"call": "form"}
+						"form-login" : {"call": "form"}	
 					}
 				}
 			}

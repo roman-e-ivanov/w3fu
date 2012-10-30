@@ -1,5 +1,7 @@
 {
 	"body": {
-		"fill": {"file": "header.html"}
+		"all": {
+			"fill": {"file": "header.html"}
+		}
 	}
 }

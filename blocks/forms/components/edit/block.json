@@ -1,9 +1,11 @@
 {
 	"body": {
-		"fill": {"file": "edit.html"},
-		"args" : {
-			"value" : {
-				"data": ["form", "source", {"data": ["name"]}]
+		"all": {
+			"fill": {"file": "edit.html"},
+			"args" : {
+				"value" : {
+					"data": ["form", "source", {"data": ["name"]}]
+				}
 			}
 		}
 	}

@@ -3,14 +3,16 @@
 		"layout": "layouts/common"
 	},
 	"body": {
-		"call": "layout",
-		"args": {
-			"title": "Домашняя страница", 
-			"keywords": "Ключевые слова",
-			"description": "Описание",
-			"style": "css/html.css",
-			"script": "html.js",
-			"content": {"fill": {"file": "home.html"}}
+		"all": {
+			"call": "layout",
+			"args": {
+				"title": "Домашняя страница", 
+				"keywords": "Ключевые слова",
+				"description": "Описание",
+				"style": "css/html.css",
+				"script": "html.js",
+				"content": {"fill": {"file": "home.html"}}
+			}
 		}
 	}
 }

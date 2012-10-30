@@ -1,7 +1,9 @@
 {
 	"body": {
-		"if": {"data": ["user"]},
-		"true": {"fill": {"file": "user-login.html"}},
-		"false": {"fill": {"file": "user-not-login.html"}}
+		"all": {
+			"if": {"data": ["user"]},
+			"true": {"fill": {"file": "user-login.html"}},
+			"false": {"fill": {"file": "user-not-login.html"}}
+		}
 	}
 }
