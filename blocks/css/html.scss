@@ -3,18 +3,18 @@
 @import "reset.html";
 @import "debugging.html";
 @import "960.html";
-@import "blocks/common/devmenu/html";
-@import "blocks/common/footer/html";
-@import "blocks/common/top/html";
+@import "common/devmenu/html";
+@import "common/footer/html";
+@import "common/top/html";
 @import "general.html";
 
 
-@import "blocks/forms/components/button/html";
-@import "blocks/forms/components/edit/html";
-@import "blocks/forms/components/edit-password/html";
+@import "forms/components/button/html";
+@import "forms/components/edit/html";
+@import "forms/components/edit-password/html";
 
 
-@import "blocks/pages/home/html";
-@import "blocks/pages/index/html";
-@import "blocks/pages/register/html";
-@import "blocks/pages/login/html";
+@import "pages/home/html";
+@import "pages/index/html";
+@import "pages/register/html";
+@import "pages/login/html";
