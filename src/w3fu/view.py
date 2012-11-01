@@ -1,8 +1,12 @@
 import sys
 import os.path
+import logging
+import scss
 from json import load
 from codecs import open
-import scss
+
+
+logging.getLogger('scss').addHandler(logging.StreamHandler())
 
 
 class Blocks(object):
