@@ -1,12 +1,12 @@
 @option compress: no;
 
-@import "reset.html";
-@import "debugging.html";
-@import "960.html";
+@import "css/reset.html";
+@import "css/debugging.html";
+@import "layouts/common/960.html";
 @import "common/devmenu/html";
 @import "common/footer/html";
 @import "common/top/html";
-@import "general.html";
+@import "css/general.html";
 
 
 @import "forms/components/button/html";

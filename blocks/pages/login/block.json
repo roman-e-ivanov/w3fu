@@ -1,7 +1,7 @@
 {
 	"include_js":  ["forms/login"],
 	"include": {
-		"layout": "layouts/common",
+		"layout": "layouts/960gs",
 		"form": "forms/login"
 	},
 	"body": {
@@ -12,7 +12,7 @@
 				"keywords": "Ключевые слова",
 				"description": "Описание",
 				"style": "css/html.css",
-				"script": "pages/login/html.js",
+				"script": "js/html.js",
 				"content": {
 					"fill": {"file": "login.html"},
 					"args": {
