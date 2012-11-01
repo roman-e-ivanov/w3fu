@@ -2,18 +2,23 @@ import sys
 import os.path
 import logging
 import scss
-from json import load
+import json
+import shutil
 from codecs import open
-
 
 logging.getLogger('scss').addHandler(logging.StreamHandler())
 
 
 class Blocks(object):
 
-    def __init__(self, blocks_dir):
-        self.blocks_dir = blocks_dir
+    def __init__(self, config):
+        self.blocks_dir = config.blocks_dir
+        self.static_dir = config.static_dir
+        self._media_extensions = config.media_extensions
+        self._static_formats = config.static_formats
         self._blocks = {}
+        self._css_root_block = self[config.css_root_block]
+        self._js_root_block = self[config.js_root_block]
 
     def __getitem__(self, rel_block_dir):
         try:
@@ -22,6 +27,31 @@ class Blocks(object):
             block = Block(self, rel_block_dir)
             self._blocks[rel_block_dir] = block
             return block
+
+    def make_static(self):
+        #shutil.rmtree(self.static_dir, ignore_errors=True)
+        self._make_media()
+        for fmt in self._static_formats:
+            self._css_root_block.make_css(fmt)
+            self._js_root_block.make_js(fmt)
+
+    def _make_media(self):
+        for src_dir, _, filenames in os.walk(self.blocks_dir):
+            media = []
+            for filename in filenames:
+                ext = os.path.splitext(filename)[1]
+                if ext in self._media_extensions:
+                    media.append(filename)
+            if not media:
+                continue
+            rel_dst_dir = os.path.relpath(src_dir, self.blocks_dir)
+            dst_dir = os.path.join(self.static_dir, rel_dst_dir)
+            if not os.path.exists(dst_dir):
+                os.makedirs(dst_dir)
+            for filename in media:
+                src_path = os.path.join(src_dir, filename)
+                dst_path = os.path.join(dst_dir, filename)
+                shutil.copyfile(src_path, dst_path)
 
 
 class Operand(object):
@@ -193,8 +223,8 @@ class Block(object):
             return ''
         return body.render(fmt, ctx)
 
-    def make_css(self, fmt, static_dir):
-        css_dir = os.path.join(static_dir, self._rel_block_dir)
+    def make_css(self, fmt):
+        css_dir = os.path.join(self._blocks.static_dir, self._rel_block_dir)
         css_path = os.path.join(css_dir, fmt + '.css')
         scss_path = os.path.join(self.block_dir, fmt + '.scss')
         scss.LOAD_PATHS = self._blocks.blocks_dir
@@ -207,7 +237,7 @@ class Block(object):
         with open(css_path, 'w') as f:
             f.write(css)
 
-    def make_js(self, fmt, static_dir):
+    def make_js(self, fmt):
         included = set()
         def includer(writer, current):
             if current in included:
@@ -216,7 +246,7 @@ class Block(object):
             for block_dir in current.include_js:
                 includer(writer, self._blocks[block_dir])
             writer.write(current.js(fmt))
-        js_dir = os.path.join(static_dir, self._rel_block_dir)
+        js_dir = os.path.join(self._blocks.static_dir, self._rel_block_dir)
         js_path = os.path.join(js_dir, fmt + '.js')
         if not os.path.exists(js_dir):
             os.makedirs(js_dir)
@@ -240,7 +270,7 @@ class Block(object):
         path = os.path.join(self.block_dir, 'block.json')
         try:
             with open(path, 'r') as f:
-                self._src = load(f)
+                self._src = json.load(f)
         except IOError:
             print >> sys.stderr, "Error loading " + self.block_dir
             self._src = {}

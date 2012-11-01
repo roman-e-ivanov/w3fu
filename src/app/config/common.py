@@ -5,11 +5,13 @@ blocks_dir = ''
 static_dir = ''
 js_root_block = 'js'
 css_root_block = 'css'
+static_formats = ['html']
+media_extensions = frozenset(['.png', '.jpg', '.gif'])
 
 cli_http_host = 'localhost'
 cli_request_method = 'GET'
-cli_path_info = '/TyvweMRIKx5GAAAA'
-cli_query_string = 'no-xslt=1&login=test33&password=12345'
+cli_path_info = '/'
+cli_query_string = ''
 cli_http_cookie = ''
 
 db_uri = 'mongodb://localhost'
