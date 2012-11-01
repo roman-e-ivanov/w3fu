@@ -1,4 +1,9 @@
 {
+	"include_js":  [
+	                "forms/components/edit",
+	                "forms/components/button",
+	                "forms/components/edit-password"
+	 ],
 	"include": {
 		"edit-login" : "forms/components/edit",
 		"edit-password" : "forms/components/edit-password",

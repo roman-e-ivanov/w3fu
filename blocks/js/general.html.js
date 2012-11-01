@@ -18,13 +18,6 @@
 	$('.f2').popUp('.container_16','class', 20, 20);
 	$('.f3').popUp('.container_16','class', 20, 20);
 	
-/*	
- *  ХЗ ,что такое
- 	$("div.fast-provider").find("span.dropdown-button").toggleClass('nodisplay');
-	$("div.fast-provider").find("span.dropdown-button").toggleClass('display');
-	$("div.fast-provider").find("a").toggleClass('nodisplay');
-	$("div.fast-provider").find("a").toggleClass('display');
-/*	
 	/*region select form*/
 	$('#f4').popUp('.container_16','id', 20, 20);
 	$('#f4').json();
@@ -42,10 +35,3 @@
 */
 		  	
 });
-//----------------------------------------------------------------------------
-function onLoad() {
-	
-
-	
-}
-//----------------------------------------------------------------------------
