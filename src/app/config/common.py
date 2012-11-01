@@ -1,8 +1,10 @@
 from datetime import timedelta
 
 
-xslt_ext_prefix = 'http://w3fu/'
-xsl_path = 'd:/workspace/w3fu/xsl'
+blocks_dir = ''
+static_dir = ''
+js_root_block = 'js'
+css_root_block = 'css'
 
 cli_http_host = 'localhost'
 cli_request_method = 'GET'

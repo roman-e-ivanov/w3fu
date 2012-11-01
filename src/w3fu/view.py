@@ -2,20 +2,21 @@ import sys
 import os.path
 from json import load
 from codecs import open
+import scss
 
 
 class Blocks(object):
 
-    def __init__(self, root_dir):
-        self._root_dir = root_dir
+    def __init__(self, blocks_dir):
+        self.blocks_dir = blocks_dir
         self._blocks = {}
 
-    def __getitem__(self, block_dir):
+    def __getitem__(self, rel_block_dir):
         try:
-            return self._blocks[block_dir]
+            return self._blocks[rel_block_dir]
         except KeyError:
-            block = Block(self, os.path.join(self._root_dir, block_dir))
-            self._blocks[block_dir] = block
+            block = Block(self, rel_block_dir)
+            self._blocks[rel_block_dir] = block
             return block
 
 
@@ -141,10 +142,9 @@ class File(Function):
         self._load()
 
     def _load(self):
-        path = os.path.join(self._block.work_dir, self._data.render(None, {}))
-        f = open(path, 'r', 'utf-8')
-        self._content = f.read()
-        f.close()
+        path = os.path.join(self._block.block_dir, self._data.render(None, {}))
+        with open(path, 'r', 'utf-8') as f:
+            self._content = f.read()
 
     def render(self, fmt, ctx):
         return self._content
@@ -156,9 +156,12 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, blocks, work_dir):
-        self.work_dir = work_dir
+    def __init__(self, blocks, rel_block_dir):
+        self._blocks = blocks
+        self._rel_block_dir = rel_block_dir
+        self.block_dir = os.path.join(blocks.blocks_dir, rel_block_dir)
         self._load()
+        self.include_js = self._src.get('include_js', [])
         include = self._src.get('include', {})
         define = self._src.get('define', {})
         self.subs = dict([(k, blocks[v])
@@ -186,12 +189,54 @@ class Block(object):
             return ''
         return body.render(fmt, ctx)
 
+    def make_css(self, fmt, static_dir):
+        css_dir = os.path.join(static_dir, self._rel_block_dir)
+        css_path = os.path.join(css_dir, fmt + '.css')
+        scss_path = os.path.join(self.block_dir, fmt + '.scss')
+        scss.LOAD_PATHS = self._blocks.blocks_dir
+        with open(scss_path, 'r') as f:
+            scss_string = f.read()
+        compiler = scss.Scss()
+        css = compiler.compile(scss_string)
+        if not os.path.exists(css_dir):
+            os.makedirs(css_dir)
+        with open(css_path, 'w') as f:
+            f.write(css)
+
+    def make_js(self, fmt, static_dir):
+        included = set()
+        def includer(writer, current):
+            if current in included:
+                return
+            included.add(current)
+            for block_dir in current.include_js:
+                includer(writer, self._blocks[block_dir])
+            writer.write(current.js(fmt))
+        js_dir = os.path.join(static_dir, self._rel_block_dir)
+        js_path = os.path.join(js_dir, fmt + '.js')
+        if not os.path.exists(js_dir):
+            os.makedirs(js_dir)
+        with open(js_path, 'w') as f:
+            includer(f, self)
+
+    def js(self, fmt):
+        scripts = ''
+        for name in ['common', fmt]:
+            js_path = os.path.join(self.block_dir, name + '.js')
+            try:
+                with open(js_path, 'r') as f:
+                    script = f.read()
+            except IOError:
+                continue
+            scripts += '// ' + js_path + '\n'
+            scripts += script + '\n'
+        return scripts
+
     def _load(self):
-        path = os.path.join(self.work_dir, 'block.json')
+        path = os.path.join(self.block_dir, 'block.json')
         try:
-            f = open(path, 'r')
-            self._src = load(f)
-            f.close()
+            with open(path, 'r') as f:
+                self._src = load(f)
         except IOError:
+            print >> sys.stderr, "Error loading " + self.block_dir
             self._src = {}
-            print >> sys.stderr, "Error loading " + self.work_dir
