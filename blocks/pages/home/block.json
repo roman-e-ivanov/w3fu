@@ -1,6 +1,6 @@
 {
 	"include": {
-		"layout": "layouts/common"
+		"layout": "layouts/960gs"
 	},
 	"body": {
 		"all": {
@@ -10,7 +10,7 @@
 				"keywords": "Ключевые слова",
 				"description": "Описание",
 				"style": "css/html.css",
-				"script": "html.js",
+				"script": "js/html.js",
 				"content": {"fill": {"file": "home.html"}}
 			}
 		}

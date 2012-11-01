@@ -7,7 +7,7 @@
 	},
 	"body": {
 		"all": {
-			"fill": {"file": "common.html"},
+			"fill": {"file": "960gs.html"},
 			"args": {
 				"header": {"call": "head"},
 				"footer": {"call": "footer"},
