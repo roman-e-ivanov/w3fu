@@ -3,13 +3,26 @@
   {header}
   <body>
     {devmenu}
-    <div class="container_16">{top}</div>
-    <div class="container_16">{content}</div>
+    <div class="container_16">
+    	<div class="grid_10 l-header">
+  			{top}
+		</div>
+		<div class="grid_6 l-header">
+			{user-control}
+		</div>
+	<div class="clear" />
+    </div>
+    <div class="container_16">
+    	<div class="grid_3 l-main">1</div>	
+		<div class="grid_10">{content}</div>					
+		<div class="grid_3 l-main">2</div>					
+	<div class="clear" />
+    </div>
     <div class="container_16">
     	<div class="grid_16">
     		{footer}
     	</div>
-    	<div class="clear" />
+    <div class="clear" />
     </div>
   </body>
 </html>
