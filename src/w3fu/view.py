@@ -14,7 +14,7 @@ class Blocks(object):
     def __init__(self, config):
         self.blocks_dir = config.blocks_dir
         self.static_dir = config.static_dir
-        self._media_extensions = config.media_extensions
+        self._media_extensions = set(config.media_extensions)
         self._static_formats = config.static_formats
         self._blocks = {}
         self._css_root_block = self[config.css_root_block]

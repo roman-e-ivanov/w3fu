@@ -6,7 +6,7 @@ static_dir = ''
 js_root_block = 'js'
 css_root_block = 'css'
 static_formats = ['html']
-media_extensions = frozenset(['.png', '.jpg', '.gif'])
+media_extensions = ['.png', '.jpg', '.gif']
 
 cli_http_host = 'localhost'
 cli_request_method = 'GET'
