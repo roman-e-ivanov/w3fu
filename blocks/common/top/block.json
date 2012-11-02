@@ -1,13 +1,8 @@
 {
-	"include": {
-		"user-control": "user/user-control"
-	},
+	"include": {},
 	"body": {
 		"all": {
-			"fill": {"file": "top.html"},
-			"args": {
-				"user-control": {"call": "user-control"}
-			}
+			"fill": {"file": "top.html"}
 		}
 	}
 }

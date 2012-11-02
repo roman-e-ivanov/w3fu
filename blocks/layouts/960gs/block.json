@@ -3,7 +3,8 @@
 		"head": "common/header",
 		"footer": "common/footer",
 		"top": "common/top",
-		"devmenu": "common/devmenu"
+		"devmenu": "common/devmenu",
+		"user-control": "user/user-control"
 	},
 	"body": {
 		"all": {
@@ -12,7 +13,8 @@
 				"header": {"call": "head"},
 				"footer": {"call": "footer"},
 				"top": {"call": "top"},
-				"devmenu": {"call": "devmenu"}
+				"devmenu": {"call": "devmenu"},
+				"user-control": {"call": "user-control"}
 			}
 		}
 	}
