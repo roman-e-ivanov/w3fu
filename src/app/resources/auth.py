@@ -75,7 +75,7 @@ class ShortcutLogin(Resource):
         user = User.find_shortcut(shortcut)
         if user is None:
             raise NotFound
-        super(ShortcutLogin, self).__call__(req, user=user)
+        return super(ShortcutLogin, self).__call__(req, user=user)
 
     @html.GET
     def get(self, req, user):
