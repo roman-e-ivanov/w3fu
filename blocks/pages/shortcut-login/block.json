@@ -1,0 +1,24 @@
+{
+	"include": {
+		"layout": "layouts/960gs",
+		"form": "forms/register-password"
+	},
+	"body": {
+		"all": {
+			"call": "layout",
+			"args": {
+				"title": "Регистрация нового пользователя", 
+				"keywords": "Ключевые слова",
+				"description": "Описание",
+				"style": "css/html.css",
+				"script": "js/html.js",
+				"content": {
+					"fill": {"file": "shortcut-login.html"},
+					"args": {
+						"form-password" : {"call": "form"}
+					}
+				}
+			}
+		}
+	}
+}

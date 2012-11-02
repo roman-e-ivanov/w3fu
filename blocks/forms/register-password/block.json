@@ -1,0 +1,24 @@
+{
+	"include_js": ["forms/components/edit-password"],
+	"include": {
+		"edit-password" : "forms/components/edit-password",
+		"submit" : "forms/components/button"
+	},
+	"body": {
+		"all": {
+			"fill": {"file": "form-register-password.html"},
+			"args" : {
+				"edit-password" : {
+					"call": "edit-password"
+				},
+				"submit" :{
+					"call" : "submit",
+					"args" : {
+						"class" : "b-button",
+						"value" : "ОК"
+					}
+				}
+			}
+		}
+	}
+}
