@@ -1,0 +1,21 @@
+{
+	"include": {
+		"head": "common/header",
+		"footer": "common/footer",
+		"top": "common/top",
+		"devmenu": "common/devmenu",
+		"user-control": "user/user-control"
+	},
+	"body": {
+		"all": {
+			"fill": {"file": "titan.html"},
+			"args": {
+				"header": {"call": "head"},
+				"footer": {"call": "footer"},
+				"top": {"call": "top"},
+				"devmenu": {"call": "devmenu"},
+				"user-control": {"call": "user-control"}
+			}
+		}
+	}
+}

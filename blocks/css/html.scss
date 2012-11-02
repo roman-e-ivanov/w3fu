@@ -1,8 +1,15 @@
 @option compress: no;
 
-@import "css/reset.html";
+/* 960gs*/
+/*@import "layouts/960gs/reset.html";
+@import "layouts/960gs/960gs.html"; */
+
+/*Titan*/
+@import "layouts/titan/reset";
+@import "layouts/titan/16";
+/*@import "layouts/titan/text";*/
+
 @import "css/debugging.html";
-@import "layouts/960gs/960gs.html";
 @import "common/devmenu/html";
 @import "common/footer/html";
 @import "common/top/html";
