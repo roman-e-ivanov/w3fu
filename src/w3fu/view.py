@@ -29,7 +29,7 @@ class Blocks(object):
             return block
 
     def make_static(self):
-        #shutil.rmtree(self.static_dir, ignore_errors=True)
+        shutil.rmtree(self.static_dir, ignore_errors=True)
         self._make_media()
         for fmt in self._static_formats:
             self._css_root_block.make_css(fmt)
