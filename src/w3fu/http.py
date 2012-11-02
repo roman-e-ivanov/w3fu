@@ -93,7 +93,7 @@ class Redirect(Response, Exception):
     desc = 'Found'
 
     def __init__(self, url):
-        super(Redirect).__init__()
+        super(Redirect, self).__init__()
         self.url = url
         self.header('Location', url)
 
@@ -159,7 +159,7 @@ class Application(object):
         try:
             req = self._req_cls(environ)
             resp = self._handler(req)
-        except Error as e:
+        except (Redirect, Error) as e:
             resp = e
         return resp(start_response)
 
