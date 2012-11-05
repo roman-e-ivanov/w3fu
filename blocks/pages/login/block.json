@@ -1,7 +1,7 @@
 {
-	"include_js":  ["forms/login"],
+	"include_js":  ["layouts/responsive","forms/login"],
 	"include": {
-		"layout": "layouts/960gs",
+		"layout": "layouts/responsive",
 		"form": "forms/login"
 	},
 	"body": {

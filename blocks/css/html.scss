@@ -1,13 +1,36 @@
 @option compress: no;
 
 /* 960gs*/
-/*@import "layouts/960gs/reset.html";
-@import "layouts/960gs/960gs.html"; */
+/*
+@import "layouts/960gs/reset.html";
+@import "layouts/960gs/960gs.html"; 
+*/
 
 /*Titan*/
+/*
 @import "layouts/titan/reset";
 @import "layouts/titan/16";
-/*@import "layouts/titan/text";*/
+@import "layouts/titan/text";
+*/
+
+/*Responsive*/
+/*
+@import "layouts/responsive/scss/html5reset";
+@import "layouts/responsive/scss/responsivegridsystem";
+@import "layouts/responsive/scss/col";
+@import "layouts/responsive/scss/2cols";
+@import "layouts/responsive/scss/3cols";
+@import "layouts/responsive/scss/4cols";
+@import "layouts/responsive/scss/5cols";
+@import "layouts/responsive/scss/6cols";
+@import "layouts/responsive/scss/7cols";
+@import "layouts/responsive/scss/8cols";
+@import "layouts/responsive/scss/9cols";
+@import "layouts/responsive/scss/10cols";
+@import "layouts/responsive/scss/11cols";
+@import "layouts/responsive/scss/12cols";
+*/
+
 
 @import "css/debugging.html";
 @import "common/devmenu/html";

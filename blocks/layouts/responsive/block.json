@@ -1,0 +1,19 @@
+{
+	"include": {
+		"footer": "common/footer",
+		"top": "common/top",
+		"devmenu": "common/devmenu",
+		"user-control": "user/user-control"
+	},
+	"body": {
+		"all": {
+			"fill": {"file": "responsive.html"},
+			"args": {
+				"footer": {"call": "footer"},
+				"top": {"call": "top"},
+				"devmenu": {"call": "devmenu"},
+				"user-control": {"call": "user-control"}
+			}
+		}
+	}
+}
