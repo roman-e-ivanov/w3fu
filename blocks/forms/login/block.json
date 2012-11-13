@@ -1,21 +1,11 @@
 {
-	"include_js": [
-	               "forms/components/edit",
-	               "forms/components/button",
-	               "forms/components/edit-password"
-	               ],
-	"include": {
-		"edit-login" : "forms/components/edit",
-		"edit-password" : "forms/components/edit-password",
-		"edit-password1" : "forms/components/edit-password",
-		"submit" : "forms/components/button"
-	},
+	"include":  ["forms/components/edit","forms/components/edit-password","forms/components/edit-password","forms/components/button" ],
 	"body": {
 		"all": {
 			"fill": {"file": "form-login.html"},
 			"args" : {
 				"edit-login" : {
-					"call": "edit-login",
+					"call": "forms/components/edit",
 					"args":{
 						"type"  :"text",
 						"class" : "b-edit",
@@ -24,13 +14,13 @@
 					}
 				},
 				"edit-password" : {
-					"call": "edit-password"
+					"call": "forms/components/edit-password"
 				},
 				"edit-password1" : {
-					"call": "edit-password1"
+					"call": "forms/components/edit-password"
 				},
 				"submit" :{
-					"call" : "submit",
+					"call" : "forms/components/button",
 					"args" : {
 						"class" : "b-button",
 						"value" : "ОК"

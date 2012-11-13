@@ -1,10 +1,5 @@
 {
-	"include": [
-	            "common/footer",
-	            "common/top",
-	            "common/devmenu",
-	            "user/user-control"
-	],
+	"include": ["common/footer", "common/top", "common/devmenu", "user/user-control"],
 	"body": {
 		"all": {
 			"fill": {"file": "responsive.html"},

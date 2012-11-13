@@ -1,11 +1,8 @@
 {
-	"include": {
-		"layout": "layouts/960gs",
-		"form": "forms/register"
-	},
+	"include": ["layouts/960gs","forms/register"],
 	"body": {
 		"all": {
-			"call": "layout",
+			"call": "layouts/960gs",
 			"args": {
 				"title": "Регистрация нового пользователя", 
 				"keywords": "Ключевые слова",
@@ -15,7 +12,7 @@
 				"content": {
 					"fill": {"file": "register.html"},
 					"args": {
-						"form-register" : {"call": "form"}
+						"form-register" : {"call": "forms/register"}
 					}
 				}
 			}

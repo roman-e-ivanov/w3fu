@@ -1,14 +1,11 @@
 {
-	"include": {
-		"edit-password" : "forms/components/edit",
-		"edit-password-display" : "forms/components/edit"
-	},
+	"include": ["forms/components/edit", "forms/components/edit"],
 	"body": {
 		"all": {
 			"fill": {"file": "edit-password.html"},
 			"args" : {
 				"edit-password" : {
-					"call": "edit-password",
+					"call": "forms/components/edit",
 					"args":{
 						"type"  :"password",
 						"class" : "b-edit b-edit-password__element js-element",
@@ -17,7 +14,7 @@
 					}
 				},
 				"edit-password-display" : {
-					"call": "edit-password-display",
+					"call": "forms/components/edit",
 					"args":{
 						"type"  :"text",
 						"class" : "b-edit b-edit-password__monitor js-monitor",

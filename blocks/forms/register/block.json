@@ -1,14 +1,11 @@
 {
-	"include": {
-		"edit-login" : "forms/components/edit",
-		"submit" : "forms/components/button"
-	},
+	"include": ["forms/components/edit", "forms/components/button"],
 	"body": {
 		"all": {
 			"fill": {"file": "form-register.html"},
 			"args" : {
 				"edit-login" : {
-					"call": "edit-login",
+					"call": "forms/components/edit",
 					"args":{
 						"type" : "text",
 						"class" : "b-edit",
@@ -17,7 +14,7 @@
 					}
 				},
 				"submit" :{
-					"call" : "submit",
+					"call" : "forms/components/button",
 					"args" : {
 						"class" : "b-button",
 						"value" : "ОК"

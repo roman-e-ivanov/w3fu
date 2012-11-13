@@ -1,10 +1,8 @@
 {
-	"include": {
-		"layout": "layouts/960gs"
-	},
+	"include": ["layouts/960gs"],
 	"body": {
 		"all": {
-			"call": "layout",
+			"call": "layouts/960gs",
 			"args": {
 				"title": "Корневая страница", 
 				"keywords": "Ключевые слова",

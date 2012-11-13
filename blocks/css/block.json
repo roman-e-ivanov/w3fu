@@ -1,1 +1,6 @@
-{"css": true}
+{
+	"css": true,
+	"include": [
+	            "pages/login"
+	            ]
+}

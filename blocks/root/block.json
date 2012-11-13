@@ -1,3 +1,7 @@
 {
-	"include": ["css", "js"]
+	"js": true,
+	"css": true,
+	"include": [
+	            "pages/login"
+	            ]
 }
