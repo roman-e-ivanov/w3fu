@@ -229,8 +229,6 @@ class Block(object):
     def make_css(self, fmt):
         if not self._src.get('css', False):
             return
-        compiler = scss.Scss()
-        scss.LOAD_PATHS = self._blocks.blocks_dir
         css_dir = os.path.join(self._blocks.static_dir, self.name)
         css_path = os.path.join(css_dir, fmt + '.css')
         if not os.path.exists(css_dir):
@@ -238,11 +236,9 @@ class Block(object):
         with open(css_path, 'w') as f:
             tree = self.tree()
             for block in tree:
-                scss = block.scss(fmt)
-                if scss is None:
-                    continue
-                css = compiler.compile(scss)
-                f.write(css)
+                css = block.css(fmt)
+                if css:
+                    f.write(css)
 
     def make_js(self, fmt):
         if not self._src.get('js', False):
@@ -271,17 +267,20 @@ class Block(object):
             scripts += script + '\n'
         return scripts
 
-    def scss(self, fmt):
+    def css(self, fmt):
+        compiler = scss.Scss(scss_opts={'compress': False})
+        scss.LOAD_PATHS = self.block_dir
         for name in [fmt, 'all']:
             scss_path = os.path.join(self.block_dir, name + '.scss')
             try:
                 with open(scss_path, 'r') as f:
-                    scss = f.read()
-                    scss = '// ' + scss_path + '\n' + scss
-                    return scss
+                    scss_src = f.read()
+                css = compiler.compile(scss_src)
+                css = '/* ' + scss_path + ' */\n' + css
+                return css
             except IOError:
                 pass
-        return None
+        return ''
 
     def _load(self):
         path = os.path.join(self.block_dir, 'block.json')

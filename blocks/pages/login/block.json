@@ -1,12 +1,8 @@
 {
-	"include_js":  ["layouts/responsive","forms/login"],
-	"include": {
-		"layout": "layouts/responsive",
-		"form": "forms/login"
-	},
+	"include": ["layouts/responsive", "forms/login"],
 	"body": {
 		"all": {
-			"call": "layout",
+			"call": "layouts/responsive",
 			"args": {
 				"title": "Вход в систему", 
 				"keywords": "Ключевые слова",
@@ -16,7 +12,7 @@
 				"content": {
 					"fill": {"file": "login.html"},
 					"args": {
-						"form-login" : {"call": "form"}	
+						"form-login" : {"call": "forms/login"}
 					}
 				}
 			}

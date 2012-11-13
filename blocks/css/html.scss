@@ -1,5 +1,3 @@
-@option compress: no;
-
 /* 960gs*/
 /*
 @import "layouts/960gs/reset.html";
@@ -32,11 +30,11 @@
 */
 
 
-@import "css/debugging.html";
+@import "debugging.html";
 @import "common/devmenu/html";
 @import "common/footer/html";
 @import "common/top/html";
-@import "css/general.html";
+@import "general.html";
 
 
 @import "forms/components/button/html";

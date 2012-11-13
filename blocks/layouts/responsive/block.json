@@ -1,18 +1,18 @@
 {
-	"include": {
-		"footer": "common/footer",
-		"top": "common/top",
-		"devmenu": "common/devmenu",
-		"user-control": "user/user-control"
-	},
+	"include": [
+	            "common/footer",
+	            "common/top",
+	            "common/devmenu",
+	            "user/user-control"
+	],
 	"body": {
 		"all": {
 			"fill": {"file": "responsive.html"},
 			"args": {
-				"footer": {"call": "footer"},
-				"top": {"call": "top"},
-				"devmenu": {"call": "devmenu"},
-				"user-control": {"call": "user-control"}
+				"footer": {"call": "common/footer"},
+				"top": {"call": "common/top"},
+				"devmenu": {"call": "common/devmenu"},
+				"user-control": {"call": "user/user-control"}
 			}
 		}
 	}

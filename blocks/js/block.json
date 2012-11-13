@@ -1,5 +1,6 @@
 {
-	"include_js":[
-	              "pages/login"
-	              ]
+	"js": true,
+	"include": [
+	            "pages/login"
+	            ]
 }
