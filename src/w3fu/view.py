@@ -14,44 +14,26 @@ class Blocks(object):
     def __init__(self, config):
         self.blocks_dir = config.blocks_dir
         self.static_dir = config.static_dir
-        self._media_extensions = set(config.media_extensions)
         self._static_formats = config.static_formats
         self._blocks = {}
-        self._css_root_block = self[config.css_root_block]
-        self._js_root_block = self[config.js_root_block]
+        self._root_block = self[config.root_block]
 
-    def __getitem__(self, rel_block_dir):
+    def __getitem__(self, block_name):
         try:
-            return self._blocks[rel_block_dir]
+            return self._blocks[block_name]
         except KeyError:
-            block = Block(self, rel_block_dir)
-            self._blocks[rel_block_dir] = block
+            block = Block(self, block_name)
+            self._blocks[block_name] = block
             return block
 
     def make_static(self):
         shutil.rmtree(self.static_dir, ignore_errors=True)
-        self._make_media()
-        for fmt in self._static_formats:
-            self._css_root_block.make_css(fmt)
-            self._js_root_block.make_js(fmt)
-
-    def _make_media(self):
-        for src_dir, _, filenames in os.walk(self.blocks_dir):
-            media = []
-            for filename in filenames:
-                ext = os.path.splitext(filename)[1]
-                if ext in self._media_extensions:
-                    media.append(filename)
-            if not media:
-                continue
-            rel_dst_dir = os.path.relpath(src_dir, self.blocks_dir)
-            dst_dir = os.path.join(self.static_dir, rel_dst_dir)
-            if not os.path.exists(dst_dir):
-                os.makedirs(dst_dir)
-            for filename in media:
-                src_path = os.path.join(src_dir, filename)
-                dst_path = os.path.join(dst_dir, filename)
-                shutil.copyfile(src_path, dst_path)
+        blocks = self._root_block.tree()
+        for block in blocks:
+            block.make_static_copy()
+            for fmt in self._static_formats:
+                block.make_css(fmt)
+                block.make_js(fmt)
 
 
 class Operand(object):
@@ -165,7 +147,7 @@ class Call(Function):
 
     def render(self, fmt, ctx):
         ext = self._args['args'].render(fmt, ctx)
-        sub = self._block.subs[self._data.render(fmt, ctx)]
+        sub = self._block.callables[self._data.render(fmt, ctx)]
         return sub.render(fmt, dict(ctx, **ext))
 
 
@@ -190,18 +172,17 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, blocks, rel_block_dir):
+    def __init__(self, blocks, name):
         self._blocks = blocks
-        self._rel_block_dir = rel_block_dir
-        self.block_dir = os.path.join(blocks.blocks_dir, rel_block_dir)
+        self.name = name
+        self.block_dir = os.path.join(blocks.blocks_dir, name)
         self._load()
-        self.include_js = self._src.get('include_js', [])
-        include = self._src.get('include', {})
+        includes = self._src.get('include', [])
+        self.includes = [blocks[block_name] for block_name in includes]
+        self.callables = dict([(block.name, block) for block in self.includes])
         define = self._src.get('define', {})
-        self.subs = dict([(k, blocks[v])
-                          for k, v in include.iteritems()])
-        self.subs.update(dict([(k, self.compile(v))
-                               for k, v in define.iteritems()]))
+        self.callables.update(dict([(sub_name, self.compile(sub))
+                               for sub_name, sub in define.iteritems()]))
         self._body = {}
         for fmt, body in self._src.get('body', {}).iteritems():
             self._body[fmt] = self.compile(body)
@@ -223,35 +204,59 @@ class Block(object):
             return ''
         return body.render(fmt, ctx)
 
+    def tree(self, current=None, collected=None, included=None):
+        if current is None:
+            current = self
+        if included is None:
+            included = set()
+        if current in included:
+            return collected
+        if collected is None:
+            collected = []
+        included.add(current)
+        for include in current.includes:
+            self.tree(include, collected, included)
+        collected.append(current)
+        return collected
+
+    def make_static_copy(self):
+        src_dir = os.path.join(self.block_dir, 'static')
+        if not os.path.exists(src_dir):
+            return
+        dst_dir = os.path.join(self._blocks.static_dir, self.name)
+        shutil.copytree(src_dir, dst_dir)
+
     def make_css(self, fmt):
-        css_dir = os.path.join(self._blocks.static_dir, self._rel_block_dir)
-        css_path = os.path.join(css_dir, fmt + '.css')
-        scss_path = os.path.join(self.block_dir, fmt + '.scss')
-        scss.LOAD_PATHS = self._blocks.blocks_dir
-        with open(scss_path, 'r') as f:
-            scss_string = f.read()
+        if not self._src.get('css', False):
+            return
         compiler = scss.Scss()
-        css = compiler.compile(scss_string)
+        scss.LOAD_PATHS = self._blocks.blocks_dir
+        css_dir = os.path.join(self._blocks.static_dir, self.name)
+        css_path = os.path.join(css_dir, fmt + '.css')
         if not os.path.exists(css_dir):
             os.makedirs(css_dir)
         with open(css_path, 'w') as f:
-            f.write(css)
+            tree = self.tree()
+            for block in tree:
+                scss = block.scss(fmt)
+                if scss is None:
+                    continue
+                css = compiler.compile(scss)
+                f.write(css)
 
     def make_js(self, fmt):
-        included = set()
-        def includer(writer, current):
-            if current in included:
-                return
-            included.add(current)
-            for block_dir in current.include_js:
-                includer(writer, self._blocks[block_dir])
-            writer.write(current.js(fmt))
-        js_dir = os.path.join(self._blocks.static_dir, self._rel_block_dir)
+        if not self._src.get('js', False):
+            return
+        js_dir = os.path.join(self._blocks.static_dir, self.name)
         js_path = os.path.join(js_dir, fmt + '.js')
         if not os.path.exists(js_dir):
             os.makedirs(js_dir)
         with open(js_path, 'w') as f:
-            includer(f, self)
+            tree = self.tree()
+            for block in tree:
+                js = block.js(fmt)
+                if js:
+                    f.write(js)
 
     def js(self, fmt):
         scripts = ''
@@ -265,6 +270,18 @@ class Block(object):
             scripts += '// ' + js_path + '\n'
             scripts += script + '\n'
         return scripts
+
+    def scss(self, fmt):
+        for name in [fmt, 'all']:
+            scss_path = os.path.join(self.block_dir, name + '.scss')
+            try:
+                with open(scss_path, 'r') as f:
+                    scss = f.read()
+                    scss = '// ' + scss_path + '\n' + scss
+                    return scss
+            except IOError:
+                pass
+        return None
 
     def _load(self):
         path = os.path.join(self.block_dir, 'block.json')

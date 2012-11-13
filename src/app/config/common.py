@@ -3,10 +3,8 @@ from datetime import timedelta
 
 blocks_dir = ''
 static_dir = ''
-js_root_block = 'js'
-css_root_block = 'css'
+root_block = 'root'
 static_formats = ['html']
-media_extensions = ['.png', '.jpg', '.gif']
 
 cli_http_host = 'localhost'
 cli_request_method = 'GET'
