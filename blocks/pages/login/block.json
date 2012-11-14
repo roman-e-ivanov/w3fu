@@ -7,8 +7,8 @@
 				"title": "Вход в систему", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
-				"style": "css/html.css",
-				"script": "js/html.js",
+				"style": "root/html.css",
+				"script": "root/html.js",
 				"content": {
 					"fill": {"file": "login.html"},
 					"args": {
