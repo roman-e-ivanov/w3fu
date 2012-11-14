@@ -2,6 +2,7 @@
 	"js": true,
 	"css": true,
 	"include": [
-	            "pages/login"
+	            "pages/login",
+	            "pages/register"
 	            ]
 }

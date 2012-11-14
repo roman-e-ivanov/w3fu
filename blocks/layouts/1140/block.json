@@ -1,0 +1,14 @@
+{
+	"include": ["common/footer", "common/top", "common/devmenu", "user/user-control"],
+	"body": {
+		"all": {
+			"fill": {"file": "1140.html"},
+			"args": {
+				"footer": {"call": "common/footer"},
+				"top": {"call": "common/top"},
+				"devmenu": {"call": "common/devmenu"},
+				"user-control": {"call": "user/user-control"}
+			}
+		}
+	}
+}

@@ -1,14 +1,14 @@
 {
-	"include": ["layouts/960gs","forms/register"],
+	"include": ["layouts/1140","forms/register"],
 	"body": {
 		"all": {
-			"call": "layouts/960gs",
+			"call": "layouts/1140",
 			"args": {
 				"title": "Регистрация нового пользователя", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
-				"style": "css/html.css",
-				"script": "js/html.js",
+				"style": "root/html.css",
+				"script": "root/html.js",
 				"content": {
 					"fill": {"file": "register.html"},
 					"args": {
