@@ -1,14 +1,14 @@
 {
-	"include": ["layouts/960gs"],
+	"include": ["layouts/simplegrid"],
 	"body": {
 		"all": {
-			"call": "layouts/960gs",
+			"call": "layouts/simplegrid",
 			"args": {
 				"title": "Корневая страница", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
-				"style": "css/html.css",
-				"script": "js/html.js",
+				"style": "root/html.css",
+				"script": "root/html.js",
 				"content": {"fill": {"file": "index.html"}}
 			}
 		}

@@ -2,7 +2,9 @@
 	"js": true,
 	"css": true,
 	"include": [
+	            "pages/index",
 	            "pages/login",
-	            "pages/register"
+	            "pages/register",
+	            "pages/home"
 	            ]
 }
