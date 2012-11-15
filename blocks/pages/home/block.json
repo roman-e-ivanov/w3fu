@@ -1,16 +1,14 @@
 {
-	"include": {
-		"layout": "layouts/960gs"
-	},
+	"include": ["layouts/kube"],
 	"body": {
 		"all": {
-			"call": "layout",
+			"call": "layouts/kube",
 			"args": {
 				"title": "Домашняя страница", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
-				"style": "css/html.css",
-				"script": "js/html.js",
+				"style": "root/html.css",
+				"script": "root/html.js",
 				"content": {"fill": {"file": "home.html"}}
 			}
 		}

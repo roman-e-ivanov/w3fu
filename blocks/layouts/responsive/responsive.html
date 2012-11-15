@@ -41,6 +41,9 @@
 	<link rel="stylesheet" href="s/layouts/responsive/css/11cols.css" media="all">
 	<link rel="stylesheet" href="s/layouts/responsive/css/12cols.css" media="all">
 	
+	<!-- All JavaScript at the bottom, except for Modernizr which enables HTML5 elements and feature detects -->
+	<script src="s/layouts/responsive/js/modernizr-2.5.3-min.js"></script>
+	
 	<link rel="stylesheet" href="/s/{style}" />
 	<script type="text/javascript" src="/s/{script}" ></script>
 </head>
@@ -402,5 +405,11 @@
 		</footer>
 	</div>
 </div>
+	<!--[if (lt IE 9) & (!IEMobile)]>
+	<script src="s/layouts/responsive/js/selectivizr-min.js"></script>
+	<![endif]-->
+	
+	<!-- More Scripts-->
+	<script src="s/layouts/responsive/js/responsivegridsystem.js"></script>
 </body>
 </html>

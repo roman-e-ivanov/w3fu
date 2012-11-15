@@ -1,0 +1,221 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+	<title>SimpleGrid</title>
+	
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7; IE=EmulateIE9"> 
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		
+	<link rel="stylesheet" href="s/layouts/simplegrid/css/base.css" type="text/css" media="all">
+	<!--[if lt IE 9 ]><link rel="stylesheet" href="s/layouts/simplegrid/css/720_grid.css" type="text/css"><![endif]-->
+	<link rel="stylesheet" href="s/layouts/simplegrid/css/720_grid.css" type="text/css" media="screen and (min-width: 720px)">
+	<link rel="stylesheet" href="s/layouts/simplegrid/css/986_grid.css" type="text/css" media="screen and (min-width: 986px)">
+	<link rel="stylesheet" href="s/layouts/simplegrid/css/1236_grid.css" media="screen and (min-width: 1236px)" >
+	
+	<link rel="stylesheet" href="/s/{style}" />
+	<script type="text/javascript" src="/s/{script}" ></script>
+
+</head>
+<body>
+
+<div class="grid">	
+	<div class="example-grids">
+		<h2>Basic 6-Column Grid Slots</h2>
+		<p>Slots 0-5 represent the 6-column grid. These slots can be combined to create a 3-column grid too.</p>
+		<div class="row">
+			<div class="slot-0"> 
+				<p> 
+					.slot-0
+				</p> 
+			</div> 
+	 
+			<div class="slot-1"> 
+				<p> 
+					.slot-1
+				</p> 
+			</div> 
+
+			<div class="slot-2"> 
+				<p> 
+					.slot-2
+				</p> 
+			</div> 
+	 
+			<div class="slot-3"> 
+				<p> 
+					.slot-3
+				</p> 
+			</div> 
+
+			<div class="slot-4"> 
+				<p> 
+					.slot-4
+				</p> 
+			</div> 
+	 
+			<div class="slot-5"> 
+				<p> 
+					.slot-5
+				</p> 
+			</div> 
+		</div><!-- / .row -->
+		
+		<h2>Basic 4-Column Grid Slots</h2>
+		<p>Slots 6-9 represent the 4-column grid.
+		<div class="row">
+			<div class="slot-6"> 
+				<p> 
+					.slot-6
+				</p> 
+			</div> 
+	 
+			<div class="slot-7"> 
+				<p> 
+					.slot-7
+				</p> 
+			</div> 
+	 
+			<div class="slot-8"> 
+				<p> 
+					.slot-8
+				</p> 
+			</div> 
+
+			<div class="slot-9"> 
+				<p> 
+					.slot-9
+				</p> 
+			</div> 
+		</div><!-- /.row -->
+
+		<h2>Combining Slots to Create Super Slots</h2>
+		<p>Combining slots is as simple as connecting their slot numbers with dashes.</p>
+		<div class="row">
+			<div class="slot-0"> 
+				<p> 
+					.slot-0
+				</p> 
+			</div> 
+	 
+			<div class="slot-1-2"> 
+				<p> 
+					.slot-1-2
+				</p> 
+			</div> 
+	 
+			<div class="slot-3-4-5"> 
+				<p> 
+					.slot-3-4-5
+				</p> 
+			</div> 
+		</div><!-- /.row -->
+		
+		<h2>Using Both 4- &amp; 6-Column Slots In a Row</h2>
+		<p>In some situations, you might want to combine the 4- &amp; 6-column grids in a single row. Just use the slot numbers that best represent each slots position in that row.</p>
+		<div class="row">
+			<div class="slot-0"> 
+				<p> 
+					.slot-0
+				</p> 
+			</div> 
+	 
+			<div class="slot-7"> 
+				<p> 
+					.slot-7
+				</p> 
+			</div> 
+
+			<div class="slot-8"> 
+				<p> 
+					.slot-8
+				</p> 
+			</div> 
+			
+			<div class="slot-4-5"> 
+				<p> 
+					.slot-4-5
+				</p> 
+			</div> 
+		</div><!-- /.row -->
+
+		<h2>Nesting Slots &amp; Rows</h2>
+		<p>Just add <code>.row</code>s within <code>.row</code>s, and then assemble the slots in each row as per usual.</p>
+		<div class="row">
+			<div class="slot-0"> 
+				<p> 
+					.slot-0
+				</p> 
+			</div> 
+			<!-- end .slot-0 -->
+		
+			<div class="slot-1-2-3"> 
+				<p> 
+					.slot-1-2-3
+				</p>
+				<div class="row">
+					<div class="slot-1">
+						<p>
+							.slot-1
+						</p>
+						<div class="row">
+							<div class="slot-1">
+								<p>
+									.slot-1
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="slot-2-3">
+						{devmenu}
+						<div class="row">
+							<div class="slot-2">
+								<p>
+									.slot-2
+								</p>
+							</div>
+							<div class="slot-3">
+								<p>
+									.slot-3
+								</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="slot-2-3">
+								<p>
+									.slot-2-3
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div> 
+			<!-- end .slot-1-2-3 -->
+
+			<div class="slot-4-5"> 
+				<p> 
+					.slot-4-5
+				</p>
+				<div class="row">
+					<div class="slot-4">
+						<p>
+							.slot-4
+						</p>
+					</div>
+					<div class="slot-5">
+						<p>
+							.slot-5
+						</p>
+					</div>
+				</div>
+			</div> 
+			<!-- end .slot-5 -->	
+		</div><!-- /.row -->
+	</div><!-- / .example-grids -->
+	<div class="row footer">
+		<p>{footer}</p>
+	</div>
+</div><!-- / .grid -->
+
+</body> 
+</html>
