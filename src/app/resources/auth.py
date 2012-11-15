@@ -106,11 +106,9 @@ class Register(Resource):
         return OK({})
 
     @html.POST
+    @RegisterForm.handler()
     def post(self, req):
-        form = RegisterForm(req)
-        if form.errors:
-            raise BadRequest({})
-        user = User.new(form.data['email'])
+        user = User.new(req.form.data['email'])
         if not User.insert(user, True):
             raise Conflict({'user_exists': True})
         raise Redirect(ShortcutLogin.route.url(req, shortcut=user.shortcut))

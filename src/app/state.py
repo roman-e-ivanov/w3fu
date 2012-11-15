@@ -11,7 +11,6 @@ class SessionIdState(object):
     _ttl = timedelta(days=1)
 
     def __get__(self, req, owner):
-        print('__get__')
         value = self._value(req)
         req.session_id = value
         return value

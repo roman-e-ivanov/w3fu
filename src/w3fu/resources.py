@@ -1,9 +1,9 @@
 from urllib import urlencode
 
-import w3fu.http as http
 from w3fu.args import ArgError
 from w3fu.util import json_dump
-
+from w3fu.http import OK, Error, Redirect, BadRequest, \
+    UnsupportedMediaType, MethodNotAllowed
 
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
 
@@ -17,7 +17,7 @@ class Resource(object):
             except (KeyError, AttributeError):
                 continue
             return renderer(self, req, **kwargs)
-        raise http.UnsupportedMediaType
+        raise UnsupportedMediaType
 
 
 class Renderer(object):
@@ -41,7 +41,7 @@ class Renderer(object):
             handler = self._handlers[method]
             return handler(res, req, **kwargs)
         except KeyError:
-            raise http.MethodNotAllowed
+            raise MethodNotAllowed
 
 
 class HTML(Renderer):
@@ -56,7 +56,7 @@ class HTML(Renderer):
             resp = self._handle(res, req, **kwargs)
             self._render(req, resp)
             return resp
-        except http.Error as e:
+        except Error as e:
             self._render(req, e)
             raise e
 
@@ -83,12 +83,12 @@ class JSON(Renderer):
             resp = self._handle(res, req, **kwargs)
             self._render(req, resp)
             return resp
-        except http.Error as e:
+        except Error as e:
             self._render(req, e)
             raise e
-        except http.Redirect as e:
+        except Redirect as e:
             if self._no_redirect:
-                resp = http.OK({'url': e.url})
+                resp = OK({'url': e.url})
                 self._render(req, resp)
                 return resp
             raise e
@@ -112,6 +112,17 @@ class FormMeta(type):
 class Form(object):
 
     __metaclass__ = FormMeta
+
+    @classmethod
+    def handler(cls):
+        def decorator(method):
+            def f(res, req, **kwargs):
+                req.form = cls(req)
+                if req.form.errors:
+                    raise BadRequest({})
+                return method(res, req, **kwargs)
+            return f
+        return decorator
 
     def __init__(self, req):
         self.data = {}
