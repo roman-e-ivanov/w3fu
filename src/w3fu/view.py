@@ -119,12 +119,12 @@ class If(Function):
 
 class Data(Function):
 
-    _required = {'default': '', 'ctx': None}
+    _required = {'default': '', 'ctx': ''}
 
     def render(self, fmt, ctx):
         path = self._data.render(fmt, ctx)
         local_ctx = self._args['ctx'].render(fmt, ctx)
-        result = ctx if local_ctx is None else local_ctx
+        result = local_ctx or ctx
         for p in path:
             try:
                 result = result[p]

@@ -5,6 +5,7 @@ from w3fu.util import json_dump
 from w3fu.http import OK, Error, Redirect, BadRequest, \
     UnsupportedMediaType, MethodNotAllowed
 
+
 OVERLOADABLE = frozenset(['PUT', 'DELETE'])
 
 
