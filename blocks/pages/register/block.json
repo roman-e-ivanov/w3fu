@@ -12,7 +12,8 @@
 				"content": {
 					"fill": {"file": "register.html"},
 					"args": {
-						"form-register" : {"call": "forms/register"}
+						"form-register": {"call": "forms/register"},
+						"form-register-errors": {"data": ["req", "form", "errors", "email", "code"]}
 					}
 				}
 			}
