@@ -6,34 +6,31 @@ from w3fu import util
 
 class ArgError(Exception):
 
-    def __init__(self):
-        self._contents = dict(error=self._code)
-
-    def dump(self):
-        return self._contents
-
     def __getitem__(self, name):
-        return self._contents[name]
+        try:
+            return getattr(self, name)
+        except AttributeError:
+            raise KeyError
 
 
 class ArgAbsentError(ArgError):
 
-    _code = 'absent'
+    code = 'absent'
 
 
 class ArgSizeError(ArgError):
 
-    _code = 'size'
+    code = 'size'
 
 
 class ArgTypeError(ArgError):
 
-    _code = 'type'
+    code = 'type'
 
 
 class ArgRangeError(ArgError):
 
-    _code = 'range'
+    code = 'range'
 
 
 class SingleArg(object):
