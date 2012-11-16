@@ -119,17 +119,18 @@ class If(Function):
 
 class Data(Function):
 
-    _required = {'default': ''}
+    _required = {'default': '', 'src': None}
 
     def render(self, fmt, ctx):
         path = self._data.render(fmt, ctx)
-        res = ctx
+        src = self._args['src'].render(fmt, ctx)
+        tree = ctx if src is None else src
         for p in path:
             try:
-                res = res[p]
+                tree = tree[p]
             except KeyError:
                 return self._args['default'].render(fmt, ctx)
-        return res
+        return tree
 
 
 class Fill(Function):
