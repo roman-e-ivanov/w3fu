@@ -3,8 +3,15 @@
 		"all": {
 			"fill": {"file": "edit.html"},
 			"args" : {
-				"value" : {
-					"data": ["form", "source", {"data": ["name"]}]
+				"value" : {"data": ["req", "form", "src", {"data": ["name"]}]},
+				"error" : {
+					"if": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]},
+					"true": {
+						"fill": "Ошибка {1}",
+						"args": {
+							"1": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
+						}
+					}
 				}
 			}
 		}
