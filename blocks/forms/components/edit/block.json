@@ -7,9 +7,9 @@
 				"error" : {
 					"if": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]},
 					"true": {
-						"fill": "Ошибка {1}",
+						"fill": "Ошибка {code}",
 						"args": {
-							"1": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
+							"code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
 						}
 					}
 				}
