@@ -1,16 +1,16 @@
 {
 	"body": {
 		"all": {
-			"fill": {"file": "edit.html"},
-			"args" : {
-				"value" : {"data": ["req", "form", "src", {"data": ["name"]}]},
-				"error" : {
-					"if": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]},
-					"true": {
-						"fill": "Ошибка {code}",
-						"args": {
-							"code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
-						}
+			"args": {
+				"error-code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
+			},
+			"apply": {
+				"fill": {"file": "edit.html"},
+				"args" : {
+					"value" : {"data": ["req", "form", "src", {"data": ["name"]}]},
+					"error-msg" : {
+						"if": {"data": ["error-code"]},
+						"true": {"fill": "Ошибка {error-code}"}
 					}
 				}
 			}
