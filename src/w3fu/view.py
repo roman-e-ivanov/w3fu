@@ -133,13 +133,22 @@ class Data(Function):
         return result
 
 
+class Apply(Function):
+
+    _required = {'args': {}}
+
+    def render(self, fmt, ctx):
+        args = self._args['args'].render(fmt, ctx)
+        return self._data.render(fmt, dict(ctx, **args))
+
+
 class Fill(Function):
 
     _required = {'args': {}}
 
     def render(self, fmt, ctx):
-        ext = self._args['args'].render(fmt, ctx)
-        return self._data.render(fmt, ctx).format(**dict(ctx, **ext))
+        args = self._args['args'].render(fmt, ctx)
+        return self._data.render(fmt, ctx).format(**dict(ctx, **args))
 
 
 class Call(Function):
@@ -169,7 +178,7 @@ class File(Function):
 
 class Block(object):
 
-    _functions = [Join, Map, If, Data, Fill, Call, File]
+    _functions = [Join, Map, If, Data, Apply, Fill, Call, File]
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
