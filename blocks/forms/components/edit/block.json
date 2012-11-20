@@ -7,10 +7,22 @@
 			"apply": {
 				"fill": {"file": "edit.html"},
 				"args" : {
+					"class" : {
+						"if": {"data": ["error-code"]},
+						"true": "b-edit-error",
+						"false": "b-edit"
+					},
 					"value" : {"data": ["req", "form", "src", {"data": ["name"]}]},
 					"error-msg" : {
 						"if": {"data": ["error-code"]},
-						"true": {"fill": "Ошибка {error-code}"}
+						"true": {
+							"fill": "Ошибка: {error}",
+							"args": {
+								"error": {
+									"data" : [{"data": ["error-code"]}], "ctx": {"absent": "отсутствует", "size": "размер", "type": "тип"}
+								}
+							}
+						}
 					}
 				}
 			}

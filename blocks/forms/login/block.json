@@ -8,7 +8,6 @@
 					"call": "forms/components/edit",
 					"args":{
 						"type"  :"text",
-						"class" : "b-edit",
 						"name" : "email",
 						"maxlength": "254"
 					}
@@ -22,7 +21,6 @@
 				"submit" :{
 					"call" : "forms/components/button",
 					"args" : {
-						"class" : "b-button",
 						"value" : "ОК"
 					}
 				}
