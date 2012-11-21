@@ -48,7 +48,7 @@ class Login(Resource):
             return BadRequest({})
         user = User.find_email(form.data['email'])
         if user is None or not user.check_password(form.data['password']):
-            raise BadRequest({'user_auth_error': True})
+            raise BadRequest({'error': 'user-auth'})
         session = Session.new()
         User.push_session(user, session)
         resp = Redirect(Home.route.url(req))
@@ -110,5 +110,5 @@ class Register(Resource):
     def post(self, req):
         user = User.new(req.form.data['email'])
         if not User.insert(user, True):
-            raise Conflict({'user_exists': True})
+            raise Conflict({'error': 'user-exists'})
         raise Redirect(ShortcutLogin.route.url(req, shortcut=user.shortcut))
