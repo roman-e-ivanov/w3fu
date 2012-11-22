@@ -12,6 +12,10 @@
 						"maxlength": "254"
 					}
 				},
+				"error-msg" :{
+					"if": {"data": ["error"]},
+					"true": {"data" : [{"data": ["error"]}], "ctx": {"user-exists": "Пользователь существует"}}
+				},
 				"submit" :{
 					"call" : "forms/components/button",
 					"args" : {
