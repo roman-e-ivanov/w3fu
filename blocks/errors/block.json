@@ -1,0 +1,14 @@
+{
+	"body": {
+		"all": {
+			"if": {"data": ["error-code"]},
+			"false": {"data": ["element-code"]},
+			"true": {
+				"fill": {"file": "error.html"},
+				"args": {
+					"error-mes": {"data": [{"data": ["error-code"]}], "ctx": {"absent": "отсутствует", "size": "размер", "type": "тип"}}
+				}
+			}
+		}
+	}
+}

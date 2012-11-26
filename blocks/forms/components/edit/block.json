@@ -1,30 +1,18 @@
 {
+	"include": ["errors"],
 	"body": {
 		"all": {
-			"args": {
-				"error-code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
-			},
-			"apply": {
-				"fill": {"file": "edit.html"},
-				"args" : {
-					"class" : {
-						"if": {"data": ["error-code"]},
-						"true": "b-edit-error",
-						"false": "b-edit"
-					},
-					"value" : {"data": ["req", "form", "src", {"data": ["name"]}]},
-					"error-msg" : {
-						"if": {"data": ["error-code"]},
-						"true": {
-							"fill": "Ошибка: {error}",
-							"args": {
-								"error": {
-									"data" : [{"data": ["error-code"]}], "ctx": {"absent": "отсутствует", "size": "размер", "type": "тип"}
-								}
-							}
-						}
+			"call" : "errors",
+			"args" : {
+				"element-code" :{
+					"fill": {"file": "edit.html"},
+					"args" : {
+						"class" : "b-edit",
+						"value" : {"data": ["req", "form", "src", {"data": ["name"]}]}
 					}
-				}
+				},
+				"error-class" : "b-edit-error",
+				"error-code" : {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
 			}
 		}
 	}
