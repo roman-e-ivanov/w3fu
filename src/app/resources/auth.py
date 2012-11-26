@@ -42,12 +42,10 @@ class Login(Resource):
         return OK({})
 
     @html.POST
+    @LoginForm.handler()
     def post(self, req):
-        form = LoginForm(req)
-        if form.errors:
-            return BadRequest({})
-        user = User.find_email(form.data['email'])
-        if user is None or not user.check_password(form.data['password']):
+        user = User.find_email(req.form.data['email'])
+        if user is None or not user.check_password(req.form.data['password']):
             raise BadRequest({'error': 'user-auth'})
         session = Session.new()
         User.push_session(user, session)
@@ -82,11 +80,9 @@ class ShortcutLogin(Resource):
         return OK({})
 
     @html.POST
+    @SetPasswordForm.handler()
     def post(self, req, user):
-        form = SetPasswordForm(req)
-        if form.errors:
-            raise BadRequest({})
-        user.set_password(form.data['password'])
+        user.set_password(req.form.data['password'])
         User.update_password(user)
         session = Session.new()
         User.push_session(user, session)
