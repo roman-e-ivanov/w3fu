@@ -1,13 +1,16 @@
-from w3fu.http import BaseRequest, Application
+from w3fu.http import Application
+from w3fu.routing import Router
 
-from app.resources import router
-from app.state import UserState, SessionIdState
+from app.http import Request
+
+from app.resources.test import Test
+from app.resources.index import Index
+from app.resources.home import Home
+from app.resources.auth import ShortcutLogin, Login, Register
 
 
-class Request(BaseRequest):
+resources = [Test(),
+             Index(), Home(),
+             ShortcutLogin(), Login(), Register()]
 
-    user = UserState()
-    session_id = SessionIdState()
-
-
-application = Application(router, Request)
+application = Application(Router(resources), Request)

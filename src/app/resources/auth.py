@@ -7,8 +7,9 @@ from w3fu.args import StrArg
 from app.view import blocks
 from app.resources.home import Home
 from app.resources.index import Index
-from app.storage.auth import User, Session
-from app.state import SessionIdState
+from app.storage.auth import User
+from app.state import UserState
+
 
 class RegisterForm(Form):
 
@@ -47,18 +48,14 @@ class Login(Resource):
         user = User.find_email(req.form.data['email'])
         if user is None or not user.check_password(req.form.data['password']):
             raise BadRequest({'error': 'user-auth'})
-        session = Session.new()
-        User.push_session(user, session)
         resp = Redirect(Home.route.url(req))
-        SessionIdState.set(resp, session.id)
+        UserState.login(resp, user)
         raise resp
 
     @html.DELETE
     def delete(self, req):
-        if req.session_id is not None:
-            User.pull_session(req.session_id)
         resp = Redirect(req.referer or Index.route.url(req))
-        SessionIdState.delete(resp)
+        UserState.logout(req, resp)
         raise resp
 
 
@@ -84,10 +81,8 @@ class ShortcutLogin(Resource):
     def post(self, req, user):
         user.set_password(req.form.data['password'])
         User.update_password(user)
-        session = Session.new()
-        User.push_session(user, session)
         resp = Redirect(Home.route.url(req))
-        SessionIdState.set(resp, session.id)
+        UserState.login(resp, user)
         raise resp
 
 

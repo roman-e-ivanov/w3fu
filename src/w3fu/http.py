@@ -157,8 +157,7 @@ class Application(object):
 
     def __call__(self, environ, start_response):
         try:
-            req = self._req_cls(environ)
-            resp = self._handler(req)
+            resp = self._handler(self._req_cls(environ))
         except (Redirect, Error) as e:
             resp = e
         return resp(start_response)
