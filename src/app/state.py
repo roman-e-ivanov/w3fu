@@ -45,9 +45,9 @@ class UserState(object):
 
     @classmethod
     def logout(cls, req, resp):
-        session_id = cls._cookie.unpack(req.cookie)
+        session_id = cls._arg.unpack(req.cookie)
         if session_id is not None:
-            User.pull_session(req.session_id)
+            User.pull_session(session_id)
         cls._delete_cookie(resp)
 
     def _compute(self, req):

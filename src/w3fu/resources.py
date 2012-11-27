@@ -36,8 +36,11 @@ class Renderer(object):
         method = req.method
         if method == 'POST':
             overloaded = req.fs.getfirst('method')
-            if overloaded is not None and overloaded in OVERLOADABLE:
-                method = overloaded
+            if overloaded is not None:
+                if overloaded in OVERLOADABLE:
+                    method = overloaded
+                else:
+                    raise MethodNotAllowed
         try:
             handler = self._handlers[method]
             return handler(res, req, **kwargs)
