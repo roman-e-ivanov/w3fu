@@ -43,9 +43,9 @@ class Renderer(object):
                     raise MethodNotAllowed
         try:
             handler = self._handlers[method]
-            return handler(res, req, **kwargs)
         except KeyError:
             raise MethodNotAllowed
+        return handler(res, req, **kwargs)
 
 
 class HTML(Renderer):
