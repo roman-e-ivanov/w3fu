@@ -7,8 +7,6 @@
 				"edit-providers-name" : {
 					"call": "forms/components/edit",
 					"args":{
-						
-						
 						"type" : "text",
 						"name" : "name",
 						"class": "b-edit",

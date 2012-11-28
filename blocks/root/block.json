@@ -6,7 +6,7 @@
 	            "pages/login",
 	            "pages/register",
 	            "pages/home",
-	            "pages/providers-admiv",
-	            "pages/shortcut-login
+	            "pages/providers-admin",
+	            "pages/shortcut-login"
 	            ]
 }
