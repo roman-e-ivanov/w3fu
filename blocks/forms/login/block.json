@@ -1,5 +1,5 @@
 {
-	"include":  ["forms/components/edit","forms/components/edit-password","forms/components/edit-password","forms/components/button" ],
+	"include":  ["error","forms/components/edit","forms/components/edit-password","forms/components/edit-password","forms/components/button" ],
 	"body": {
 		"all": {
 			"fill": {"file": "form-login.html"},
@@ -9,13 +9,11 @@
 					"args":{
 						"type"  :"text",
 						"name" : "email",
+						"class": "b-edit val-email",
 						"maxlength": "254"
 					}
 				},
 				"edit-password" : {
-					"call": "forms/components/edit-password"
-				},
-				"edit-password1" : {
 					"call": "forms/components/edit-password"
 				},
 				"submit" :{

@@ -1,18 +1,26 @@
 {
-	"include": ["layouts/960gs","forms/register-password" ],
+	"include": ["layouts/1140","forms/components/button","forms/components/edit-password"],
 	"body": {
 		"all": {
-			"call": "layouts/960gs",
+			"call": "layouts/1140",
 			"args": {
 				"title": "Регистрация нового пользователя", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
-				"style": "css/html.css",
-				"script": "js/html.js",
+				"style": "root/html.css",
+				"script": "root/html.js",
 				"content": {
 					"fill": {"file": "shortcut-login.html"},
 					"args": {
-						"form-password" : {"call": "forms/register-password"}
+						"edit-password" : {
+							"call": "forms/components/edit-password"
+						},
+						"submit" :{
+							"call" : "forms/components/button",
+							"args" : {
+								"value" : "ОК"
+							}
+						}
 					}
 				}
 			}

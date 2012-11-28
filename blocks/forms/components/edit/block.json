@@ -2,17 +2,16 @@
 	"include": ["errors"],
 	"body": {
 		"all": {
-			"call" : "errors",
-			"args" : {
-				"element-code" :{
+			"call": "errors",
+			"args": {
+				"element-code":{
 					"fill": {"file": "edit.html"},
-					"args" : {
-						"class" : "b-edit",
-						"value" : {"data": ["req", "form", "src", {"data": ["name"]}]}
+					"args": {
+						"value": {"data": ["req", "form", "src", {"data": ["name"]}]}
 					}
 				},
-				"error-class" : "b-edit-error",
-				"error-code" : {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
+				"error-class": "b-edit-error",
+				"error-code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
 			}
 		}
 	}

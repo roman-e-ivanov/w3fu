@@ -1,5 +1,5 @@
 {
-	"include": ["forms/components/edit", "forms/components/edit"],
+	"include": ["forms/components/edit"],
 	"body": {
 		"all": {
 			"fill": {"file": "edit-password.html"},
@@ -10,6 +10,7 @@
 						"type"  :"password",
 						"class" : "b-edit b-edit-password__element js-element",
 						"name" : "password",
+						"no-show-error-msg" : "yes",
 						"maxlength": "32"
 					}
 				},
@@ -18,7 +19,7 @@
 					"args":{
 						"type"  :"text",
 						"class" : "b-edit b-edit-password__monitor js-monitor",
-						"name" : "",
+						"name" : "password",
 						"maxlength": "32"
 					}
 				}

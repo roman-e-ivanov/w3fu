@@ -1,8 +1,12 @@
 {
 	"body": {
 		"all": {
-			"if": {"data": ["user"]},
-			"true": {"fill": {"file": "user-login.html"}},
+			"if": {"data": ["req","user"]},
+			"true": {"fill": {"file": "user-login.html"},
+				"args" : {
+					"user": {"data": ["req","user","email"]}
+				}
+			},
 			"false": {"fill": {"file": "user-not-login.html"}}
 		}
 	}

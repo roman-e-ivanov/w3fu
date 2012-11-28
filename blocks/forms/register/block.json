@@ -9,6 +9,7 @@
 					"args":{
 						"type" : "text",
 						"name" : "email",
+						"class": "b-edit",
 						"maxlength": "254"
 					}
 				},

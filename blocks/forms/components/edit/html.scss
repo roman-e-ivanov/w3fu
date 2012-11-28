@@ -1,24 +1,20 @@
 .b-edit {
 	/*font-size: 10pt;
-	padding:8px 40px 8px 8px;
 	font-weight:bold;*/
 	border:1px solid #909090;
 	/*background:#fff;*/
+	/*padding: 0.4em;*/
 }
 .b-edit-error .b-edit{
 	border:2px solid #ff0000;
 }
 
-.b-form-login .b-edit, .b-form-register .b-edit {
-	/*width:306px;*/
-}
 
 .b-edit__name {
-	
+
 }
 
 .b-edit__label {
-	margin:2px 0 0 0;
 	font-size: 8pt;
 	color:#777;
 }

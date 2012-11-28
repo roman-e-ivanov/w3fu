@@ -11,13 +11,13 @@
 	<!--[if lte IE 9]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen" /><![endif]-->
 
 	<!-- The 1140px Grid - http://cssgrid.net/ -->
-	<link rel="stylesheet" href="s/layouts/1140/css/1140.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/s/layouts/1140/css/1140.css" type="text/css" media="screen" />
 	
 	<!-- Your styles -->
-	<link rel="stylesheet" href="s/layouts/1140/css/styles.css" type="text/css" media="screen" />
-	
+	<link rel="stylesheet" href="/s/layouts/1140/css/styles.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="/b/js/jquery.js" ></script>
 	<!--css3-mediaqueries-js - http://code.google.com/p/css3-mediaqueries-js/ - Enables media queries in some unsupported browsers-->
-	<script type="text/javascript" src="s/layouts/1140/js/css3-mediaqueries.js"></script>
+	<script type="text/javascript" src="/s/layouts/1140/js/css3-mediaqueries.js"></script>
 	
 	<link rel="stylesheet" href="/s/{style}" />
 	<script type="text/javascript" src="/s/{script}" ></script>
@@ -39,7 +39,7 @@
 
 
 <body>
-
+<!--
 <div class="container">
 	<div class="row">
 		<div class="onecol">
@@ -120,21 +120,23 @@
 		</div>
 	</div>
 </div>
-
+-->
+ 
 <div class="container">
 	<div class="row">
 		<div class="fourcol">
-			{content}
+			{user-control}
 		</div>
 		<div class="fourcol">
 			<p>Four columns</p>
 		</div>
 		<div class="fourcol last">
-			<p>Four columns</p>
+		<p>Four columns</p>
+			
 		</div>
 	</div>
 </div>
-
+<!--
 <div class="container">
 	<div class="row">
 		<div class="onecol">
@@ -167,14 +169,14 @@
 		</div>
 	</div>
 </div>
-
+-->
 <div class="container">
 	<div class="row">
 		<div class="fourcol">
-			<p>{devmenu}</p>
+			{devmenu}
 		</div>
 		<div class="eightcol last">
-			<p>Eight columns</p>
+			{content}
 		</div>
 	</div>
 </div>

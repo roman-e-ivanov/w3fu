@@ -4,9 +4,15 @@
 			"if": {"data": ["error-code"]},
 			"false": {"data": ["element-code"]},
 			"true": {
-				"fill": {"file": "error.html"},
-				"args": {
-					"error-mes": {"data": [{"data": ["error-code"]}], "ctx": {"absent": "отсутствует", "size": "размер", "type": "тип"}}
+				"if": {"data": ["no-show-error-msg"]},
+				"true": {
+					"fill": {"file": "error-class.html"}
+					},
+				"false": {
+					"fill": {"file": "error-class-msg.html"},
+					"args": {
+						"error-mes": {"data": [{"data": ["error-code"]}], "ctx": {"absent": "отсутствует", "size": "размер", "type": "тип"}}
+					}
 				}
 			}
 		}

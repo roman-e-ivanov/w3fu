@@ -1,8 +1,8 @@
 {
-	"include": ["layouts/kube"],
+	"include": ["layouts/1140"],
 	"body": {
 		"all": {
-			"call": "layouts/kube",
+			"call": "layouts/1140",
 			"args": {
 				"title": "Домашняя страница", 
 				"keywords": "Ключевые слова",
