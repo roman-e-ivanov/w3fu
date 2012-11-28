@@ -15,8 +15,8 @@ class Blocks(object):
         self.blocks_dir = config.blocks_dir
         self.static_dir = config.static_dir
         self._static_formats = config.static_formats
+        self._root_block = config.root_block
         self._blocks = {}
-        self._root_block = self[config.root_block]
 
     def __getitem__(self, block_name):
         try:
@@ -28,7 +28,7 @@ class Blocks(object):
 
     def make_static(self):
         shutil.rmtree(self.static_dir, ignore_errors=True)
-        blocks = self._root_block.tree()
+        blocks = self[self._root_block].tree()
         for block in blocks:
             block.make_static_copy()
             for fmt in self._static_formats:
@@ -297,6 +297,9 @@ class Block(object):
         try:
             with open(path, 'r') as f:
                 self._src = json.load(f)
-        except IOError:
+        except IOError as e:
             print >> sys.stderr, "Error loading " + self.block_dir
             self._src = {}
+        except Exception as e:
+            print >> sys.stderr, "Error loading " + self.block_dir
+            raise e
