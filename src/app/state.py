@@ -19,7 +19,7 @@ class UserState(object):
         return value
 
     @classmethod
-    def _session_id(cls, req):
+    def _read_cookie(cls, req):
         try:
             return cls._arg.unpack(req.cookie)
         except ArgError:
@@ -45,13 +45,13 @@ class UserState(object):
 
     @classmethod
     def logout(cls, req, resp):
-        session_id = cls._arg.unpack(req.cookie)
+        session_id = cls._read_cookie(req)
         if session_id is not None:
             User.pull_session(session_id)
         cls._delete_cookie(resp)
 
     def _compute(self, req):
-        session_id = self._arg.unpack(req.cookie)
+        session_id = self._read_cookie(req)
         if session_id is None:
             return None
         return User.find_valid_session(session_id, datetime.utcnow())
