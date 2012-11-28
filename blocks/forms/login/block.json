@@ -7,7 +7,9 @@
 				"edit-login" : {
 					"call": "forms/components/edit",
 					"args":{
-						"type"  :"text",
+					
+						
+						"type": "text",
 						"name" : "email",
 						"class": "b-edit val-email",
 						"maxlength": "254"
