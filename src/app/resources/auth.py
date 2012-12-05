@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 from w3fu.http import OK, Redirect, BadRequest, NotFound, Conflict
-from w3fu.routing import Route
 from w3fu.resources import Resource, Form, HTML
 from w3fu.args import StrArg
 
+from app.routing import router
 from app.view import blocks
-from app.resources.home import Home
-from app.resources.index import Index
 from app.storage.auth import User
 from app.state import UserState
 
@@ -34,8 +32,6 @@ class LoginForm(Form):
 
 class Login(Resource):
 
-    route = Route('/login')
-
     html = HTML(blocks['pages/login'])
 
     @html.GET
@@ -48,21 +44,18 @@ class Login(Resource):
         user = User.find_email(req.form.data['email'])
         if user is None or not user.check_password(req.form.data['password']):
             raise BadRequest({'error': 'user-auth'})
-        resp = Redirect(Home.route.url(req))
+        resp = Redirect(router['home'].url(req))
         UserState.login(resp, user)
         raise resp
 
     @html.DELETE
     def delete(self, req):
-        resp = Redirect(req.referer or Index.route.url(req))
+        resp = Redirect(req.referer or router['index'].url(req))
         UserState.logout(req, resp)
         raise resp
 
 
 class ShortcutLogin(Resource):
-
-    route = Route('/login/{shortcut}',
-                  shortcut=StrArg('shortcut', pattern='[\da-zA-Z_-]{22}'))
 
     html = HTML(blocks['pages/shortcut-login'])
 
@@ -81,14 +74,12 @@ class ShortcutLogin(Resource):
     def post(self, req, user):
         user.set_password(req.form.data['password'])
         User.update_password(user)
-        resp = Redirect(Home.route.url(req))
+        resp = Redirect(router['home'].url(req))
         UserState.login(resp, user)
         raise resp
 
 
 class Register(Resource):
-
-    route = Route('/register')
 
     html = HTML(blocks['pages/register'])
 
@@ -102,4 +93,5 @@ class Register(Resource):
         user = User.new(req.form.data['email'])
         if not User.insert(user, True):
             raise Conflict({'error': 'user-exists'})
-        raise Redirect(ShortcutLogin.route.url(req, shortcut=user.shortcut))
+        raise Redirect(router['shortcut_login'].url(req,
+                                                    shortcut=user.shortcut))

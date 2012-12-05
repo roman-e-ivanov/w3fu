@@ -1,21 +1,24 @@
 from re import compile
 from urlparse import urlunsplit
 
-from w3fu.http import NotFound
+from w3fu.http import NotFound, ServiceUnavailable
 from w3fu.args import ArgError
 
 
 class Router(object):
 
-    def __init__(self, resources):
-        self._resources = resources
+    def __init__(self, **routes):
+        self._routes = routes
+        self._routes_sorted = sorted(routes.itervalues(), reverse=True)
+
+    def __getitem__(self, name):
+        return self._routes[name]
 
     def __call__(self, req):
-        for res in self._resources:
-            args = res.route.match(req.path)
-            if args is None:
-                continue
-            return res(req, **args)
+        for route in self._routes_sorted:
+            resp = route(req)
+            if resp is not None:
+                return resp
         raise NotFound
 
 
@@ -26,6 +29,18 @@ class Route(object):
         self._scheme = scheme
         self._args = args
         self._compile()
+        self.target = None
+
+    def __cmp__(self, other):
+        return cmp(self.pattern, other.pattern)
+
+    def __call__(self, req):
+        args = self._match(req.path)
+        if args is None:
+            return None
+        if self.target is None:
+            raise ServiceUnavailable
+        return self.target(req, **args)
 
     def url(self, req, query='', **args):
         return urlunsplit((self._scheme, req.host, self.path(**args),
@@ -34,7 +49,7 @@ class Route(object):
     def path(self, **args):
         return self.pattern.format(**self._pack(args))
 
-    def match(self, path):
+    def _match(self, path):
         match = self._re.match(path)
         return self._unpack(match.groupdict()) if match else None
 

@@ -1,16 +1,14 @@
 from w3fu.http import OK, Redirect, Forbidden, NotFound
-from w3fu.routing import Route
-from w3fu.args import StrArg, IdArg
+from w3fu.args import StrArg
 from w3fu.resources import Resource, Form, HTML
 
+from app.routing import router
 from app.view import blocks
 from app.storage.auth import User
 from app.storage.providers import Provider
 
 
 class ProvidersPublic(Resource):
-
-    route = Route('/providers')
 
     html = HTML(blocks['pages/providers-public'])
 
@@ -20,8 +18,6 @@ class ProvidersPublic(Resource):
 
 
 class ProviderPublic(Resource):
-
-    route = Route('/providers/{id_}', id_=IdArg('id_'))
 
     html = HTML(blocks['pages/provider-public'])
 
@@ -43,8 +39,6 @@ class ProviderForm(Form):
 
 class ProvidersAdmin(Resource):
 
-    route = Route('/home/providers')
-
     html = HTML(blocks['pages/providers-admin'])
 
     @html.GET
@@ -57,12 +51,10 @@ class ProvidersAdmin(Resource):
         provider = Provider.new(req.form.data['name'])
         Provider.insert(provider)
         User.push_owned(req.user, provider.id)
-        raise Redirect(ProviderAdmin.route.url(req, id_=provider.id))
+        raise Redirect(router['provider_admin'].url(req, id_=provider.id))
 
 
 class ProviderAdmin(Resource):
-
-    route = Route('/home/providers/{id_}', id_=IdArg('id_'))
 
     html = HTML(blocks['pages/provider-admin'])
 
@@ -83,18 +75,16 @@ class ProviderAdmin(Resource):
     def put(self, req, provider):
         provider.name = req.form.data['name']
         Provider.update(provider)
-        raise Redirect(ProvidersListAdmin.route.url(req))
+        raise Redirect(router['providers_list_admin'].url(req))
 
     @html.DELETE
     def delete(self, req, provider):
         User.pull_owned(provider.id)
         Provider.remove_id(provider.id)
-        raise Redirect(ProvidersListAdmin.route.url(req))
+        raise Redirect(router['providers_list_admin'].url(req))
 
 
 class ProvidersListAdmin(Resource):
-
-    route = Route('/home/providers/list')
 
     html = HTML(blocks['pages/providers-list-admin'])
 
