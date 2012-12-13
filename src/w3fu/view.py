@@ -9,7 +9,7 @@ from codecs import open
 logging.getLogger('scss').addHandler(logging.StreamHandler())
 
 
-class Blocks(object):
+class View(object):
 
     def __init__(self, config):
         self.blocks_dir = config.blocks_dir
@@ -182,13 +182,13 @@ class Block(object):
 
     _functions_by_name = dict([(op.name(), op) for op in _functions])
 
-    def __init__(self, blocks, name):
-        self._blocks = blocks
+    def __init__(self, view, name):
+        self._view = view
         self.name = name
-        self.block_dir = os.path.join(blocks.blocks_dir, name)
+        self.block_dir = os.path.join(view.blocks_dir, name)
         self._load()
         includes = self._src.get('include', [])
-        self.includes = [blocks[block_name] for block_name in includes]
+        self.includes = [view[block_name] for block_name in includes]
         self.callables = dict([(block.name, block) for block in self.includes])
         define = self._src.get('define', {})
         self.callables.update(dict([(sub_name, self.compile(sub))
@@ -233,13 +233,13 @@ class Block(object):
         src_dir = os.path.join(self.block_dir, 'static')
         if not os.path.exists(src_dir):
             return
-        dst_dir = os.path.join(self._blocks.static_dir, self.name)
+        dst_dir = os.path.join(self._view.static_dir, self.name)
         shutil.copytree(src_dir, dst_dir)
 
     def make_css(self, fmt):
         if not self._src.get('css', False):
             return
-        css_dir = os.path.join(self._blocks.static_dir, self.name)
+        css_dir = os.path.join(self._view.static_dir, self.name)
         css_path = os.path.join(css_dir, fmt + '.css')
         if not os.path.exists(css_dir):
             os.makedirs(css_dir)
@@ -253,7 +253,7 @@ class Block(object):
     def make_js(self, fmt):
         if not self._src.get('js', False):
             return
-        js_dir = os.path.join(self._blocks.static_dir, self.name)
+        js_dir = os.path.join(self._view.static_dir, self.name)
         js_path = os.path.join(js_dir, fmt + '.js')
         if not os.path.exists(js_dir):
             os.makedirs(js_dir)

@@ -42,3 +42,21 @@ def json_dump(data):
         return str(data)
     return dumps(data,
                  indent=4, ensure_ascii=False, default=default).encode('utf-8')
+
+
+def class_wrapper(decorator):
+    def wrapper(cls):
+        cls.__call__ = decorator(cls.__call__)
+        return cls
+    return wrapper
+
+
+def func_wrapper(decorator):
+    def wrapper(original):
+        def callback(obj, req, *args, **kwargs):
+            return original(req, *args, **kwargs)
+        decorated = decorator(callback)
+        def f(req, *args, **kwargs):
+            return decorated(None, req, *args, **kwargs)
+        return f
+    return wrapper

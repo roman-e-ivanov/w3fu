@@ -7,7 +7,7 @@ FORMAT_BY_TYPE = {'text/html': 'html',
                   'application/json': 'json'}
 
 
-class BaseRequest(object):
+class Request(object):
 
     _allowed_formats = frozenset(FORMAT_BY_TYPE.values())
     _path_re = re.compile('^(.+)\.(\w+)?$')
@@ -151,13 +151,12 @@ class ServiceUnavailable(Error):
 
 class Application(object):
 
-    def __init__(self, handler, req_cls=BaseRequest):
+    def __init__(self, handler):
         self._handler = handler
-        self._req_cls = req_cls
 
     def __call__(self, environ, start_response):
         try:
-            resp = self._handler(self._req_cls(environ))
+            resp = self._handler(Request(environ))
         except (Redirect, Error) as e:
             resp = e
         return resp(start_response)

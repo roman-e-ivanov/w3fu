@@ -50,9 +50,10 @@ class Renderer(object):
 
 class HTML(Renderer):
 
-    def __init__(self, block=None, content_type='text/html'):
+    def __init__(self, block=None, mixins=[], content_type='text/html'):
         super(HTML, self).__init__()
         self._block = block
+        self._mixins = mixins
         self._content_type = content_type
 
     def __call__(self, res, req, **kwargs):
@@ -72,6 +73,8 @@ class HTML(Renderer):
             resp.content = str(resp.content).encode('utf-8')
         else:
             src = dict(req=req, **resp.content)
+            for mixin in self._mixins:
+                src.update(mixin(req))
             resp.content = self._block.render('html', src).encode('utf-8')
 
 
@@ -165,3 +168,13 @@ class Form(object):
     def _decode(self, fs):
         return dict([(k, fs.getfirst(k).decode('utf-8'))
                      for k in fs.keys()])
+
+
+def classwrapper(*wrappers):
+    def f(cls):
+        method = cls.__call__
+        for wrapper in reversed(wrappers):
+            method = wrapper(method)
+        cls.__call__ = method
+        return cls
+    return f

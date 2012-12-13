@@ -4,9 +4,10 @@ from w3fu.resources import Resource, Form, HTML
 from w3fu.args import StrArg
 
 from app.routing import router
-from app.view import blocks
+from app.view import view
 from app.storage.auth import User
 from app.state import UserState
+from app.mixins import public_mixins
 
 
 class RegisterForm(Form):
@@ -32,7 +33,7 @@ class LoginForm(Form):
 
 class Login(Resource):
 
-    html = HTML(blocks['pages/login'])
+    html = HTML(view['pages/login'], public_mixins)
 
     @html.GET
     def get(self, req):
@@ -57,7 +58,7 @@ class Login(Resource):
 
 class ShortcutLogin(Resource):
 
-    html = HTML(blocks['pages/shortcut-login'])
+    html = HTML(view['pages/shortcut-login'], public_mixins)
 
     def __call__(self, req, shortcut):
         user = User.find_shortcut(shortcut)
@@ -81,7 +82,7 @@ class ShortcutLogin(Resource):
 
 class Register(Resource):
 
-    html = HTML(blocks['pages/register'])
+    html = HTML(view['pages/register'], public_mixins)
 
     @html.GET
     def get(self, req):

@@ -1,16 +1,19 @@
 from w3fu.http import OK, Redirect, Forbidden, NotFound
 from w3fu.args import StrArg
 from w3fu.resources import Resource, Form, HTML
+from w3fu.util import class_wrapper
 
 from app.routing import router
-from app.view import blocks
+from app.view import view
 from app.storage.auth import User
 from app.storage.providers import Provider
+from app.mixins import public_mixins
+from app.state import UserState
 
 
 class ProvidersPublic(Resource):
 
-    html = HTML(blocks['pages/providers-public'])
+    html = HTML(view['pages/providers-public'], public_mixins)
 
     @html.GET
     def get(self, req):
@@ -19,7 +22,7 @@ class ProvidersPublic(Resource):
 
 class ProviderPublic(Resource):
 
-    html = HTML(blocks['pages/provider-public'])
+    html = HTML(view['pages/provider-public'], public_mixins)
 
     def __call__(self, req, id_):
         provider = Provider.find_id(id_)
@@ -37,9 +40,10 @@ class ProviderForm(Form):
     name = StrArg('name', min_size=1, max_size=100)
 
 
+@class_wrapper(UserState(True))
 class ProvidersAdmin(Resource):
 
-    html = HTML(blocks['pages/providers-admin'])
+    html = HTML(view['pages/providers-admin'], public_mixins)
 
     @html.GET
     def get(self, req):
@@ -54,9 +58,10 @@ class ProvidersAdmin(Resource):
         raise Redirect(router['provider_admin'].url(req, id_=provider.id))
 
 
+@class_wrapper(UserState(True))
 class ProviderAdmin(Resource):
 
-    html = HTML(blocks['pages/provider-admin'])
+    html = HTML(view['pages/provider-admin'], public_mixins)
 
     def __call__(self, req, id_):
         if not req.user.can_write(id_):
@@ -84,9 +89,10 @@ class ProviderAdmin(Resource):
         raise Redirect(router['providers_list_admin'].url(req))
 
 
+@class_wrapper(UserState(True))
 class ProvidersListAdmin(Resource):
 
-    html = HTML(blocks['pages/providers-list-admin'])
+    html = HTML(view['pages/providers-list-admin'], public_mixins)
 
     @html.GET
     def get(self, req):

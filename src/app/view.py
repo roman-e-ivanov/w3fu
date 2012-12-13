@@ -1,6 +1,6 @@
-from w3fu.view import Blocks
+from w3fu.view import View
 
 from app import config
 
 
-blocks = Blocks(config)
+view = View(config)

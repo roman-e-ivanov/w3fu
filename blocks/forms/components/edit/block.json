@@ -7,11 +7,11 @@
 				"element-code":{
 					"fill": {"file": "edit.html"},
 					"args": {
-						"value": {"data": ["req", "form", "src", {"data": ["name"]}]}
+						"value": {"data": ["form", "src", {"data": ["name"]}]}
 					}
 				},
 				"error-class": "b-edit-error",
-				"error-code": {"data": ["req", "form", "errors", {"data": ["name"]}, "code"]}
+				"error-code": {"data": ["form", "errors", {"data": ["name"]}, "code"]}
 			}
 		}
 	}
