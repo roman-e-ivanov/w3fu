@@ -11,6 +11,11 @@ from app.mixins import public_mixins
 from app.state import UserState
 
 
+def paths(provider):
+    return dict([(name, router[name].path(id_=provider.id))
+                 for name in ['provider_public', 'provider_admin']])
+
+
 class ProvidersPublic(Resource):
 
     html = HTML(view['pages/providers-public'], public_mixins)
@@ -97,4 +102,6 @@ class ProvidersListAdmin(Resource):
     @html.GET
     def get(self, req):
         providers = Provider.find_from_user(req.user)
-        return OK({'providers': providers})
+        providers_paths = dict([(provider.id, paths(provider))
+                                for provider in providers])
+        return OK({'providers': providers, 'paths': providers_paths})
