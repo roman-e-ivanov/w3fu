@@ -6,7 +6,7 @@ from w3fu.http import OK, Error, Redirect, BadRequest, \
     UnsupportedMediaType, MethodNotAllowed
 
 
-OVERLOADABLE = frozenset(['PUT', 'DELETE'])
+OVERLOADABLE = frozenset(['POST', 'PUT', 'DELETE'])
 
 
 class Resource(object):
