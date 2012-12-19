@@ -10,7 +10,8 @@
 						"type" : "text",
 						"name" : "name",
 						"class": "b-edit",
-						"maxlength": "254"
+						"maxlength": "254",
+						"value": {"data": ["provider", "name"]}
 					}
 				},
 				"submit" :{

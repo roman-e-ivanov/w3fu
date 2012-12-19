@@ -1,11 +1,11 @@
-.b-edit {
+.b-edit, .b-edit-val-valid {
 	/*font-size: 10pt;
 	font-weight:bold;*/
 	border:1px solid #909090;
 	/*background:#fff;*/
 	/*padding: 0.4em;*/
 }
-.b-edit-error .b-edit{
+.b-edit-error .b-edit, .b-edit-val-error{
 	border:2px solid #ff0000;
 }
 

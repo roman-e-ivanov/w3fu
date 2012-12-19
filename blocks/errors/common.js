@@ -29,17 +29,17 @@ $.val = function (form) {
 	
 	this.showError = function(element){
 			
-			$(element).wrap('<div class="b-edit-error" />');
+			//$(element).wrap('<div class="b-edit-error" />');
+			
+			$(element).removeClass("b-edit-val-valid");
+			$(element).addClass("b-edit-val-error");
 	}
 		
-	/*	this.showValid = function(element){
+	this.showValid = function(element){
 			
-			$(element).removeClass('def');
-			$(element).removeClass('err');
-			$(element).addClass('val');
-			$($(element).data('msg')).text('Хорошая работа!');
-			
-		}*/
+			$(element).removeClass("b-edit-val-error");
+			$(element).addClass("b-edit-val-valid");
+	}
 		
 	/*	this.showDefault = function(element){
 			

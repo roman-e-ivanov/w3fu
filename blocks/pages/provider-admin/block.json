@@ -4,16 +4,21 @@
 		"all": {
 			"call": "layouts/1140",
 			"args": {
-				"title": "Создание компании", 
+				"title": "Редактирование/удаление компании", 
 				"keywords": "Ключевые слова",
 				"description": "Описание",
 				"style": "root/html.css",
 				"script": "root/html.js",
 				"content": {
-					"call": "forms/provider",
+					"fill": {"file": "provider-admin.html"},
 					"args":{
-						"method": "POST",
-						"action":"/home/providers"
+						"form-edit":{
+							"call": "forms/provider",
+							"args":{
+								"method": "PUT",
+								"action":""
+							}
+						}
 					}
 				}
 			}
