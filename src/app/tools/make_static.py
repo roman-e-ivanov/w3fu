@@ -1,4 +1,4 @@
-from app.view import blocks
+from app.view import view
 
 
-blocks.make_static()
+view.make_static()
