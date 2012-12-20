@@ -1,22 +1,22 @@
 {
-	"include": ["errors"],
-	"body": {
-		"all": {
-			"call": "errors",
-			"args": {
-				"element-code":{
-					"fill": {"file": "edit.html"},
-					"args": {
-						"value": {
-							"if" : {"data":["value"]},
-							"true": {"data":["value"]},
-							"false": {"data": ["form", "src", {"data": ["name"]}]}
-						}
-					}
-				},
-				"error-class": "b-edit-error",
-				"error-code": {"data": ["form", "errors", {"data": ["name"]}, "code"]}
-			}
-		}
-	}
+    "include" : ["errors"],
+    "body" : {
+        "all" : {
+            "call" : "errors",
+            "args" : {
+                "element-code" : {
+                    "fill" : {"file" : "edit.html"},
+                    "args" : {
+                        "value" : {
+                            "if" : {"data" : ["value"]},
+                            "true" : {"data" : ["value"]},
+                            "false" : {"data" : ["form", "src", {"data" : ["name"]}]}
+                        }
+                    }
+                },
+                "error-class" : "b-edit-error",
+                "error-code" : {"data" : ["form", "errors", {"data" : ["name"]}, "code"]}
+            }
+        }
+    }
 }

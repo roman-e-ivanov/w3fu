@@ -1,27 +1,26 @@
 {
-	"include": ["layouts/1140", "forms/provider"],
-	"body": {
-		"all": {
-			"call": "layouts/1140",
-			"args": {
-				"title": "Редактирование/удаление компании", 
-				"keywords": "Ключевые слова",
-				"description": "Описание",
-				"style": "root/html.css",
-				"script": "root/html.js",
-				"content": {
-					"fill": {"file": "provider-admin.html"},
-					"args":{
-						"form-edit":{
-							"call": "forms/provider",
-							"args":{
-								"method": "PUT",
-								"action":""
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+    "include" : ["layouts/1140", "forms/provider"],
+    "body" : {
+        "all" : {
+            "call" : "layouts/1140",
+            "args" : {
+                "title" : "Редактирование/удаление компании",
+                "keywords" : "Ключевые слова",
+                "description" : "Описание",
+                "style" : "root/html.css",
+                "script" : "root/html.js",
+                "content" : {
+                    "fill" : {"file" : "provider-admin.html"},
+                    "args" : {
+                        "form-edit" : {
+                            "call" : "forms/provider",
+                            "args" : {
+                                "method" : "PUT"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

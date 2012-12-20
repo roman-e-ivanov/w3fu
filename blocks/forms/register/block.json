@@ -1,29 +1,29 @@
 {
-	"include": ["forms/components/edit", "forms/components/button"],
-	"body": {
-		"all": {
-			"fill": {"file": "form-register.html"},
-			"args" : {
-				"edit-login" : {
-					"call": "forms/components/edit",
-					"args":{
-						"type": "text",
-						"name" : "email",
-						"class": "b-edit",
-						"maxlength": "254"
-					}
-				},
-				"error-msg" :{
-					"if": {"data": ["error"]},
-					"true": {"data" : [{"data": ["error"]}], "ctx": {"user-exists": "Пользователь существует"}}
-				},
-				"submit" :{
-					"call" : "forms/components/button",
-					"args" : {
-						"value" : "ОК"
-					}
-				}
-			}
-		}
-	}
+    "include" : ["forms/components/edit", "forms/components/button"],
+    "body" : {
+        "all" : {
+            "fill" : {"file" : "form-register.html"},
+            "args" : {
+                "edit-login" : {
+                    "call" : "forms/components/edit",
+                    "args" :{
+                        "type" : "text",
+                        "name" : "email",
+                        "class" : "b-edit",
+                        "maxlength" : "254"
+                    }
+                },
+                "error-msg" : {
+                    "if" : {"data" : ["error"]},
+                    "true" : {"data" : [{"data" : ["error"]}], "ctx" : {"user-exists" : "Пользователь существует"}}
+                },
+                "submit" : {
+                    "call" : "forms/components/button",
+                    "args" : {
+                        "value" : "ОК"
+                    }
+                }
+            }
+        }
+    }
 }
