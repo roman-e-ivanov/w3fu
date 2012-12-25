@@ -85,10 +85,10 @@ class ServicesListAdmin(Resource):
     html = HTML(view['pages/services-list-admin'], public_mixins)
 
     @html.GET
-    def get(self, req, provider_id_):
-        if not req.user.can_write(provider_id_):
+    def get(self, req, provider_id):
+        if not req.user.can_write(provider_id):
             raise Forbidden
-        services = Service.find_provider(provider_id_)
+        services = Service.find_provider(provider_id)
         services_paths = dict([(service.id, paths(service))
                                 for service in services])
         return OK({'services': services, 'paths': services_paths})
