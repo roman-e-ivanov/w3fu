@@ -15,7 +15,7 @@ class UserState(object):
         self._required = required
 
     def __call__(self, handler):
-        def f(res, req, **kwargs):
+        def f(res, req, *args, **kwargs):
             if not hasattr(req, 'user'):
                 session_id = self._read_cookie(req)
                 if session_id is None:
@@ -25,7 +25,7 @@ class UserState(object):
                                                        datetime.utcnow())
             if self._required and req.user is None:
                 raise Forbidden
-            return handler(res, req, **kwargs)
+            return handler(res, req, *args, **kwargs)
         return f
 
     @classmethod

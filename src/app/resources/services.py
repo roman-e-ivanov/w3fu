@@ -1,19 +1,19 @@
-from w3fu.http import Response
-from w3fu.routing import Route
-from w3fu.args import StrArg, IdArg
-from w3fu.resources import Form
+from w3fu.http import OK, Redirect, Forbidden, NotFound
+from w3fu.args import StrArg
+from w3fu.resources import Resource, Form, HTML
+from w3fu.util import class_wrapper
 
-from app.resources import Resource
-from app.resources.middleware.context import user
-from app.resources.middleware.transform import xml
-
+from app.routing import router
+from app.view import view
+from app.mixins import public_mixins
 from app.storage.providers import Provider
 from app.storage.services import Service
+from app.state import UserState
 
 
-def block_service(doc):
-    nav = {'main': ServiceAdmin.route.path(id=doc.id)}
-    return {'doc': doc, 'nav': nav}
+def paths(service):
+    return dict([(name, router[name].path(id_=service.id))
+                 for name in ['service_admin']])
 
 
 class ServiceForm(Form):
@@ -21,80 +21,74 @@ class ServiceForm(Form):
     name = StrArg('name', min_size=1, max_size=100)
 
 
+@class_wrapper(UserState(True))
 class ServicesAdmin(Resource):
 
-    route = Route('/home/providers/{id}/services', id=IdArg('id'))
+    html = HTML(view['pages/services-admin'], public_mixins)
 
-    @xml('pages/services-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        return Response.ok({})
-
-    @xml('pages/services-admin/html.xsl')
-    @user(required=True)
-    def post(self, ctx):
-        provider_id = ctx.args['id']
+    def __call__(self, req, provider_id):
+        if not req.user.can_write(provider_id):
+            raise Forbidden
         provider = Provider.find_id(provider_id)
         if provider is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(provider_id):
-            return Response.forbidden()
-        form = ServiceForm(ctx.req)
-        if form.errors:
-            return Response.ok({'form': form})
-        service = Service.new(provider_id, form.data['name'])
-        service.Service.insert(service)
-        return Response.redirect(ServiceAdmin.route.url(ctx.req,
-                                                        id=service.id))
+            raise NotFound
+        return super(ServicesAdmin, self).__call__(req, provider)
+
+    @html.GET
+    def get(self, req, provider):
+        return OK({})
+
+    @html.POST
+    @ServiceForm.handler()
+    def post(self, req, provider):
+        service = Service.new(provider.id, req.form.data['name'])
+        Service.insert(service)
+        raise Redirect(router['service_admin'] \
+                       .url(req, service_id=service.id))
 
 
+@class_wrapper(UserState(True))
 class ServiceAdmin(Resource):
 
-    route = Route('/home/services/{id}', id=IdArg('id'))
+    html = HTML(view['pages/service-admin'], public_mixins)
 
-    @xml('pages/service-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        service = Service.find_id(ctx.args['id'])
+    def __call__(self, req, service_id):
+        service = Service.find_id(service_id)
         if service is None:
-            return Response.not_found()
-        return Response.ok({'service': service})
+            raise NotFound
+        if not req.user.can_write(service.provider_id):
+            raise Forbidden
+        return super(ServiceAdmin, self).__call__(req, service)
 
-    @xml('pages/service-admin/html.xsl')
-    @user(required=True)
-    def put(self, ctx):
-        service = Service.find_id(ctx.args['id'])
-        if service is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(service.provider_id):
-            return Response.forbidden()
-        form = ServiceForm(ctx.req)
-        if form.errors:
-            return Response.ok({'form': form})
-        service.name = form.data['name']
+    @html.GET
+    def get(self, req, service):
+        return OK({'service': service})
+
+    @html.PUT
+    @ServiceForm.handler()
+    def put(self, req, service):
+        service.name = req.form.data['name']
         Service.update(service)
-        location = ServicesListAdmin.route.url(ctx.req, id=service.provider_id)
-        return Response.redirect(location)
+        raise Redirect(router['services_list_admin'] \
+                       .url(req, provider_id=service.provider_id))
 
-    @user(required=True)
-    def delete(self, ctx):
-        service = Service.find_id(ctx.args['id'])
-        if service is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(service.provider_id):
-            return Response.forbidden()
+    @html.DELETE
+    def delete(self, req, service):
         Service.remove_id(service.id)
-        location = ServicesListAdmin.route.url(ctx.req, id=service.provider_id)
-        return Response.redirect(location)
+        raise Redirect(router['services_list_admin'] \
+                       .url(req, provider_id=service.provider_id))
 
 
+@class_wrapper(UserState(True))
 class ServicesListAdmin(Resource):
 
-    route = Route('/home/providers/{id}/services/list', id=IdArg('id'))
+    html = HTML(view['pages/services-list-admin'], public_mixins)
 
-    @xml('pages/services-list-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        found = Service.find_provider(ctx.args['id'])
-        return Response.ok({'services': [block_service(doc)
-                                         for doc in found]})
+    @html.GET
+    def get(self, req, provider_id_):
+        if not req.user.can_write(provider_id_):
+            raise Forbidden
+        services = Service.find_provider(provider_id_)
+        services_paths = dict([(service.id, paths(service))
+                                for service in services])
+        return OK({'services': services, 'paths': services_paths})

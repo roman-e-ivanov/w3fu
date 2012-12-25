@@ -64,7 +64,7 @@ class ShortcutLogin(Resource):
         user = User.find_shortcut(shortcut)
         if user is None:
             raise NotFound
-        return super(ShortcutLogin, self).__call__(req, user=user)
+        return super(ShortcutLogin, self).__call__(req, user)
 
     @html.GET
     def get(self, req, user):
@@ -94,5 +94,5 @@ class Register(Resource):
         user = User.new(req.form.data['email'])
         if not User.insert(user, True):
             raise Conflict({'error': 'user-exists'})
-        raise Redirect(router['shortcut_login'].url(req,
-                                                    shortcut=user.shortcut))
+        raise Redirect(router['shortcut_login'] \
+                       .url(req, shortcut=user.shortcut))

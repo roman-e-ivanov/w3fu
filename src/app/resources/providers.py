@@ -12,7 +12,7 @@ from app.state import UserState
 
 
 def paths(provider):
-    return dict([(name, router[name].path(id_=provider.id))
+    return dict([(name, router[name].path(provider_id=provider.id))
                  for name in ['provider_public', 'provider_admin']])
 
 
@@ -29,11 +29,11 @@ class ProviderPublic(Resource):
 
     html = HTML(view['pages/provider-public'], public_mixins)
 
-    def __call__(self, req, id_):
-        provider = Provider.find_id(id_)
+    def __call__(self, req, provider_id):
+        provider = Provider.find_id(provider_id)
         if provider is None:
             raise NotFound
-        return super(ProviderPublic, self).__call__(req, provider=provider)
+        return super(ProviderPublic, self).__call__(req, provider)
 
     @html.GET
     def get(self, req, provider):
@@ -60,7 +60,7 @@ class ProvidersAdmin(Resource):
         provider = Provider.new(req.form.data['name'])
         Provider.insert(provider)
         User.push_owned(req.user, provider.id)
-        raise Redirect(router['provider_admin'].url(req, id_=provider.id))
+        raise Redirect(router['provider_admin'].url(req, provider_id=provider.id))
 
 
 @class_wrapper(UserState(True))
@@ -68,13 +68,13 @@ class ProviderAdmin(Resource):
 
     html = HTML(view['pages/provider-admin'], public_mixins)
 
-    def __call__(self, req, id_):
-        if not req.user.can_write(id_):
+    def __call__(self, req, provider_id):
+        if not req.user.can_write(provider_id):
             raise Forbidden
-        provider = Provider.find_id(id_)
+        provider = Provider.find_id(provider_id)
         if provider is None:
             raise NotFound
-        return super(ProviderAdmin, self).__call__(req, provider=provider)
+        return super(ProviderAdmin, self).__call__(req, provider)
 
     @html.GET
     def get(self, req, provider):

@@ -11,13 +11,13 @@ OVERLOADABLE = frozenset(['POST', 'PUT', 'DELETE'])
 
 class Resource(object):
 
-    def __call__(self, req, **kwargs):
+    def __call__(self, req, *args, **kwargs):
         for fmt in req.formats:
             try:
                 renderer = getattr(self, fmt)
             except (KeyError, AttributeError):
                 continue
-            return renderer(self, req, **kwargs)
+            return renderer(self, req, *args, **kwargs)
         raise UnsupportedMediaType
 
 
@@ -32,7 +32,7 @@ class Renderer(object):
             return f
         return decorator
 
-    def _handle(self, res, req, **kwargs):
+    def _handle(self, res, req, *args, **kwargs):
         method = req.method
         if method == 'POST':
             overloaded = req.fs.getfirst('method')
@@ -45,7 +45,7 @@ class Renderer(object):
             handler = self._handlers[method]
         except KeyError:
             raise MethodNotAllowed
-        return handler(res, req, **kwargs)
+        return handler(res, req, *args, **kwargs)
 
 
 class HTML(Renderer):
@@ -56,9 +56,9 @@ class HTML(Renderer):
         self._mixins = mixins
         self._content_type = content_type
 
-    def __call__(self, res, req, **kwargs):
+    def __call__(self, res, req, *args, **kwargs):
         try:
-            resp = self._handle(res, req, **kwargs)
+            resp = self._handle(res, req, *args, **kwargs)
             self._render(req, resp)
             return resp
         except Error as e:
@@ -85,9 +85,9 @@ class JSON(Renderer):
         self._content_type = content_type
         self._no_redirect = no_redirect
 
-    def __call__(self, res, req, **kwargs):
+    def __call__(self, res, req, *args, **kwargs):
         try:
-            resp = self._handle(res, req, **kwargs)
+            resp = self._handle(res, req, *args, **kwargs)
             self._render(req, resp)
             return resp
         except Error as e:
@@ -123,11 +123,11 @@ class Form(object):
     @classmethod
     def handler(cls):
         def decorator(method):
-            def f(res, req, **kwargs):
+            def f(res, req, *args, **kwargs):
                 req.form = cls(req)
                 if req.form.errors:
                     raise BadRequest({})
-                return method(res, req, **kwargs)
+                return method(res, req, *args, **kwargs)
             return f
         return decorator
 
