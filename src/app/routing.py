@@ -17,4 +17,7 @@ router = Router(
                 services_list_admin=Route('/home/providers/{provider_id}/services/list', provider_id=IdArg('provider_id')),
                 services_admin=Route('/home/providers/{provider_id}/services', provider_id=IdArg('provider_id')),
                 service_admin=Route('/home/services/{service_id}', service_id=IdArg('service_id')),
+                workers_list_admin=Route('/home/providers/{provider_id}/workers/list', provider_id=IdArg('provider_id')),
+                workers_admin=Route('/home/providers/{provider_id}/workers', provider_id=IdArg('provider_id')),
+                worker_admin=Route('/home/workers/{worker_id}', worker_id=IdArg('worker_id')),
                 )

@@ -1,19 +1,19 @@
-from w3fu.http import Response
-from w3fu.routing import Route
-from w3fu.args import StrArg, IdArg
-from w3fu.resources import Form
+from w3fu.http import OK, Redirect, Forbidden, NotFound
+from w3fu.args import StrArg
+from w3fu.resources import Resource, Form, HTML
+from w3fu.util import class_wrapper
 
-from app.resources import Resource
-from app.resources.middleware.context import user
-from app.resources.middleware.transform import xml
-
+from app.routing import router
+from app.view import view
+from app.mixins import public_mixins
 from app.storage.providers import Provider
 from app.storage.workers import Worker
+from app.state import UserState
 
 
-def block_worker(doc):
-    nav = {'main': WorkerAdmin.route.path(id=doc.id)}
-    return {'doc': doc, 'nav': nav}
+def paths(worker):
+    return dict([(name, router[name].path(id_=worker.id))
+                 for name in ['worker_admin']])
 
 
 class WorkerForm(Form):
@@ -21,79 +21,74 @@ class WorkerForm(Form):
     name = StrArg('name', min_size=1, max_size=100)
 
 
+@class_wrapper(UserState(True))
 class WorkersAdmin(Resource):
 
-    route = Route('/home/providers/{id}/workers', id=IdArg('id'))
+    html = HTML(view['pages/workers-admin'], public_mixins)
 
-    @xml('pages/workers-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        return Response.ok({})
-
-    @xml('pages/workers-admin/html.xsl')
-    @user(required=True)
-    def post(self, ctx):
-        provider_id = ctx.args['id']
+    def __call__(self, req, provider_id):
+        if not req.user.can_write(provider_id):
+            raise Forbidden
         provider = Provider.find_id(provider_id)
         if provider is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(provider_id):
-            return Response.forbidden()
-        form = WorkerForm(ctx.req)
-        if form.errors:
-            return Response.ok({'form': form})
-        worker = Worker.new(provider_id, form.data['name'])
+            raise NotFound
+        return super(WorkersAdmin, self).__call__(req, provider)
+
+    @html.GET
+    def get(self, req, provider):
+        return OK({})
+
+    @html.POST
+    @WorkerForm.handler()
+    def post(self, req, provider):
+        worker = Worker.new(provider.id, req.form.data['name'])
         Worker.insert(worker)
-        return Response.redirect(WorkerAdmin.route.url(ctx.req, id=worker.id))
+        raise Redirect(router['worker_admin'] \
+                       .url(req, worker_id=worker.id))
 
 
+@class_wrapper(UserState(True))
 class WorkerAdmin(Resource):
 
-    route = Route('/home/workers/{id}', id=IdArg('id'))
+    html = HTML(view['pages/worker-admin'], public_mixins)
 
-    @xml('pages/worker-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        worker = Worker.find_id(ctx.args['id'])
+    def __call__(self, req, worker_id):
+        worker = Worker.find_id(worker_id)
         if worker is None:
-            return Response.not_found()
-        return Response.ok({'worker': worker})
+            raise NotFound
+        if not req.user.can_write(worker.provider_id):
+            raise Forbidden
+        return super(WorkerAdmin, self).__call__(req, worker)
 
-    @xml('pages/worker-admin/html.xsl')
-    @user(required=True)
-    def put(self, ctx):
-        worker = Worker.find_id(ctx.args['id'])
-        if worker is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(worker.provider_id):
-            return Response.forbidden()
-        form = WorkerForm(ctx.req)
-        if form.errors:
-            return Response.ok({'form': form})
-        worker.name = form.data['name']
+    @html.GET
+    def get(self, req, worker):
+        return OK({'worker': worker})
+
+    @html.PUT
+    @WorkerForm.handler()
+    def put(self, req, worker):
+        worker.name = req.form.data['name']
         Worker.update(worker)
-        location = WorkersListAdmin.route.url(ctx.req, id=worker.provider_id)
-        return Response.redirect(location)
+        raise Redirect(router['workers_list_admin'] \
+                       .url(req, provider_id=worker.provider_id))
 
-    @user(required=True)
-    def delete(self, ctx):
-        worker = Worker.find_id(ctx.args['id'])
-        if worker is None:
-            return Response.not_found()
-        if not ctx.state['user'].can_write(worker.provider_id):
-            return Response.forbidden()
+    @html.DELETE
+    def delete(self, req, worker):
         Worker.remove_id(worker.id)
-        location = WorkersListAdmin.route.url(ctx.req, id=worker.provider_id)
-        return Response.redirect(location)
+        raise Redirect(router['workers_list_admin'] \
+                       .url(req, provider_id=worker.provider_id))
 
 
+@class_wrapper(UserState(True))
 class WorkersListAdmin(Resource):
 
-    route = Route('/home/providers/{id}/workers/list', id=IdArg('id'))
+    html = HTML(view['pages/workers-list-admin'], public_mixins)
 
-    @xml('pages/workers-list-admin/html.xsl')
-    @user(required=True)
-    def get(self, ctx):
-        found = Worker.find_provider(ctx.args['id'])
-        return Response.ok({'workers': [block_worker(doc)
-                                        for doc in found]})
+    @html.GET
+    def get(self, req, provider_id):
+        if not req.user.can_write(provider_id):
+            raise Forbidden
+        workers = Worker.find_provider(provider_id)
+        workers_paths = dict([(worker.id, paths(worker))
+                                for worker in workers])
+        return OK({'workers': workers, 'paths': workers_paths})

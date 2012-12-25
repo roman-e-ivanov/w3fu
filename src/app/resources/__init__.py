@@ -8,6 +8,8 @@ from app.resources.providers import ProviderPublic, ProvidersPublic, \
     ProvidersListAdmin, ProviderAdmin, ProvidersAdmin
 from app.resources.services import \
     ServicesListAdmin, ServicesAdmin, ServiceAdmin
+from app.resources.workers import \
+    WorkersListAdmin, WorkersAdmin, WorkerAdmin
 
 
 router['test'].target = Test()
@@ -24,3 +26,6 @@ router['providers_list_admin'].target = ProvidersListAdmin()
 router['services_admin'].target = ServicesAdmin()
 router['service_admin'].target = ServiceAdmin()
 router['services_list_admin'].target = ServicesListAdmin()
+router['workers_admin'].target = WorkersAdmin()
+router['worker_admin'].target = WorkerAdmin()
+router['workers_list_admin'].target = WorkersListAdmin()
