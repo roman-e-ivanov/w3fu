@@ -13,7 +13,9 @@ from app.state import UserState
 
 def paths(provider):
     return dict([(name, router[name].path(provider_id=provider.id))
-                 for name in ['provider_public', 'provider_admin']])
+                 for name in ['provider_public', 'provider_admin',
+                              'services_list_admin', 'services_admin',
+                              'workers_list_admin', 'workers_admin']])
 
 
 class ProvidersPublic(Resource):
@@ -78,7 +80,7 @@ class ProviderAdmin(Resource):
 
     @html.GET
     def get(self, req, provider):
-        return OK({'provider': provider})
+        return OK({'provider': provider, 'paths': paths(provider)})
 
     @html.PUT
     @ProviderForm.handler()
