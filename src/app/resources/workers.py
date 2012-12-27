@@ -12,7 +12,7 @@ from app.state import UserState
 
 
 def paths(worker):
-    return dict([(name, router[name].path(id_=worker.id))
+    return dict([(name, router[name].path(worker_id=worker.id))
                  for name in ['worker_admin']])
 
 
