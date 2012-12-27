@@ -1,0 +1,34 @@
+{
+    "include" : ["layouts/1140"],
+    "body" : {
+        "all" : {
+            "call" : "layouts/1140",
+            "args" : {
+                "title" : "Список работников компании",
+                "keywords" : "Ключевые слова",
+                "description" : "Описание",
+                "style" : "root/html.css",
+                "script" : "root/html.js",
+                "content" : {
+                    "fill" : "<div><ul>{workers}</ul></div><a href=\"\">Add</a>",
+                    "args" : {
+                        "workers" : {
+                            "join" : {
+                                "map" : {
+                                    "fill" : "<li><a href=\"{href}\">{worker}</a></li>",
+                                    "args" : {
+                                        "worker" : {"data" : ["_", "name"]},
+                                        "href" : {"data" : ["paths", {"data" : ["_", "id"]}, "workers_admin"]}
+                                    }
+                                },
+                                "list" : {
+                                    "data" : ["workers"]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,12 +1,13 @@
 {
-	"js": true,
-	"css": true,
-	"include": [
-	            "pages/index",
-	            "pages/login",
-	            "pages/register",
-	            "pages/home",
-	            "pages/providers-admin",
-	            "pages/shortcut-login"
-	            ]
+    "js": true,
+    "css": true,
+    "include": [
+                "pages/index",
+                "pages/login",
+                "pages/register",
+                "pages/home",
+                "pages/providers-admin",
+                "pages/workers-admin",
+                "pages/shortcut-login"
+                ]
 }

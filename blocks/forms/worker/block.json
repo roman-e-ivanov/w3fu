@@ -1,0 +1,26 @@
+{
+    "include" : ["forms/components/edit", "forms/components/button"],
+    "body" : {
+        "all" : {
+            "fill" : {"file" : "form-worker.html"},
+            "args" : {
+                "edit-workers-name" : {
+                    "call" : "forms/components/edit",
+                    "args" : {
+                        "type" : "text",
+                        "name" : "name",
+                        "class" : "b-edit",
+                        "maxlength" : "254",
+                        "value" : {"data" : ["worker", "name"]}
+                    }
+                },
+                "submit" : {
+                    "call" : "forms/components/button",
+                    "args" : {
+                        "value" : "ОК"
+                    }
+                }
+            }
+        }
+    }
+}
