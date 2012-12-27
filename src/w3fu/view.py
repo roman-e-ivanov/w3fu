@@ -92,7 +92,8 @@ class Join(Function):
 
     def render(self, fmt, ctx):
         separator = self._args['separator'].render(fmt, ctx)
-        return separator.join([str(v) for v in self._data.render(fmt, ctx)])
+        return separator.join([unicode(v)
+                               for v in self._data.render(fmt, ctx)])
 
 
 class Map(Function):
