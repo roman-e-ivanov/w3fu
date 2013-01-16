@@ -4,25 +4,25 @@
         "all" : {
             "call" : "layouts/1140",
             "args" : {
-                "title" : "Список работников компании",
+                "title" : "Список сервисов компании",
                 "keywords" : "Ключевые слова",
                 "description" : "Описание",
                 "style" : "root/html.css",
                 "script" : "root/html.js",
                 "content" : {
-                    "fill" : "<div><ul>{workers-list}</ul></div>",
+                    "fill" : "<div><ul>{services-list}</ul></div>",
                     "args" : {
-                        "workers-list" : {
+                        "services-list" : {
                             "join" : {
                                 "map" : {
-                                    "fill" : "<li><a href=\"{href}\">{worker-name}</a></li>",
+                                    "fill" : "<li><a href=\"{href}\">{service-name}</a></li>",
                                     "args" : {
-                                        "worker-name" : {"data" : ["_", "name"]},
-                                        "href" : {"data" : ["paths", {"data" : ["_", "id"]}, "worker_admin"]}
+                                        "service-name" : {"data" : ["_", "name"]},
+                                        "href" : {"data" : ["paths", {"data" : ["_", "id"]}, "service_admin"]}
                                     }
                                 },
                                 "list" : {
-                                    "data" : ["workers"]
+                                    "data" : ["services"]
                                 }
                             }
                         }
