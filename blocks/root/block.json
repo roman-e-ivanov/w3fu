@@ -7,8 +7,14 @@
                 "pages/register",
                 "pages/home",
                 "pages/providers-admin",
+                "pages/providers-admin-list",
+                "pages/provider-admin",
                 "pages/workers-admin",
+                "pages/workers-admin-list",
+                "pages/worker-admin",
                 "pages/services-admin",
+                "pages/services-admin-list",
+                "pages/service-admin",
                 "pages/shortcut-login"
                 ]
 }
