@@ -1,8 +1,8 @@
 {
-	"include": ["layouts/simplegrid"],
+	"include": ["layouts/bootstrap"],
 	"body": {
 		"all": {
-			"call": "layouts/simplegrid",
+			"call": "layouts/bootstrap",
 			"args": {
 				"title": "Корневая страница", 
 				"keywords": "Ключевые слова",

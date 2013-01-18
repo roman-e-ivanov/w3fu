@@ -1,8 +1,8 @@
 {
-	"include": ["layouts/1140", "forms/login"],
+	"include": ["layouts/bootstrap", "forms/login"],
 	"body": {
 		"all": {
-			"call": "layouts/1140",
+			"call": "layouts/bootstrap",
 			"args": {
 				"title": "Вход в систему", 
 				"keywords": "Ключевые слова",
