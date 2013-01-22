@@ -3,6 +3,7 @@
 import sys
 import codecs
 
+from app.storage import places_c
 from app.storage.geo import Place
 
 
@@ -13,5 +14,5 @@ for line in codecs.getreader('cp1251')(sys.stdin):
     except ValueError:
         continue
     place = Place.new(ext_id, name, region, district)
-    if Place.insert():
+    if places_c.insert():
         print('\t'.join([str(ext_id), name, region, district]))

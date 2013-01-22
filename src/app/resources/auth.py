@@ -5,9 +5,10 @@ from w3fu.args import StrArg
 
 from app.routing import router
 from app.view import view
-from app.storage.auth import User
 from app.state import UserState
 from app.mixins import public_mixins
+from app.storage import users_c
+from app.storage.auth import User
 
 
 class RegisterForm(Form):
@@ -42,7 +43,7 @@ class Login(Resource):
     @html.POST
     @LoginForm.handler()
     def post(self, req):
-        user = User.find_email(req.form.data['email'])
+        user = users_c.find_email(req.form.data['email'])
         if user is None or not user.check_password(req.form.data['password']):
             raise BadRequest({'error': 'user-auth'})
         resp = Redirect(router['home'].url(req))
@@ -61,7 +62,7 @@ class ShortcutLogin(Resource):
     html = HTML(view['pages/shortcut-login'], public_mixins)
 
     def __call__(self, req, shortcut):
-        user = User.find_shortcut(shortcut)
+        user = users_c.find_shortcut(shortcut)
         if user is None:
             raise NotFound
         return super(ShortcutLogin, self).__call__(req, user)
@@ -74,7 +75,7 @@ class ShortcutLogin(Resource):
     @SetPasswordForm.handler()
     def post(self, req, user):
         user.set_password(req.form.data['password'])
-        User.update_password(user)
+        users_c.update_password(user)
         resp = Redirect(router['home'].url(req))
         UserState.login(resp, user)
         raise resp
@@ -92,7 +93,7 @@ class Register(Resource):
     @RegisterForm.handler()
     def post(self, req):
         user = User.new(req.form.data['email'])
-        if not User.insert(user, True):
+        if not users_c.insert(user, True):
             raise Conflict({'error': 'user-exists'})
         raise Redirect(router['shortcut_login'] \
                        .url(req, shortcut=user.shortcut))

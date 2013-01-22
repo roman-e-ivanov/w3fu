@@ -2,13 +2,12 @@ from datetime import datetime
 from uuid import uuid4
 
 from w3fu.util import b64e, salted_hash
-from w3fu.storage import safe, Property, ListContainer
+from w3fu.storage import safe, Collection, Document, Property, ListContainer
 
 from app import config
-from app.storage import Model
 
 
-class Session(Model):
+class Session(Document):
 
     id = Property('id')
     expires = Property('expires')
@@ -18,13 +17,7 @@ class Session(Model):
         self.expires = datetime.utcnow() + config.session_ttl
 
 
-class User(Model):
-
-    _collection = 'users'
-    _indexes = [('email', {'unique': True}),
-                ('shortcut', {}),
-                ('sessions.id', {}),
-                ('owned', {})]
+class User(Document):
 
     id = Property('_id')
     email = Property('email')
@@ -47,50 +40,50 @@ class User(Model):
     def can_write(self, provider_id):
         return provider_id in self.owned
 
-    @classmethod
-    @safe()
-    def push_session(cls, user, session):
-        cls._c().update({'_id': user.id},
-                      {'$push': {'sessions': session.raw}})
 
-    @classmethod
-    @safe()
-    def pull_session(cls, session_id):
-        cls._c().update({'sessions.id': session_id},
-                      {'$pull': {'sessions': {'id': session_id}}})
+class Users(Collection):
 
-    @classmethod
+    _indexes = [('email', {'unique': True}),
+                ('shortcut', {}),
+                ('sessions.id', {}),
+                ('owned', {})]
+
     @safe()
-    def push_owned(cls, user, provider_id):
-        cls._c().update({'_id': user.id},
+    def push_session(self, user, session):
+        self._c.update({'_id': user.id},
+                       {'$push': {'sessions': session.raw}})
+
+    @safe()
+    def pull_session(self, session_id):
+        self._c.update({'sessions.id': session_id},
+                       {'$pull': {'sessions': {'id': session_id}}})
+
+    @safe()
+    def push_owned(self, user, provider_id):
+        self._c.update({'_id': user.id},
                        {'$push': {'owned': provider_id}})
 
-    @classmethod
     @safe()
-    def pull_owned(cls, provider_id):
-        cls._c().update({'owned': provider_id},
-                      {'$pull': {'owned': provider_id}})
+    def pull_owned(self, provider_id):
+        self._c.update({'owned': provider_id},
+                       {'$pull': {'owned': provider_id}})
 
-    @classmethod
     @safe()
-    def update_password(cls, user):
-        cls._c().update({'_id': user.id},
-                      {'$set': {'password': user.password},
-                       '$unset': {'shortcut': 1}})
+    def update_password(self, user):
+        self._c.update({'_id': user.id},
+                       {'$set': {'password': user.password},
+                        '$unset': {'shortcut': 1}})
 
-    @classmethod
     @safe(True)
-    def find_email(cls, email):
-        return cls._c().find_one({'email': email})
+    def find_email(self, email):
+        return self._c.find_one({'email': email})
 
-    @classmethod
     @safe(True)
-    def find_shortcut(cls, shortcut):
-        return cls._c().find_one({'shortcut': shortcut})
+    def find_shortcut(self, shortcut):
+        return self._c.find_one({'shortcut': shortcut})
 
-    @classmethod
     @safe(True)
-    def find_valid_session(cls, id, expires):
-        query = {'sessions': {'$elemMatch': {'id': id,
+    def find_valid_session(self, session_id, expires):
+        query = {'sessions': {'$elemMatch': {'id': session_id,
                                              'expires': {'$gt': expires}}}}
-        return cls._c().find_one(query)
+        return self._c.find_one(query)

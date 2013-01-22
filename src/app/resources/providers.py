@@ -5,10 +5,10 @@ from w3fu.util import class_wrapper
 
 from app.routing import router
 from app.view import view
-from app.storage.auth import User
-from app.storage.providers import Provider
 from app.mixins import public_mixins
 from app.state import UserState
+from app.storage import users_c, providers_c
+from app.storage.providers import Provider
 
 
 def paths(provider):
@@ -32,7 +32,7 @@ class ProviderPublic(Resource):
     html = HTML(view['pages/provider-public'], public_mixins)
 
     def __call__(self, req, provider_id):
-        provider = Provider.find_id(provider_id)
+        provider = providers_c.find_id(provider_id)
         if provider is None:
             raise NotFound
         return super(ProviderPublic, self).__call__(req, provider)
@@ -60,8 +60,8 @@ class ProvidersAdmin(Resource):
     @ProviderForm.handler()
     def post(self, req):
         provider = Provider.new(req.form.data['name'])
-        Provider.insert(provider)
-        User.push_owned(req.user, provider.id)
+        providers_c.insert(provider)
+        users_c.push_owned(req.user, provider.id)
         raise Redirect(router['provider_admin'].url(req, provider_id=provider.id))
 
 
@@ -73,7 +73,7 @@ class ProviderAdmin(Resource):
     def __call__(self, req, provider_id):
         if not req.user.can_write(provider_id):
             raise Forbidden
-        provider = Provider.find_id(provider_id)
+        provider = providers_c.find_id(provider_id)
         if provider is None:
             raise NotFound
         return super(ProviderAdmin, self).__call__(req, provider)
@@ -86,13 +86,13 @@ class ProviderAdmin(Resource):
     @ProviderForm.handler()
     def put(self, req, provider):
         provider.name = req.form.data['name']
-        Provider.update(provider)
+        providers_c.update(provider)
         raise Redirect(router['providers_list_admin'].url(req))
 
     @html.DELETE
     def delete(self, req, provider):
-        User.pull_owned(provider.id)
-        Provider.remove_id(provider.id)
+        users_c.pull_owned(provider.id)
+        providers_c.remove_id(provider.id)
         raise Redirect(router['providers_list_admin'].url(req))
 
 
@@ -103,7 +103,7 @@ class ProvidersListAdmin(Resource):
 
     @html.GET
     def get(self, req):
-        providers = Provider.find_from_user(req.user)
+        providers = providers_c.find_from_user(req.user)
         providers_paths = dict([(provider.id, paths(provider))
                                 for provider in providers])
         return OK({'providers': providers, 'paths': providers_paths})

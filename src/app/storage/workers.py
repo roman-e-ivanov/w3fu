@@ -1,12 +1,7 @@
-from w3fu.storage import safe, Property
-
-from app.storage import Model
+from w3fu.storage import safe, Collection, Document, Property
 
 
-class Worker(Model):
-
-    _collection = 'workers'
-    _indexes = [('provider_id', {})]
+class Worker(Document):
 
     id = Property('_id')
     provider_id = Property('provider_id')
@@ -16,13 +11,16 @@ class Worker(Model):
         self.provider_id = provider_id
         self.name = name
 
-    @classmethod
-    @safe()
-    def update(cls, worker):
-        return cls._c().update({'_id': worker.id},
-                               {'$set': {'name': worker.name}})
 
-    @classmethod
+class Workers(Collection):
+
+    _indexes = [('provider_id', {})]
+
+    @safe()
+    def update(self, worker):
+        return self._c.update({'_id': worker.id},
+                              {'$set': {'name': worker.name}})
+
     @safe(True)
-    def find_provider(cls, provider_id):
-        return cls._c().find({'provider_id': provider_id})
+    def find_provider(self, provider_id):
+        return self._c.find({'provider_id': provider_id})

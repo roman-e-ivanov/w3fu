@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from w3fu.http import Forbidden
 from w3fu.args import StrArg, ArgError
 
-from app.storage.auth import User, Session
+from app.storage import users_c
+from app.storage.auth import Session
 
 
 class UserState(object):
@@ -21,8 +22,8 @@ class UserState(object):
                 if session_id is None:
                     req.user = None
                 else:
-                    req.user = User.find_valid_session(session_id,
-                                                       datetime.utcnow())
+                    req.user = users_c.find_valid_session(session_id,
+                                                          datetime.utcnow())
             if self._required and req.user is None:
                 raise Forbidden
             return handler(res, req, *args, **kwargs)
@@ -50,12 +51,12 @@ class UserState(object):
     @classmethod
     def login(cls, resp, user):
         session = Session.new()
-        User.push_session(user, session)
+        users_c.push_session(user, session)
         cls._write_cookie(resp, session.id)
 
     @classmethod
     def logout(cls, req, resp):
         session_id = cls._read_cookie(req)
         if session_id is not None:
-            User.pull_session(session_id)
+            users_c.pull_session(session_id)
         cls._delete_cookie(resp)

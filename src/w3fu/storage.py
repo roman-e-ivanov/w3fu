@@ -1,8 +1,36 @@
 from pymongo import Connection
 from pymongo.cursor import Cursor
 from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
-from pymongo.dbref import DBRef
 from copy import copy
+
+
+def safe(wrap=False):
+    def decorator(method):
+        def handler(self, *args, **kwargs):
+            tried = False
+            while True:
+                try:
+                    result = method(self, *args, **kwargs)
+                    if not wrap:
+                        return result
+                    if isinstance(result, Cursor):
+                        return [self.document_cls(doc) for doc in result]
+                    if result is not None:
+                        return self.document_cls(result)
+                    return None
+                except AutoReconnect as e:
+                    if tried:
+                        raise StorageError(e)
+                    tried = True
+                except DuplicateKeyError:
+                    return False
+                except PyMongoError as e:
+                    raise StorageError(e)
+        return handler
+    return decorator
+
+
+class StorageError(Exception): pass
 
 
 class Database(object):
@@ -21,72 +49,43 @@ class Database(object):
         self._connection.end_request()
 
 
-def safe(wrap=False):
-    def decorator(method):
-        def handler(cls, *args, **kwargs):
-            tried = False
-            while True:
-                try:
-                    result = method(cls, *args, **kwargs)
-                    if not wrap:
-                        return result
-                    if isinstance(result, Cursor):
-                        return [cls(doc) for doc in result]
-                    if result is not None:
-                        return cls(result)
-                    return None
-                except AutoReconnect as e:
-                    if tried:
-                        raise StorageError(e)
-                    tried = True
-                except DuplicateKeyError:
-                    return False
-                except PyMongoError as e:
-                    raise StorageError(e)
-        return handler
-    return decorator
+class Collection(object):
+
+    _indexes = []
+
+    def __init__(self, db, name, document_cls=None):
+        self._c = db.collection(name)
+        self.document_cls = document_cls
+        for index, kwargs in self._indexes:
+            self._c.ensure_index(index, **kwargs)
+
+    @safe()
+    def insert(self, doc, safe=False):
+        self._c.insert(doc.raw, safe=safe)
+        return True
+
+    @safe()
+    def remove_id(self, _id, safe=False):
+        return self._c.remove({'_id': _id}, safe=safe)
+
+    @safe(True)
+    def find_id(self, _id):
+        return self._c.find_one({'_id': _id})
 
 
-class BaseModelMeta(type):
+class DocumentMeta(type):
 
     def __init__(cls, name, bases, attrs):
         cls.props = {}
         for name, attr in attrs.iteritems():
             if hasattr(attr, 'dump'):
                 cls.props[name] = attr
-        super(BaseModelMeta, cls).__init__(name, bases, attrs)
+        super(DocumentMeta, cls).__init__(name, bases, attrs)
 
 
-class BaseModel(object):
+class Document(object):
 
-    __metaclass__ = BaseModelMeta
-
-    _collection = ''
-    _indexes = []
-
-    @classmethod
-    def name(cls):
-        return cls.__name__.lower()
-
-    @classmethod
-    def _c(cls):
-        return cls._database.collection(cls._collection)
-
-    @classmethod
-    @safe()
-    def insert(cls, doc, safe=False):
-        cls._c().insert(doc.raw, safe=safe)
-        return True
-
-    @classmethod
-    @safe()
-    def remove_id(cls, id, safe=False):
-        return cls._c().remove({'_id': id}, safe=safe)
-
-    @classmethod
-    @safe(True)
-    def find_id(cls, id):
-        return cls._c().find_one({'_id': id})
+    __metaclass__ = DocumentMeta
 
     @classmethod
     def new(cls, *args, **kwargs):
@@ -94,20 +93,12 @@ class BaseModel(object):
         doc._new(*args, **kwargs)
         return doc
 
-    def __init__(self, raw, collection=None):
+    def __init__(self, raw):
         self.raw = raw
-        self.collection = collection
         self.containers = {}
-
-    def _ensure_indexes(self):
-        for index, kwargs in self._indexes:
-            self._collection.ensure_index(index, **kwargs)
 
     def _new(self, *args, **kwargs):
         self.raw = dict(*args, **kwargs)
-
-    def ref(self):
-        return DBRef(self.collection.name(), self.id)
 
     def dump(self):
         doc = {}
@@ -217,5 +208,3 @@ class DictContainer(Container):
     def _dump(self, docs):
         return dict([(k, doc.dump()) for k, doc in docs.iteritems()])
 
-
-class StorageError(Exception): pass

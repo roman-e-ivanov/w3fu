@@ -2,7 +2,8 @@
 
 import sys
 
-from app.storage.geo import IpRange, Place
+from app.storage import places_c
+from app.storage.geo import IpRange
 
 
 range_by_id = {}
@@ -16,5 +17,5 @@ for line in sys.stdin:
         continue
     range_by_id.setdefault(ext_id, []).append(IpRange.new(begin, end))
 for ext_id, ranges in range_by_id.iteritems():
-    if not Place.replace_ranges(ext_id, ranges):
+    if not places_c.replace_ranges(ext_id, ranges):
         print(ext_id)

@@ -1,11 +1,7 @@
-from w3fu.storage import safe, Property
-
-from app.storage import Model
+from w3fu.storage import safe, Collection, Document, Property
 
 
-class Provider(Model):
-
-    _collection = 'providers'
+class Provider(Document):
 
     id = Property('_id')
     name = Property('name')
@@ -13,13 +9,14 @@ class Provider(Model):
     def _new(self, name):
         self.name = name
 
-    @classmethod
-    @safe()
-    def update(cls, provider):
-        return cls._c().update({'_id': provider.id},
-                               {'$set': {'name': provider.name}})
 
-    @classmethod
+class Providers(Collection):
+
+    @safe()
+    def update(self, provider):
+        return self._c.update({'_id': provider.id},
+                              {'$set': {'name': provider.name}})
+
     @safe(True)
-    def find_from_user(cls, user):
-        return cls._c().find({'_id': {'$in': user.owned}})
+    def find_from_user(self, user):
+        return self._c.find({'_id': {'$in': user.owned}})

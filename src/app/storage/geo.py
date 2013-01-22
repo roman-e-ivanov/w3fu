@@ -1,9 +1,7 @@
-from w3fu.storage import safe, Property
-
-from app.storage import Model
+from w3fu.storage import safe, Collection, Document, Property
 
 
-class IpRange(Model):
+class IpRange(Document):
 
     begin = Property('a')
     end = Property('b')
@@ -16,12 +14,7 @@ class IpRange(Model):
         return self.begin <= ip <= self.end
 
 
-class Place(Model):
-
-    _collection = 'places'
-    _indexes = [('ext_id', {'unique': True}),
-               ('pattern', {}),
-               ('ranges.a', {})]
+class Place(Document):
 
     id = Property('_id')
     ext_id = Property('ext_id', hidden=True)
@@ -44,28 +37,31 @@ class Place(Model):
                 return True
         return False
 
-    @classmethod
-    @safe()
-    def replace_ranges(cls, ext_id, ranges):
-        raw = [range.raw for range in ranges]
-        return cls._c().update({'ext_id': ext_id}, {'$set': {'ranges': raw}},
-                               safe=True)['n']
 
-    @classmethod
+class Places(Collection):
+
+    _indexes = [('ext_id', {'unique': True}),
+               ('pattern', {}),
+               ('ranges.a', {})]
+
+    @safe()
+    def replace_ranges(self, ext_id, ranges):
+        raw = [range.raw for range in ranges]
+        return self._c.update({'ext_id': ext_id}, {'$set': {'ranges': raw}},
+                              safe=True)['n']
+
     @safe(True)
-    def find_ip(cls, ip):
-        doc = cls._c().find_one({'ips.a': {'$lte': ip}}).sort('ranges.a', -1)
+    def find_ip(self, ip):
+        doc = self._c.find_one({'ips.a': {'$lte': ip}}).sort('ranges.a', -1)
         if doc is not None and doc.has_ip(ip):
             return doc
         return None
 
-    @classmethod
     @safe(True)
-    def find_pattern(cls, pattern):
-        return cls._c().find({'pattern': {'$regex': '^' + pattern.lower()}}
-                                     ).sort('pattern').limit(10)
+    def find_pattern(self, pattern):
+        return self._c.find({'pattern': {'$regex': '^' + pattern.lower()}}
+                            ).sort('pattern').limit(10)
 
-    @classmethod
     @safe(True)
-    def find_name(cls, name):
-        return cls._c().find_one({'pattern': name.lower()})
+    def find_name(self, name):
+        return self._c.find_one({'pattern': name.lower()})
