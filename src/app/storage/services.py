@@ -8,7 +8,7 @@ class ServiceGroup(Document):
     id = Property('_id')
 
     def _new(self):
-        self._id = ObjectId
+        self.id = ObjectId()
 
 
 class Service(Document):
@@ -21,7 +21,7 @@ class Service(Document):
     def _new(self, provider_id, name):
         self.provider_id = provider_id
         self.name = name
-        self.groups = [ServiceGroup()]
+        self.groups = [ServiceGroup.new()]
 
 
 class Services(Collection):
@@ -37,6 +37,10 @@ class Services(Collection):
     @safe(True)
     def find_provider(self, provider_id):
         return self._c.find({'provider_id': provider_id})
+
+    @safe(True)
+    def find_group(self, group_id):
+        return self._c.find({'groups._id': group_id})
 
     @safe()
     def pull_group(self, group_id):

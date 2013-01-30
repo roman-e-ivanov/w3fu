@@ -7,7 +7,8 @@ from app.resources.auth import ShortcutLogin, Login, Register
 from app.resources.providers import ProviderPublic, ProvidersPublic, \
     ProvidersListAdmin, ProviderAdmin, ProvidersAdmin
 from app.resources.services import \
-    ServicesListAdmin, ServicesAdmin, ServiceAdmin
+    ServicesListAdmin, ServicesAdmin, ServiceAdmin, \
+    ServiceGroupsAdmin, ServiceGroupAdmin
 from app.resources.workers import \
     WorkersListAdmin, WorkersAdmin, WorkerAdmin
 
@@ -26,6 +27,8 @@ router['providers_list_admin'].target = ProvidersListAdmin()
 router['services_admin'].target = ServicesAdmin()
 router['service_admin'].target = ServiceAdmin()
 router['services_list_admin'].target = ServicesListAdmin()
+router['service_groups_admin'].target = ServiceGroupsAdmin()
+router['service_group_admin'].target = ServiceGroupAdmin()
 router['workers_admin'].target = WorkersAdmin()
 router['worker_admin'].target = WorkerAdmin()
 router['workers_list_admin'].target = WorkersListAdmin()

@@ -161,7 +161,7 @@ class Container(Property):
         doc.containers[self._name] = value
 
     def _wrap(self, doc, raw):
-        return self._cls(doc.collection, raw)
+        return self._cls(raw)
 
     def _unwrap(self, doc):
         return doc.raw
@@ -170,22 +170,13 @@ class Container(Property):
         return doc.dump()
 
 
-class Reference(Container):
-
-    def _wrap(self, doc, raw):
-        return self._cls(doc.collection, doc.collection.storage.deref(raw))
-
-    def _unwrap(self, doc):
-        return doc.ref()
-
-
 class ListContainer(Container):
 
     def __init__(self, name, cls, hidden=False):
         super(ListContainer, self).__init__(name, cls, [], hidden)
 
     def _wrap(self, doc, raw):
-        return [self._cls(doc.collection, v) for v in raw]
+        return [self._cls(v) for v in raw]
 
     def _unwrap(self, docs):
         return [doc.raw for doc in docs]
@@ -200,7 +191,7 @@ class DictContainer(Container):
         super(DictContainer, self).__init__(name, cls, {}, hidden)
 
     def _wrap(self, doc, raw):
-        return dict([(k, self._cls(doc.collection, v)) for k, v in raw.iteritems()])
+        return dict([(k, self._cls(v)) for k, v in raw.iteritems()])
 
     def _unwrap(self, docs):
         return dict([(k, doc.raw) for k, doc in docs.iteritems()])
