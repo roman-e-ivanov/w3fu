@@ -13,13 +13,15 @@ from app.storage.services import Service, ServiceGroup
 
 def _group(doc):
     block = doc.dump()
-    block['admin_path'] = router['service_group_admin'].path(group_id=doc.id)
+    block['paths'] = dict([(name, router[name].path(group_id=doc.id))
+                           for name in ['service_group_admin']])
     return block
 
 
 def _service(doc):
     block = doc.dump()
-    block['admin_path'] = router['service_admin'].path(service_id=doc.id)
+    block['paths'] = dict([(name, router[name].path(service_id=doc.id))
+                           for name in ['service_admin']])
     block['groups'] = [_group(group) for group in doc.groups]
     return block
 

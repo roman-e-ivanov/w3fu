@@ -11,9 +11,11 @@ from app.storage import providers_c, workers_c
 from app.storage.workers import Worker
 
 
-def paths(worker):
-    return dict([(name, router[name].path(worker_id=worker.id))
-                 for name in ['worker_admin']])
+def _worker(doc):
+    block = doc.dump()
+    block['paths'] = dict([(name, router[name].path(worker_id=doc.id))
+                           for name in ['worker_admin']])
+    return block
 
 
 class WorkerForm(Form):
@@ -62,7 +64,7 @@ class WorkerAdmin(Resource):
 
     @html.GET
     def get(self, req, worker):
-        return OK({'worker': worker})
+        return OK({'worker': _worker(worker)})
 
     @html.PUT
     @WorkerForm.handler()
@@ -89,6 +91,4 @@ class WorkersListAdmin(Resource):
         if not req.user.can_write(provider_id):
             raise Forbidden
         workers = workers_c.find_provider(provider_id)
-        workers_paths = dict([(worker.id, paths(worker))
-                                for worker in workers])
-        return OK({'workers': workers, 'paths': workers_paths})
+        return OK({'workers': [_worker(worker) for worker in workers]})

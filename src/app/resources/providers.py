@@ -11,11 +11,13 @@ from app.storage import users_c, providers_c
 from app.storage.providers import Provider
 
 
-def paths(provider):
-    return dict([(name, router[name].path(provider_id=provider.id))
-                 for name in ['provider_public', 'provider_admin',
-                              'services_list_admin', 'services_admin',
-                              'workers_list_admin', 'workers_admin']])
+def _provider(doc):
+    block = doc.dump()
+    block['paths'] = dict([(name, router[name].path(provider_id=doc.id))
+                           for name in ['provider_public', 'provider_admin',
+                                        'services_list_admin', 'services_admin',
+                                        'workers_list_admin', 'workers_admin']])
+    return block
 
 
 class ProvidersPublic(Resource):
@@ -39,7 +41,7 @@ class ProviderPublic(Resource):
 
     @html.GET
     def get(self, req, provider):
-        return OK({'provider': provider})
+        return OK({'provider': _provider(provider)})
 
 
 class ProviderForm(Form):
@@ -80,7 +82,7 @@ class ProviderAdmin(Resource):
 
     @html.GET
     def get(self, req, provider):
-        return OK({'provider': provider, 'paths': paths(provider)})
+        return OK({'provider': _provider(provider)})
 
     @html.PUT
     @ProviderForm.handler()
@@ -104,6 +106,5 @@ class ProvidersListAdmin(Resource):
     @html.GET
     def get(self, req):
         providers = providers_c.find_from_user(req.user)
-        providers_paths = dict([(provider.id, paths(provider))
-                                for provider in providers])
-        return OK({'providers': providers, 'paths': providers_paths})
+        return OK({'providers': [_provider(provider)
+                                 for provider in providers]})
