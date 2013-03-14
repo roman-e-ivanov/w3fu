@@ -40,7 +40,7 @@ class Services(Collection):
 
     @safe(True)
     def find_group(self, group_id):
-        return self._c.find({'groups._id': group_id})
+        return self._c.find_one({'groups._id': group_id})
 
     @safe()
     def pull_group(self, group_id):
