@@ -21,7 +21,8 @@ def _group(doc):
 def _service(doc):
     block = doc.dump()
     block['paths'] = dict([(name, router[name].path(service_id=doc.id))
-                           for name in ['service_admin']])
+                           for name in ['service_admin',
+                                        'service_groups_admin']])
     block['groups'] = [_group(group) for group in doc.groups]
     return block
 
