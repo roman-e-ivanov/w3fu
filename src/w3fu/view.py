@@ -98,13 +98,15 @@ class Join(Function):
 
 class Map(Function):
 
-    _required = {'list': None, 'local': '_'}
+    _required = {'list': None, 'item': '_', 'index': '#'}
 
     def render(self, fmt, ctx):
-        local = self._args['local'].render(fmt, ctx)
+        item_param = self._args['item'].render(fmt, ctx)
+        index_param = self._args['index'].render(fmt, ctx)
         new_ctx = dict(ctx)
-        for v in self._args['list'].render(fmt, ctx):
-            new_ctx[local] = v
+        for index, item in enumerate(self._args['list'].render(fmt, ctx)):
+            new_ctx[index_param] = index
+            new_ctx[item_param] = item
             yield(self._data.render(fmt, new_ctx))
 
 
