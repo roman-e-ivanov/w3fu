@@ -18,7 +18,7 @@
                                     "fill" : "<li><a href=\"{href}\">{service-name}</a></li>",
                                     "args" : {
                                         "service-name" : {"data" : ["_", "name"]},
-                                        "href" : {"data" : ["paths", {"data" : ["_", "id"]}, "service_admin"]}
+                                        "href" : {"data" : ["_", "paths", "service_admin"]}
                                     }
                                 },
                                 "list" : {

@@ -1,7 +1,23 @@
+<h1>Создать/редактировать сервис</h1>
 {form-edit}
 <div>
 <form method="POST" action="" class="">
 <input type="hidden" name="method" value="DELETE" />
 <input type="submit" class="b-button" value="Удалить" />
+</form>
+</div>
+<hr />
+
+<h2>Группы</h2>
+{add-group}
+{groups-list}
+<hr />
+
+<h2>Расписание</h2>
+<div>
+<form method="POST" action="{schedule-action}" class="">
+<table>{schedule-tr}</table>
+<input type="hidden" name="method" value="POST" />
+<input type="submit" class="b-button" value="Сохранить" />
 </form>
 </div>

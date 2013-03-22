@@ -18,11 +18,11 @@
                                     "fill" : "<li><a href=\"{href}\">{provider}</a>   <a href=\"{href-workers}\">Workers</a>   <a href=\"{href-workers-add}\">Add worker</a>   <a href=\"{href-service}\">Services</a>   <a href=\"{href-service-add}\">Add Service</a></li>",
                                     "args" : {
                                         "provider" : {"data" : ["_", "name"]},
-                                        "href" : {"data" : ["paths", {"data" : ["_", "id"]}, "provider_admin"]},
-                                        "href-workers" : {"data" : ["paths", {"data" : ["_", "id"]}, "workers_list_admin"]},
-                                        "href-workers-add" : {"data" : ["paths", {"data" : ["_", "id"]}, "workers_admin"]},
-                                        "href-service" : {"data" : ["paths", {"data" : ["_", "id"]}, "services_list_admin"]},
-                                        "href-service-add" : {"data" : ["paths", {"data" : ["_", "id"]}, "services_admin"]}
+                                        "href" : {"data" : ["_", "paths", "provider_admin"]},
+                                        "href-workers" : {"data" : ["_", "paths", "workers_list_admin"]},
+                                        "href-workers-add" : {"data" : ["_", "paths", "workers_admin"]},
+                                        "href-service" : {"data" : ["_", "paths", "services_list_admin"]},
+                                        "href-service-add" : {"data" : ["_", "paths", "services_admin"]}
                                     }
                                 },
                                 "list" : {
