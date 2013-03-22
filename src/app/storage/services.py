@@ -1,6 +1,9 @@
 from bson import ObjectId
 
-from w3fu.storage import safe, Collection, Document, Property, ListContainer
+from w3fu.storage import safe, Collection, Document, Property, \
+    Container, ListContainer
+
+from app.storage.schedule import Schedule
 
 
 class ServiceGroup(Document):
@@ -17,11 +20,13 @@ class Service(Document):
     provider_id = Property('provider_id')
     name = Property('name')
     groups = ListContainer('groups', ServiceGroup)
+    schedule = Container('schedule', Schedule)
 
     def _new(self, provider_id, name):
         self.provider_id = provider_id
         self.name = name
         self.groups = [ServiceGroup.new()]
+        self.schedule = Schedule.new()
 
 
 class Services(Collection):
