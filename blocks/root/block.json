@@ -7,13 +7,13 @@
                 "pages/register",
                 "pages/home",
                 "pages/providers-admin",
-                "pages/providers-admin-list",
+                "pages/providers-list-admin",
                 "pages/provider-admin",
                 "pages/workers-admin",
-                "pages/workers-admin-list",
+                "pages/workers-list-admin",
                 "pages/worker-admin",
                 "pages/services-admin",
-                "pages/services-admin-list",
+                "pages/services-list-admin",
                 "pages/service-admin",
                 "pages/shortcut-login"
                 ]

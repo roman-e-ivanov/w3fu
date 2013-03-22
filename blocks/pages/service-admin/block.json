@@ -1,5 +1,5 @@
 {
-    "include" : ["layouts/1140", "forms/service"],
+    "include" : ["layouts/1140", "forms/service", "forms/schedule"],
     "body" : {
         "all" : {
             "call" : "layouts/1140",
@@ -38,47 +38,11 @@
                                 "item" : "item"
                             }
                         },
-                        "schedule-action" : {"data" : ["service", "paths", "service_schedule_admin"]},
-                        "schedule-tr" : {
-                            "join" : {
-                                "map" : {
-                                    "fill" : "<tr><td>{time}</td>{days-td}</tr>",
-                                    "args" : {
-                                        "days-td" : {
-                                            "join" : {
-                                                "map" : {
-                                                    "fill" : "<td><input type=\"checkbox\" name=\"{name}\" value=\"1\" {checked}/></td>",
-                                                    "args" : {
-                                                        "checked" : {
-                                                            "if" : {"data" : ["day"]},
-                                                            "true" : "checked=\"cheked\"" 
-                                                        },
-                                                        "name" : {
-                                                            "fill" : "s_{x}_{y}",
-                                                            "args" : {
-                                                                "y" : {"data": ["day_i"]},
-                                                                "x" : {"data": ["hour_i"]}
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                "list" : {
-                                                    "data" : ["hour", "by_day"]
-                                                },
-                                                "item" : "day",
-                                                "index" : "day_i"
-                                            }
-                                        },
-                                        "time" : {
-                                            "data" : ["hour", "label"]
-                                        }
-                                    }
-                                },
-                                "list" : {
-                                    "data" : ["service", "schedule"]
-                                },
-                                "item" : "hour",
-                                "index" : "hour_i"
+                        "schedule" : {
+                            "call" : "forms/schedule",
+                            "args" : {
+                                "_schedule" : {"data" : ["service", "schedule"]},
+                                "_action" : {"data" : ["service", "paths", "service_schedule_admin"]}
                             }
                         }
                     }

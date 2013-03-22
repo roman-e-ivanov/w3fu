@@ -1,0 +1,52 @@
+{
+    "body" : {
+        "all" : {
+            "fill" : {"file" : "schedule.html"},
+            "args" : {
+                "schedule-action" : {"data" : ["_action"]},
+                "schedule-tr" : {
+                    "join" : {
+                        "map" : {
+                            "fill" : "<tr><td>{time}</td>{days-td}</tr>",
+                            "args" : {
+                                "days-td" : {
+                                    "join" : {
+                                        "map" : {
+                                            "fill" : "<td><input type=\"checkbox\" name=\"{name}\" value=\"1\" {checked}/></td>",
+                                            "args" : {
+                                                "checked" : {
+                                                    "if" : {"data" : ["day"]},
+                                                    "true" : "checked=\"cheked\"" 
+                                                },
+                                                "name" : {
+                                                    "fill" : "s_{x}_{y}",
+                                                    "args" : {
+                                                        "y" : {"data": ["day_i"]},
+                                                        "x" : {"data": ["hour_i"]}
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "list" : {
+                                            "data" : ["hour", "by_day"]
+                                        },
+                                        "item" : "day",
+                                        "index" : "day_i"
+                                    }
+                                },
+                                "time" : {
+                                    "data" : ["hour", "label"]
+                                }
+                            }
+                        },
+                        "list" : {
+                            "data" : ["_schedule"]
+                        },
+                        "item" : "hour",
+                        "index" : "hour_i"
+                    }
+                }
+            }
+        }
+    }
+}
