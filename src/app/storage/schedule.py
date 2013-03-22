@@ -24,7 +24,7 @@ class Schedule(Document):
         for slot in range(SLOTS_PER_DAY):
             m = (slot * SLOT_SIZE) // 60
             h, m = divmod(m, 60)
-            label = '{0:2}:{1:2}'.format(h, m)
+            label = '{0:02}:{1:02}'.format(h, m)
             slots = {'label': label,
                      'by_day': [flat_slots[day][slot]
                                 for day in range(7)]}
