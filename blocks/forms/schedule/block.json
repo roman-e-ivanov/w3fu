@@ -16,7 +16,7 @@
                                             "args" : {
                                                 "checked" : {
                                                     "if" : {"data" : ["day"]},
-                                                    "true" : "checked=\"cheked\"" 
+                                                    "true" : "checked=\"checked\"" 
                                                 },
                                                 "name" : {
                                                     "fill" : "s_{x}_{y}",
