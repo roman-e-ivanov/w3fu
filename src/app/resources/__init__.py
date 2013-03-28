@@ -8,7 +8,7 @@ from app.resources.providers import ProviderPublic, ProvidersPublic, \
     ProvidersListAdmin, ProviderAdmin, ProvidersAdmin
 from app.resources.services import \
     ServicesListAdmin, ServicesAdmin, ServiceAdmin, \
-    ServiceGroupsAdmin, ServiceGroupAdmin
+    ServiceScheduleAdmin, ServiceGroupsAdmin, ServiceGroupAdmin
 from app.resources.workers import \
     WorkersListAdmin, WorkersAdmin, WorkerAdmin
 
@@ -27,6 +27,7 @@ router['providers_list_admin'].target = ProvidersListAdmin()
 router['services_admin'].target = ServicesAdmin()
 router['service_admin'].target = ServiceAdmin()
 router['services_list_admin'].target = ServicesListAdmin()
+router['service_schedule_admin'].target = ServiceScheduleAdmin()
 router['service_groups_admin'].target = ServiceGroupsAdmin()
 router['service_group_admin'].target = ServiceGroupAdmin()
 router['workers_admin'].target = WorkersAdmin()

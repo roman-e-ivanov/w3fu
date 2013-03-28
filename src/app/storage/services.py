@@ -39,6 +39,11 @@ class Services(Collection):
         return self._c.update({'_id': service.id},
                               {'$set': {'name': service.name}})
 
+    @safe()
+    def update_schedule(self, service):
+        return self._c.update({'_id': service.id},
+                              {'$set': {'schedule': service.schedule.raw}})
+
     @safe(True)
     def find_provider(self, provider_id):
         return self._c.find({'provider_id': provider_id})

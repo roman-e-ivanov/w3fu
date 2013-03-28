@@ -105,6 +105,26 @@ class ServicesListAdmin(Resource):
 
 
 @class_wrapper(UserState(True))
+class ServiceScheduleAdmin(Resource):
+
+    html = HTML(view['none'])
+
+    def __call__(self, req, service_id):
+        service = services_c.find_id(service_id)
+        if service is None:
+            raise NotFound
+        if not req.user.can_write(service.provider_id):
+            raise Forbidden
+        return super(ServiceScheduleAdmin, self).__call__(req, service)
+
+    @html.PUT
+    def post(self, req, service):
+        service.schedule.merge(req.fs)
+        services_c.update_schedule(service)
+        raise Redirect(router['service_admin'].url(req, service_id=service.id))
+
+
+@class_wrapper(UserState(True))
 class ServiceGroupsAdmin(Resource):
 
     html = HTML(view['none'])
@@ -121,8 +141,7 @@ class ServiceGroupsAdmin(Resource):
     def post(self, req, service):
         group = ServiceGroup.new()
         services_c.push_group(service, group)
-        raise Redirect(router['service_admin'] \
-                       .url(req, service_id=service.id))
+        raise Redirect(router['service_admin'].url(req, service_id=service.id))
 
 
 @class_wrapper(UserState(True))
@@ -141,5 +160,4 @@ class ServiceGroupAdmin(Resource):
     @html.DELETE
     def delete(self, req, service, group_id):
         services_c.pull_group(group_id)
-        raise Redirect(router['service_admin'] \
-                       .url(req, service_id=service.id))
+        raise Redirect(router['service_admin'].url(req, service_id=service.id))
