@@ -166,8 +166,7 @@ class Form(object):
                           for k, v in packed.iteritems()])
 
     def _decode(self, fs):
-        return dict([(k, fs.getfirst(k).decode('utf-8'))
-                     for k in fs.keys()])
+        return dict([(k, fs.getfirst(k)) for k in fs.keys()])
 
 
 def classwrapper(*wrappers):

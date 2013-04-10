@@ -33,12 +33,17 @@ class ArgRangeError(ArgError):
     code = 'range'
 
 
-class SingleArg(object):
+class StrArg(object):
 
-    def __init__(self, field, default=None, **custom):
+    def __init__(self, field, default=None, trim=True, pattern=None,
+                 min_size=0, max_size=65535):
         self._field = field
         self._default = default
-        self.custom = custom
+        self._trim = trim
+        self._min_size = min_size
+        self._max_size = max_size
+        self._pattern = pattern
+        self._cpattern = pattern and re.compile(pattern)
 
     def unpack(self, packed):
         try:
@@ -55,36 +60,25 @@ class SingleArg(object):
     def fields(self):
         return [self._field]
 
-    def _pack(self, value):
-        return str(value)
-
-
-class StrArg(SingleArg):
-
-    def __init__(self, field, trim=True, pattern=None,
-                 min_size=0, max_size=65535, **custom):
-        super(StrArg, self).__init__(field, **custom)
-        self._trim = trim
-        self._min_size = min_size
-        self._max_size = max_size
-        self._pattern = pattern
-        self._cpattern = pattern and re.compile(pattern)
+    def pattern(self):
+        return self._pattern or \
+            '.{{0},{1}}'.format(self._min_size, self._max_size)
 
     def _unpack(self, value):
+        s = value.decode('utf-8')
         if self._trim:
-            s = value.strip()
+            s = s.strip()
         if not self._min_size <= len(s) <= self._max_size:
             raise ArgSizeError
         if self._pattern is not None and not self._cpattern.match(s):
             raise ArgTypeError
         return s
 
-    def pattern(self):
-        return self._pattern or \
-            '.{{0},{1}}'.format(self._min_size, self._max_size)
+    def _pack(self, value):
+        return str(value)
 
 
-class IntArg(SingleArg):
+class IntArg(StrArg):
 
     def __init__(self, field, min=0, max=None, **custom):
         super(IntArg, self).__init__(field, **custom)
@@ -105,7 +99,7 @@ class IntArg(SingleArg):
         return '-?\d+'
 
 
-class BoolArg(SingleArg):
+class BoolArg(StrArg):
 
     def __init__(self, field, **custom):
         super(BoolArg, self).__init__(field, default=False, **custom)
@@ -125,7 +119,7 @@ class IdArg(StrArg):
 
     def _unpack(self, value):
         value = super(IdArg, self)._unpack(value)
-        return ObjectId(util.b64d(value))
+        return ObjectId(util.b64d(value.encode('utf-8')))
 
     def _pack(self, value):
         return util.b64e(value.binary)
