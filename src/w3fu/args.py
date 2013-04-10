@@ -80,18 +80,18 @@ class StrArg(object):
 
 class IntArg(StrArg):
 
-    def __init__(self, field, min=0, max=None, **custom):
+    def __init__(self, field, min_value=0, max_value=None, **custom):
         super(IntArg, self).__init__(field, **custom)
-        self._min = min
-        self._max = max
+        self._min_value = min_value
+        self._max_value = max_value
 
     def _unpack(self, value):
         try:
             x = int(value)
         except ValueError:
             raise ArgTypeError
-        if ((self._min is not None and x < self._min) or
-            (self._max is not None and x > self._max)):
+        if ((self._min_value is not None and x < self._min_value) or
+            (self._max_value is not None and x > self._max_value)):
             raise ArgRangeError
         return x
 
