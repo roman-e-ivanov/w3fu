@@ -1,5 +1,5 @@
 from w3fu.http import OK, Redirect, Forbidden, NotFound
-from w3fu.args import StrArg
+from w3fu.args import StrArg, IdArg
 from w3fu.resources import Resource, Form, HTML
 from w3fu.util import class_wrapper
 
@@ -7,7 +7,7 @@ from app.routing import router
 from app.view import view
 from app.mixins import public_mixins
 from app.state import UserState
-from app.storage import providers_c, workers_c
+from app.storage import providers_c, workers_c, services_c
 from app.storage.workers import Worker
 
 
@@ -17,10 +17,22 @@ def _worker(doc):
                            for name in ['worker_admin']])
     return block
 
+def _service_worker(doc, service):
+    block = _worker(doc)
+    for name in ['worker_admin']:
+        block['paths'][name] = router[name].path(worker_id=doc.id,
+                                                 service_id=service.id)
+    return block
+
 
 class WorkerForm(Form):
 
     name = StrArg('name', min_size=1, max_size=100)
+
+
+class ServiceWorkerForm(Form):
+
+    worker_id = IdArg('worker_id')
 
 
 @class_wrapper(UserState(True))
@@ -92,3 +104,51 @@ class WorkersListAdmin(Resource):
             raise Forbidden
         workers = workers_c.find_provider(provider_id)
         return OK({'workers': [_worker(worker) for worker in workers]})
+
+
+@class_wrapper(UserState(True))
+class ServiceWorkersAdmin(Resource):
+
+    html = HTML(view['pages/service-workers-admin'], public_mixins)
+
+    def __call__(self, req, service_id):
+        service = services_c.find_id(service_id)
+        if service is None:
+            raise NotFound
+        if not req.user.can_write(service.provider_id):
+            raise Forbidden
+        return super(ServiceWorkersAdmin, self).__call__(req, service)
+
+    @html.GET
+    def get(self, req, service):
+        workers = workers_c.find_for_service(service)
+        return OK({'workers': [_service_worker(worker, service)
+                               for worker in workers]})
+
+    @html.POST
+    @ServiceWorkerForm.handler()
+    def post(self, req, service):
+        worker = workers_c.find_id(req.form.data['worker_id'])
+        if worker is None:
+            raise NotFound
+        services_c.push_worker(service, worker)
+        raise Redirect(router['service_admin'].url(req, service_id=service.id))
+
+
+@class_wrapper(UserState(True))
+class ServiceWorkerAdmin(Resource):
+
+    html = HTML(view['none'])
+
+    def __call__(self, req, service_id, worker_id):
+        service = services_c.find_with_worker(service_id, worker_id)
+        if service is None:
+            raise NotFound
+        if not req.user.can_write(service.provider_id):
+            raise Forbidden
+        return super(ServiceWorkerAdmin, self).__call__(req, service, worker_id)
+
+    @html.DELETE
+    def delete(self, req, service, worker_id):
+        services_c.pull_worker(service.id, worker_id)
+        raise Redirect(router['service_admin'].url(req, service_id=service.id))

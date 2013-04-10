@@ -4,6 +4,7 @@ from w3fu.storage import safe, Collection, Document, Property, \
     Container, ListContainer
 
 from app.storage.schedule import Schedule
+from app.storage.workers import Worker
 
 
 class ServiceGroup(Document):
@@ -19,19 +20,25 @@ class Service(Document):
     id = Property('_id')
     provider_id = Property('provider_id')
     name = Property('name')
-    groups = ListContainer('groups', ServiceGroup)
     schedule = Container('schedule', Schedule)
+    workers = ListContainer('workers', Worker)
+    groups = ListContainer('groups', ServiceGroup)
 
     def _new(self, provider_id, name):
         self.provider_id = provider_id
         self.name = name
-        self.groups = [ServiceGroup.new()]
         self.schedule = Schedule.new()
+        self.groups = [ServiceGroup.new()]
+
+    @property
+    def worker_ids(self):
+        return [worker.id for worker in self.workers]
 
 
 class Services(Collection):
 
     _indexes = [('provider_id', {}),
+                ('workers._id', {}),
                 ('groups._id', {})]
 
     @safe()
@@ -47,6 +54,20 @@ class Services(Collection):
     @safe(True)
     def find_provider(self, provider_id):
         return self._c.find({'provider_id': provider_id})
+
+    @safe(True)
+    def find_with_worker(self, service_id, worker_id):
+        return self._c.find_one({'_id': service_id, 'workers._id': worker_id})
+
+    @safe()
+    def push_worker(self, service, worker):
+        self._c.update({'_id': service.id, 'workers._id': {'$ne': worker.id}},
+                       {'$push': {'workers': worker.embedded}})
+
+    @safe()
+    def pull_worker(self, service_id, worker_id):
+        self._c.update({'_id': service_id},
+                       {'$pull': {'workers': {'_id': worker_id}}})
 
     @safe(True)
     def find_group(self, group_id):

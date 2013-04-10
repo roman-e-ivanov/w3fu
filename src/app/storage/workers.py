@@ -11,6 +11,10 @@ class Worker(Document):
         self.provider_id = provider_id
         self.name = name
 
+    @property
+    def embedded(self):
+        return {'_id': self.id, 'name': self.name}
+
 
 class Workers(Collection):
 
@@ -24,3 +28,8 @@ class Workers(Collection):
     @safe(True)
     def find_provider(self, provider_id):
         return self._c.find({'provider_id': provider_id})
+
+    @safe(True)
+    def find_for_service(self, service):
+        return self._c.find({'provider_id': service.provider_id,
+                             '_id': {'$nin': service.worker_ids}})
