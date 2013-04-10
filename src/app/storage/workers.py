@@ -1,10 +1,10 @@
-from w3fu.storage import safe, Collection, Document, Property
+from w3fu.storage import safe, Collection, Document, Property, ID
 
 
 class Worker(Document):
 
-    id = Property('_id')
-    provider_id = Property('provider_id')
+    id = ID()
+    provider_id = ID('provider_id', hidden=True)
     name = Property('name')
 
     def _new(self, provider_id, name):

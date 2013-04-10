@@ -3,6 +3,8 @@ from pymongo.cursor import Cursor
 from pymongo.errors import PyMongoError, AutoReconnect, DuplicateKeyError
 from copy import copy
 
+from w3fu import util
+
 
 def safe(wrap=False):
     def decorator(method):
@@ -140,6 +142,15 @@ class Property(object):
 
     def _dump(self, attr):
         return attr
+
+
+class ID(Property):
+
+    def __init__(self, name='_id', default=None, hidden=False):
+        super(ID, self).__init__(name, default, hidden)
+
+    def _dump(self, attr):
+        return util.b64e(attr.binary)
 
 
 class Container(Property):

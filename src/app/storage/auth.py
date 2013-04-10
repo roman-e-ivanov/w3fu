@@ -2,7 +2,8 @@ from datetime import datetime
 from uuid import uuid4
 
 from w3fu.util import b64e, salted_hash
-from w3fu.storage import safe, Collection, Document, Property, ListContainer
+from w3fu.storage import safe, Collection, Document, Property, ID, \
+    ListContainer
 
 from app import config
 
@@ -19,7 +20,7 @@ class Session(Document):
 
 class User(Document):
 
-    id = Property('_id')
+    id = ID()
     email = Property('email')
     password = Property('password', hidden=True)
     shortcut = Property('shortcut')

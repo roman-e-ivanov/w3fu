@@ -1,9 +1,9 @@
-from w3fu.storage import safe, Collection, Document, Property
+from w3fu.storage import safe, Collection, Document, Property, ID
 
 
 class Provider(Document):
 
-    id = Property('_id')
+    id = ID()
     name = Property('name')
 
     def _new(self, name):

@@ -1,6 +1,6 @@
 from bson import ObjectId
 
-from w3fu.storage import safe, Collection, Document, Property, \
+from w3fu.storage import safe, Collection, Document, Property, ID, \
     Container, ListContainer
 
 from app.storage.schedule import Schedule
@@ -9,7 +9,7 @@ from app.storage.workers import Worker
 
 class ServiceGroup(Document):
 
-    id = Property('_id')
+    id = ID()
 
     def _new(self):
         self.id = ObjectId()
@@ -17,8 +17,8 @@ class ServiceGroup(Document):
 
 class Service(Document):
 
-    id = Property('_id')
-    provider_id = Property('provider_id')
+    id = ID()
+    provider_id = ID('provider_id', hidden=True)
     name = Property('name')
     schedule = Container('schedule', Schedule)
     workers = ListContainer('workers', Worker)
