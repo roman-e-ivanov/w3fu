@@ -9,6 +9,7 @@ from app.mixins import public_mixins
 from app.state import UserState
 from app.storage import providers_c, services_c
 from app.storage.services import Service, ServiceGroup
+from app.resources.workers import service_worker
 
 
 def _group(doc):
@@ -26,6 +27,7 @@ def _service(doc):
                                         'service_workers_admin',
                                         'service_schedule_admin']])
     block['groups'] = [_group(group) for group in doc.groups]
+    block['workers'] = [service_worker(worker, doc) for worker in doc.workers]
     return block
 
 

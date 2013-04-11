@@ -17,7 +17,7 @@ def _worker(doc):
                            for name in ['worker_admin']])
     return block
 
-def _service_worker(doc, service):
+def service_worker(doc, service):
     block = _worker(doc)
     for name in ['service_worker_admin']:
         block['paths'][name] = router[name].path(worker_id=doc.id,
@@ -122,7 +122,7 @@ class ServiceWorkersAdmin(Resource):
     @html.GET
     def get(self, req, service):
         workers = workers_c.find_for_service(service)
-        return OK({'workers': [_service_worker(worker, service)
+        return OK({'workers': [service_worker(worker, service)
                                for worker in workers]})
 
     @html.POST
