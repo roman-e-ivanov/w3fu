@@ -38,6 +38,31 @@
                                 "item" : "item"
                             }
                         },
+                        "add-worker" : {
+                            "fill" : "<a href=\"{link}\">Добавить работника</a>",
+                            "args" : {
+                                "link" : {"data" : ["service", "paths", "service_workers_admin"]}
+                            }
+                        },
+                        "workers-list" : {
+                            "join" : {
+                                "map" : {
+                                    "fill" : "<li>{worker-name}<form method=\"POST\" action=\"{delete-worker}\" class=\"\"> <input type=\"hidden\" name=\"method\" value=\"DELETE\" /><input type=\"submit\" class=\"b-button\" value=\"Удалить\" /></form></li>",
+                                    "args" : {
+                                        "worker-name" : {
+                                            "data" : ["item", "name"]
+                                        },
+                                        "delete-worker" : {
+                                            "data" : ["item", "paths", "service_worker_admin"]
+                                        }
+                                    }
+                                },
+                                "list" : {
+                                    "data" : ["service", "workers"]
+                                },
+                                "item" : "item"
+                            }
+                        },
                         "schedule" : {
                             "call" : "forms/schedule",
                             "args" : {
