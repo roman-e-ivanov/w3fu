@@ -23,6 +23,7 @@ def _service(doc):
     block['paths'] = dict([(name, router[name].path(service_id=doc.id))
                            for name in ['service_admin',
                                         'service_groups_admin',
+                                        'service_workers_admin',
                                         'service_schedule_admin']])
     block['groups'] = [_group(group) for group in doc.groups]
     return block
