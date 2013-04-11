@@ -19,7 +19,7 @@ def _worker(doc):
 
 def _service_worker(doc, service):
     block = _worker(doc)
-    for name in ['worker_admin']:
+    for name in ['service_worker_admin']:
         block['paths'][name] = router[name].path(worker_id=doc.id,
                                                  service_id=service.id)
     return block
