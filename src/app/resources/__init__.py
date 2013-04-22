@@ -11,7 +11,7 @@ from app.resources.services import \
     ServiceScheduleAdmin, ServiceGroupsAdmin, ServiceGroupAdmin
 from app.resources.workers import \
     WorkersListAdmin, WorkersAdmin, WorkerAdmin, \
-    ServiceWorkersAdmin, ServiceWorkerAdmin
+    WorkerScheduleAdmin, ServiceWorkersAdmin, ServiceWorkerAdmin
 
 
 router['test'].target = Test()
@@ -35,4 +35,5 @@ router['service_groups_admin'].target = ServiceGroupsAdmin()
 router['service_group_admin'].target = ServiceGroupAdmin()
 router['workers_admin'].target = WorkersAdmin()
 router['worker_admin'].target = WorkerAdmin()
+router['worker_schedule_admin'].target = WorkerScheduleAdmin()
 router['workers_list_admin'].target = WorkersListAdmin()

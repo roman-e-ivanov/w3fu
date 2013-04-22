@@ -94,6 +94,26 @@ class WorkerAdmin(Resource):
 
 
 @class_wrapper(UserState(True))
+class WorkerScheduleAdmin(Resource):
+
+    html = HTML(view['none'])
+
+    def __call__(self, req, worker_id):
+        worker = workers_c.find_id(worker_id)
+        if worker is None:
+            raise NotFound
+        if not req.user.can_write(worker.provider_id):
+            raise Forbidden
+        return super(WorkerScheduleAdmin, self).__call__(req, worker)
+
+    @html.PUT
+    def post(self, req, worker):
+        worker.schedule.merge(req.fs)
+        workers_c.update_schedule(worker)
+        raise Redirect(router['worker_admin'].url(req, worker_id=worker.id))
+
+
+@class_wrapper(UserState(True))
 class WorkersListAdmin(Resource):
 
     html = HTML(view['pages/workers-list-admin'], public_mixins)

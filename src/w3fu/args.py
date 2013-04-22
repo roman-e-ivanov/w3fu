@@ -1,5 +1,8 @@
 import re
 from bson.objectid import ObjectId
+from time import mktime
+from datetime import datetime
+
 
 from w3fu import util
 
@@ -123,3 +126,16 @@ class IdArg(StrArg):
 
     def _pack(self, value):
         return util.b64e(value.binary)
+
+
+class TimestampArg(IntArg):
+
+    def _unpack(self, value):
+        value = super(TimestampArg, self)._unpack(value)
+        try:
+            return datetime.utcfromtimestamp(value)
+        except ValueError:
+            raise ArgRangeError
+
+    def _pack(self, value):
+        return str(int(mktime(value.timetuple())))
